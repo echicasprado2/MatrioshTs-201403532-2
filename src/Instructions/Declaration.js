@@ -38,7 +38,7 @@ class Declaration extends Instruction {
 
     if (this.value != null) {
 
-      this.translatedCode += " = "
+      this.translatedCode += " = ";
 
       if (this.value instanceof Array) {
         this.translatedCode += this.getValueArray(this.value);
@@ -129,7 +129,8 @@ class Declaration extends Instruction {
     for(var i = 0; i < this.ids.length; i++){
 
       if(result == null){
-        e.insertNewSymbol(this.ids[i],new Symbol(this.line,this.column,this.ids[i],this.type,this.typeDeclaration,new Value(new Type(EnumType.NULL,null),"",0)));
+        // e.insertNewSymbol(this.ids[i],new Symbol(this.line,this.column,this.ids[i],this.type,this.typeDeclaration,new Value(new Type(EnumType.NULL,null),"",0)));
+        e.insertNewSymbol(this.ids[i],new Symbol(this.line,this.column,this.ids[i],new Type(EnumType.VARIABLE,null),this.typeDeclaration,this.type,null,new Value(new Type(EnumType.NULL,null),"",0)));
       }else{
         /* TODO here part i valid to type and identifier
           because result is a symbol and i save only value of symbol and not a symbol

@@ -15,17 +15,11 @@ class ErrorList{
     }
 
     static isErrors(){
-        if(ErrorList.errorList.length === 0){
-            return true;
-        }else{
-            return false;
-        }
+        return ErrorList.errorList.length === 0 ? true : false;
     }
 
     static showErrors(){
-        var item;
-        for(var i = 0; i <  ErrorList.errorList.length; i++){
-            item = ErrorList.errorList[i];
+        for (const item of ErrorList.errorList) {
             PrintConsole.printLine(`Error tipo: ${item.errorType} Linea: ${item.line} Columna: ${item.column} Descripcion: ${item.description} Entorno: ${item.environmentType.toString()}`);
         }
     }

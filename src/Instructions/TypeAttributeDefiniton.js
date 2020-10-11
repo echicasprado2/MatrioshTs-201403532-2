@@ -1,10 +1,11 @@
 class TypeAttributeDefinition extends Instruction {
     
-    constructor(linea,column,identify,type){
+    constructor(linea,column,identify,type,dimensions){
         super(linea,column);
 
         this.identify = identify;
         this.type = type;
+        this.dimensions = dimensions;
 
         this.translatedCode = "";
     }
@@ -14,6 +15,10 @@ class TypeAttributeDefinition extends Instruction {
 
         if(this.type.enumType != EnumType.NULL){
             this.translatedCode += `: ${this.type.toString()}`;
+        }
+
+        for(let i = 0; i < this.dimensions; i++){
+            this.translatedCode += "[]";
         }
 
         return this.translatedCode;

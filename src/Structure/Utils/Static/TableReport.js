@@ -1,18 +1,30 @@
 class NodeTableSymbols {
+  
   /**
-   *
-   * @param {*} line
-   * @param {*} column
-   * @param {*} name
-   * @param {*} type
-   * @param {*} typeEnviroment
-   * @param {*} value
+   * 
+   * @param {*} line 
+   * @param {*} column 
+   * @param {*} name 
+   * @param {*} type 
+   * @param {*} typeDeclaration 
+   * @param {*} typeValue 
+   * @param {*} size 
+   * @param {*} position 
+   * @param {*} dimensions 
+   * @param {*} typeEnviroment 
+   * @param {*} value 
    */
-  constructor(line, column, name, type, typeEnviroment, value) {
+  constructor(line, column, name, type, typeDeclaration, typeValue, size, position, dimensions, typeEnviroment, value) {
+    //TODO update all use new NodeTableSymbols
     this.line = line;
     this.column = column;
     this.name = name;
     this.type = type;
+    this.typeDeclaration = typeDeclaration;
+    this.typeValue = typeValue;
+    this.size = size;
+    this.position = position;
+    this.dimensions = dimensions;
     this.typeEnviroment = typeEnviroment;
     this.value = value;
   }
@@ -41,7 +53,12 @@ class TableReport {
     return TableReport.nodesTranslated;
   }
 
+  static getNewNodeWithDataSymbol(symbol){
+    let newValue = new NodeTableSymbols();
+  }
+
   static addExecute(node) {
+    //TODO update data for symbols save and in this node add attributes
     for (var i = 0; i < TableReport.nodesExecute.length; i++) {
 
         if(TableReport.nodesExecute[i].typeEnviroment.enumEnvironmentType == node.typeEnviroment.enumEnvironmentType){

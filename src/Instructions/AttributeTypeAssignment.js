@@ -10,8 +10,30 @@ class AttributeTypeAssignment extends Instruction {
     }
 
     getTranslated(){
-        this.translatedCode += `${this.identify}: ${this.value.getTranslated()}`
+        this.translatedCode += `${this.identify}: `
+        this.translatedCode += this.value instanceof Array ? `${this.getDataArray(this.value)}` : `${this.value.getTranslated()}`;
         return this.translatedCode;
+    }
+
+    getDataArray(array){
+        let cadena = '[';
+        for(let i = 0; i < array.length;i++){
+
+            if(array[i] instanceof Array && i === 0 ){
+                cadena += this.getDataArray(array[i]);
+
+            }else if(array[i] instanceof Array){
+                cadena += `,${this.getDataArray(array[i])}`
+
+            }else if(array[i] instanceof Expresion && i == 0){
+                cadena += `${array[i].getTranslated()}`;
+
+            }else if(array[i] instanceof Expresion){
+                cadena += `,${array[i].getTranslated()}`;
+            }
+
+        }
+        return `${cadena}]`
     }
 
     translatedSymbolsTable(e){

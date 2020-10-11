@@ -9,7 +9,25 @@ var editEntrada = CodeMirror.fromTextArea(
 );
 
 var editSalida = CodeMirror.fromTextArea(
-  document.getElementById("textarea-editor-salida"),
+  document.getElementById("textarea-editor-translate"),
+  {
+    mode: "javascript",
+    theme: "lucario",
+    lineNumbers: true,
+  }
+);
+
+var editCode3D = CodeMirror.fromTextArea(
+  document.getElementById('textarea-editor-code3d'),
+  {
+    mode: "javascript",
+    theme: "dracula",
+    lineNumbers: true,
+  }
+);
+
+var editOptimization = CodeMirror.fromTextArea(
+  document.getElementById("textarea-editor-optimization"),
   {
     mode: "javascript",
     theme: "lucario",
@@ -36,15 +54,27 @@ function getEditor() {
   return tmp;
 }
 
-function getSalida() {
+function getTranslate() {
   var codeMirrorTextArea = $(".CodeMirror");
   var tmp = codeMirrorTextArea[1].CodeMirror;
   return tmp;
 }
 
-function getConsole() {
+function getEditorC3D() {
   var codeMirrorTextArea = $(".CodeMirror");
   var tmp = codeMirrorTextArea[2].CodeMirror;
+  return tmp;
+}
+
+function getEditoroptimization() {
+  var codeMirrorTextArea = $(".CodeMirror");
+  var tmp = codeMirrorTextArea[3].CodeMirror;
+  return tmp;
+}
+
+function getConsole() {
+  var codeMirrorTextArea = $(".CodeMirror");
+  var tmp = codeMirrorTextArea[4].CodeMirror;
   return tmp;
 }
 
@@ -58,7 +88,7 @@ openFile.addEventListener("change", (event) => {
     return;
   }
 
-  var reader = new FileReader();
+var reader = new FileReader();
   reader.addEventListener("load", function (e) {
     var text = e.target.result;
     var editor = getEditor();
@@ -67,11 +97,12 @@ openFile.addEventListener("change", (event) => {
   reader.readAsText(fileUpload[0]);
 });
 
+//TODO use this for translate code with functions nested to functions 
 var translate = document.getElementById("traducir");
 translate.addEventListener("click", (e) => {
   var editor = getEditor();
   var myConsole = getConsole();
-  var myTranslated = getSalida();
+  var myTranslated = getTranslate();
   
   cleanReportsTranslated();
   myConsole.setValue("");
@@ -89,9 +120,10 @@ translate.addEventListener("click", (e) => {
   showTranslatedTree(editor.getValue());
 });
 
+//TODO use this for execute code 
 var execute = document.getElementById("ejecutar");
 execute.addEventListener("click", (e) => {
-  var editor = getSalida();
+  var editor = getTranslate();
   var myConsole = getConsole();
   
   cleanReportsExecute();
@@ -107,6 +139,18 @@ execute.addEventListener("click", (e) => {
   showTableErrorsSymbols();
   showGraficarTs();
   showExecuteTree(editor.getValue());
+});
+
+//TODO use this for compile to code to intermediate code
+var compile = document.getElementById("compilar");
+compile.addEventListener("click",(e) => {
+  alert("click in compile");
+});
+
+//TODO use this for optimizate intermediate code
+var optimizate = document.getElementById("optimizar");
+optimizate.addEventListener("click",(e) => {
+  alert("click in optimizate");
 });
 
 function showTranslatedTree(file) {

@@ -1,11 +1,12 @@
 class DeclarationArray extends Instruction {
-    constructor(linea,column,typeDeclaration,ids,type,dimensions,value){
+    constructor(linea,column,typeDeclaration,ids,type,dimensions,value,size){
         super(linea,column);
         this.typeDeclaration = typeDeclaration;
         this.ids = ids;
         this.type = type;
         this.dimensions = dimensions;
         this.values = value;
+        this.size = size;
         this.translatedCode = "";
     }
 
@@ -30,9 +31,12 @@ class DeclarationArray extends Instruction {
             this.translatedCode += "[]";
         }
 
+        this.translatedCode += " = ";
+
         if(this.values != null){
-            this.translatedCode += " = ";
             this.translatedCode += this.makeArray(this.values.value[0]);
+        }else if(this.values == null && this.size instanceof Expresion){
+            this.translatedCode += `new Array(${this.size.getTranslated()})`;
         }
 
         return this.translatedCode + ";\n";

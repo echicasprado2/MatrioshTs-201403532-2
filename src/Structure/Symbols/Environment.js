@@ -1,4 +1,5 @@
 class Environment {
+
     /**
      * 
      * @param {*} previous 
@@ -16,15 +17,34 @@ class Environment {
             ErrorList.addError(new ErrorNode(symbol.line,symbol.column,new ErrorType(EnumErrorType.SEMANTIC),`La variable ya existe: ${name}`,this.enviromentType));
         }else{
 
-            if(symbol.type.enumType != EnumType.ERROR){
-                
+            if(symbol.typeValue.enumType != EnumType.ERROR){
+
+                symbol.typeEnvironment = this.enviromentType;
+
                 this.table.set(name,symbol);
+
+                TableReport.addExecute(
+                    new NodeTableSymbols(
+                        symbol.line,
+                        symbol.column,
+                        symbol.id,
+                        symbol.type,
+                        symbol.typeDeclaration,
+                        symbol.typeValue,
+                        symbol.size,
+                        symbol.position,
+                        symbol.dimensions,
+                        this.enviromentType,
+                        symbol.value.value
+                        )
+                    );
                 
-                if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-                    TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
-                }else{
-                    TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
-                }
+                // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
+                //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
+                //     //TODO update data into symbols
+                // }else{
+                //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
+                // }
 
             }
 
@@ -46,13 +66,33 @@ class Environment {
                     || e.enviromentType.EnumEnvironmentType == EnumEnvironmentType.FUNCTION 
                     || e.enviromentType.EnumEnvironmentType == EnumEnvironmentType.TYPE){
 
-                    if(symbol.type.enumType != EnumType.ERROR){
+                    if(symbol.typeValue.enumType != EnumType.ERROR){
+
+                        symbol.typeEnvironment = e.enviromentType;
+
                         e.table.set(name,symbol);
-                        if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-                            TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,null));
-                        }else{
-                            TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,symbol.value.value));
-                        }
+
+                        TableReport.addExecute(
+                            new NodeTableSymbols(
+                                symbol.line,
+                                symbol.column,
+                                symbol.id,
+                                symbol.type,
+                                symbol.typeDeclaration,
+                                symbol.typeValue,
+                                symbol.size,
+                                symbol.position,
+                                symbol.dimensions,
+                                e.enviromentType,
+                                symbol.value.value
+                                )
+                            );
+
+                        // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
+                        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,null));
+                        // }else{
+                        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,symbol.value.value));
+                        // }
 
                         return;
                     }
@@ -64,14 +104,33 @@ class Environment {
         //busco un entorno en donde este definida esta variable
         for(var e = this; e != null; e = e.previous){
             if(e.table.has(name)){
-                if(symbol.type.enumType != EnumType.ERROR){
+                if(symbol.typeValue.enumType != EnumType.ERROR){
+
+                    symbol.typeEnvironment = e.enviromentType;
+
                     e.table.set(name,symbol);
 
-                    if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-                        TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,null));
-                    }else{
-                        TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,symbol.value.value));
-                    }
+                    TableReport.addExecute(
+                        new NodeTableSymbols(
+                            symbol.line,
+                            symbol.column,
+                            symbol.id,
+                            symbol.type,
+                            symbol.typeDeclaration,
+                            symbol.typeValue,
+                            symbol.size,
+                            symbol.position,
+                            symbol.dimensions,
+                            e.enviromentType,
+                            symbol.value.value
+                            )
+                        );
+
+                    // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
+                    //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,null));
+                    // }else{
+                    //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,symbol.value.value));
+                    // }
 
                     return;
                 }
@@ -80,13 +139,32 @@ class Environment {
 
         //si no encuentro la variable en ningun lugar, guardo en el entorno local
         if(symbol.type.enumType != EnumType.ERROR){
+
+            symbol.typeEnvironment = this.enviromentType;
+
             this.table.set(name,symbol);
 
-            if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-                TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
-            }else{
-                TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
-            }
+            TableReport.addExecute(
+                new NodeTableSymbols(
+                    symbol.line,
+                    symbol.column,
+                    symbol.id,
+                    symbol.type,
+                    symbol.typeDeclaration,
+                    symbol.typeValue,
+                    symbol.size,
+                    symbol.position,
+                    symbol.dimensions,
+                    this.enviromentType,
+                    symbol.value.value
+                    )
+                );
+
+            // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
+            //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
+            // }else{
+            //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
+            // }
 
             return null;
         }
@@ -95,13 +173,32 @@ class Environment {
     }
 
     insertParameter(name,symbol){
+
+        symbol.typeEnvironment = this.enviromentType;
+
         this.table.set(name,symbol);
 
-        if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-            TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
-        }else{
-            TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
-        }
+        TableReport.addExecute(
+            new NodeTableSymbols(
+                symbol.line,
+                symbol.column,
+                symbol.id,
+                symbol.type,
+                symbol.typeDeclaration,
+                symbol.typeValue,
+                symbol.size,
+                symbol.position,
+                symbol.dimensions,
+                this.enviromentType,
+                symbol.value.value
+                )
+            );
+
+        // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
+        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
+        // }else{
+        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
+        // }
         
     }
 
