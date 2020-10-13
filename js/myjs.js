@@ -144,7 +144,20 @@ execute.addEventListener("click", (e) => {
 //TODO use this for compile to code to intermediate code
 var compile = document.getElementById("compilar");
 compile.addEventListener("click",(e) => {
-  alert("click in compile");
+  var editor = getTranslate();
+  var myConsole = getConsole();
+  var editorC3D = getEditorC3D();
+
+  cleanReportsCompile();
+  myConsole.setValue("");
+
+  let result = new AST(Gramatica.parse(editor.getValue()));
+  editCode3D.setValue(result.getC3D());
+  myConsole.setValue(PrintConsole.getPrintConsole());
+
+  showTableErrorsSymbols();
+  showTableCompileSymbols();
+  showCompileTree(editor.getValue());
 });
 
 //TODO use this for optimizate intermediate code
@@ -176,6 +189,21 @@ function showExecuteTree(file) {
   var ast = GraphGrammar.parse(file);
   if (ast instanceof NodeGraphAST) {
     var code = ast.stringFinalTreeExecute(ast.totalString(ast));
+  }
+
+  // genera el arbol y da error
+  var element = document.querySelector("showExecuteTree");
+  var insertSvg = function (svgCode) {
+    element.innerHTML = svgCode;
+  };
+
+  var graph = mermaid.render("showExecuteTree", code, insertSvg);
+}
+
+function showCompileTree(file){
+  var ast = GraphGrammar.parse(file);
+  if (ast instanceof NodeGraphAST) {
+    var code = ast.stringFinalTreeCompile(ast.totalString(ast));
   }
 
   // genera el arbol y da error
@@ -253,6 +281,44 @@ function showTableExecuteSymbols() {
   document.getElementById("tableExecute").innerHTML = html;
 }
 
+function showTableCompileSymbols() {
+  document.getElementById("tableCompile").innerHTML = "";
+
+  var html = "<h2>Tabla de simbolos compilacion</h2>\n";
+  html += '<table class="table table-dark" id="tableExecute">';
+  html += '<thead class="thead-light">';
+  html += "<tr>";
+  html += '<th scope="col">#</th>';
+  html += '<th scope="col">IDENTIFICADOR</th>';
+  html += '<th scope="col">TIPO</th>';
+  html += '<th scope="col">LINEA</th>';
+  html += '<th scope="col">COLUMNA</th>';
+  html += '<th scope="col">VALOR</th>';
+  html += '<th scope="col">ENTORNO</th>';
+  html += "</tr>";
+  html += " </thead>";
+  html += "<tbody>";
+
+  var nodes = TableReport.getNodesExecute();
+  for (var i = 0; i < nodes.length; i++) {
+    var item = nodes[i];
+    html += "<tr>";
+    html += `<td>${i + 1}</td>`;
+    html += `<td>${item.name}</td>`;
+    html += `<td>${item.type}</td>`;
+    html += `<td>${item.line}</td>`;
+    html += `<td>${item.column}</td>`;
+    html += `<td>${item.value}</td>`;
+    html += `<td>${item.typeEnviroment}</td>`;
+    html += "</tr>";
+  }
+
+  html += "</tbody>";
+  html += "</table>";
+  document.getElementById("tableExecute").innerHTML = html;
+}
+
+
 function showTableErrorsSymbols() {
   document.getElementById("tableErrors").innerHTML = "";
 
@@ -307,10 +373,23 @@ function cleanReportsTranslated(){
   document.getElementById("tableTranslated").innerHTML = "";
   document.getElementById("tableExecute").innerHTML = "";
   document.getElementById("tableErrors").innerHTML = "";
+  document.getElementById("tableCompile").innerHTML = "";
+  document.getElementById("tableOptimization").innerHTML = "";
   document.getElementById("reportGraficarTs").innerHTML = "";
 }
 
 function cleanReportsExecute(){
   document.getElementById("tableExecute").innerHTML = "";
   document.getElementById("reportGraficarTs").innerHTML = "";
+  document.getElementById("tableCompile").innerHTML = "";
+  document.getElementById("tableOptimization").innerHTML = "";
+}
+
+function cleanReportsCompile(){
+  document.getElementById("tableCompile").innerHTML = "";
+  document.getElementById("tableOptimization").innerHTML = "";
+}
+
+function cleanReportsOptimization(){
+  document.getElementById("tableOptimization").innerHTML = "";
 }

@@ -198,11 +198,17 @@ class DeclarationArray extends Instruction {
                 if(!(values[i] instanceof Array)){
                     ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`el valor no es de las dimenciones del array`,e.enviromentType));
                     return false;
+                    
                 }else if(!(this.validValueWithDimensions(e,values[0],currentDimencion+1))){
                     return false;
                 }
 
             }else if(this.dimensions < currentDimencion){
+
+                if(this.dimensions == 0){
+                    return true;
+                }
+
                 ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`el valor es menor que el numero de dimenciones del array`,e.enviromentType));
                 return false;
             }

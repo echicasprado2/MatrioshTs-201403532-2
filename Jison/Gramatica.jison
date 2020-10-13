@@ -401,7 +401,15 @@ GRAPH_TS: graficar_ts par_izq par_der PUNTO_Y_COMA { $$ = new GraphTs(this._$.fi
         ;
 
 DECLARATION: TYPE_DECLARATION  L_ID TYPE_VARIABLE PUNTO_Y_COMA                                             { $$ = new Declaration(this._$.first_line,this._$.first_column,$1,$2,$3,null); }
-        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' E PUNTO_Y_COMA                                       { $$ = new Declaration(this._$.first_line,this._$.first_column,$1,$2,$3,$5); }
+        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' E PUNTO_Y_COMA                                       
+        {  
+                if($5 instanceof Array){
+                        $$ = new DeclarationArray(this._$.first_line,this._$.first_column,$1,$2,$3,0,new Value(new Type(EnumType.ARRAY,""),[$5]),0);
+                }else{
+                        $$ = new Declaration(this._$.first_line,this._$.first_column,$1,$2,$3,$5);
+                }
+        }
+        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' new array par_izq E par_der PUNTO_Y_COMA             { $$ = new DeclarationArray(this._$.first_line,this._$.first_column,$1,$2,$3,0,null,$9); }
         |    TYPE_DECLARATION  L_ID TYPE_VARIABLE L_DIMENSION '=' new array par_izq E par_der PUNTO_Y_COMA { $$ = new DeclarationArray(this._$.first_line,this._$.first_column,$1,$2,$3,$4,null,$9); }
         |    TYPE_DECLARATION  L_ID TYPE_VARIABLE L_DIMENSION '=' L_ARRAY PUNTO_Y_COMA                     { $$ = new DeclarationArray(this._$.first_line,this._$.first_column,$1,$2,$3,$4,new Value(new Type(EnumType.ARRAY,""),$6),0); }
         |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' llave_izq L_E_TYPE llave_der PUNTO_Y_COMA            { $$ = new DeclarationTypes(this._$.first_line,this._$.first_column,$1,$2,$3,$6); }

@@ -18,6 +18,12 @@ class NodeGraphAST{
         return codeGraph;
     }
 
+    stringFinalTreeCompile(string){
+        NumberNode.cleanNumberNode();
+        var codeGraph = `graph TD\nNote(AST COMPILACION)\n${string}`;
+        return codeGraph;
+    }
+
     totalString(root){
         root.tag = root.tag.replace("\"","");
         root.tag = root.tag.replace("\"","");

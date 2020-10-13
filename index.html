@@ -33,7 +33,7 @@
                     <button type="button" class="btn btn-dark" id="traducir">Traducir</button>
                 </li>
                 <li class="nav-item">
-                    <button type="button" class="btn btn-dark" id="ejecutar">Ejecutar</button>
+                    <button type="button" class="btn btn-dark" id="ejecutar" disabled>Ejecutar</button>
                 </li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-dark" id="compilar">Compilar</button>
@@ -134,6 +134,24 @@
         </div>
         <br>
         <br>
+        <div class="container" id="showTableCompile">
+            <div class="row justify-content-md-center">
+                <div class="col col-sm-12 col-md-10 col-lg-10 col-xl-10" id="tableCompile">
+                    
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="container" id="showTableOptimization">
+            <div class="row justify-content-md-center">
+                <div class="col col-sm-12 col-md-10 col-lg-10 col-xl-10" id="tableOptimization">
+                    
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
         <div class="container" id="showTableErrors">
             <div class="row justify-content-md-center">
                 <div class="col col-sm-12 col-md-10 col-lg-10 col-xl-10" id="tableErrors">
@@ -178,6 +196,7 @@
     <script src="src/Structure/Utils/Static/ErrorList.js"></script>
     <script src="src/Structure/Utils/Static/PrintConsole.js"></script>
     <script src="src/Structure/Utils/Static/ShowGraphTs.js"></script>
+    <script src="src/Structure/Utils/Static/Singleton.js"></script>
     
     <!-- ABSTRACT -->   
     <script src="src/Structure/Abstract/Node.js"></script>

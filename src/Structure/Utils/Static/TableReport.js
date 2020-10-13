@@ -33,6 +33,8 @@ class NodeTableSymbols {
 class TableReport {
   static nodesTranslated = [];
   static nodesExecute = [];
+  static nodesCompile = [];
+  static nodesOptimizate = [];
 
   static cleanTranslated() {
     TableReport.nodesTranslated = [];
@@ -42,6 +44,46 @@ class TableReport {
     TableReport.nodesExecute = [];
   }
 
+  static cleanCompile(){
+    TableReport.nodesCompile = [];
+  }
+
+  static cleanOptimizate(){
+    TableReport.nodesOptimizate = [];
+  }
+  
+  /**
+   * @returns array with nodes of translate
+   */
+  static getNodesTranslated() {
+    return TableReport.nodesTranslated;
+  }
+  
+  /**
+   * @returns array with node of execute
+   */
+  static getNodesExecute() {
+    return TableReport.nodesExecute;
+  }
+
+  /**
+   * @returns array with node of compile
+   */
+  static getNodesCompile(){
+    return TableReport.nodesCompile;
+  }
+
+  /**
+   * @returns array with node of optimizate
+   */
+  static getNodesOptimizate(){
+    return TableReport.nodesOptimizate;
+  }
+
+  /**
+   * 
+   * @param {*} node add node 
+   */
   static addTranslated(node) {
     if (node.typeEnviroment == EnumEnvironmentType.FUNCTION) {
       node.typeEnviroment = node.typeEnviroment.name;
@@ -49,14 +91,10 @@ class TableReport {
     TableReport.nodesTranslated.push(node);
   }
 
-  static getNodesTranslated() {
-    return TableReport.nodesTranslated;
-  }
-
-  static getNewNodeWithDataSymbol(symbol){
-    let newValue = new NodeTableSymbols();
-  }
-
+  /**
+   * 
+   * @param {*} node add node
+   */
   static addExecute(node) {
     //TODO update data for symbols save and in this node add attributes
     for (var i = 0; i < TableReport.nodesExecute.length; i++) {
@@ -99,6 +137,28 @@ class TableReport {
     TableReport.nodesExecute.push(node);
   }
 
+  /**
+   * 
+   * @param {*} node add node
+   */  
+  static addCompile(node){
+    //TODO implement
+  }
+
+  /**
+   * 
+   * @param {*} node add node
+   */  
+  static addOptimizate(node){
+    //TODO implement
+  }
+
+
+  /**
+   * 
+   * @param {*} map map with data
+   * @returns string with data of map
+   */
   static getMapData(map){
     var cadena = "";
 
@@ -109,6 +169,11 @@ class TableReport {
     return cadena;
   }
 
+  /**
+   * 
+   * @param {*} array with values, this use array of array
+   * @returns all data into array
+   */
   static getRealValue(arrayValues){
     var cadena = "";
     for(var i = 0; i < arrayValues.length;i++){
@@ -121,11 +186,5 @@ class TableReport {
     }
     return cadena;
   }
-
-  static getNodesExecute() {
-    return TableReport.nodesExecute;
-  }
-
-
 
 }

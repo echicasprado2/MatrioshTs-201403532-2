@@ -81,4 +81,33 @@ class AST {
     return null;
   }
 
+
+  getC3D(){
+    TableReport.cleanExecute();
+    PrintConsole.cleanConsole();
+    ShowGraphTs.clean();
+
+    let cadena = "";
+    let bodyString = "";
+
+    cadena += "#include <stdio.h> //Importar para el uso de Printf\n"
+    cadena += "float Heap[16384]; //Estructura para heap\n"
+    cadena += "float Stack[16394]; //Estructura para stack\n"
+    cadena += "float P; //Puntero P\n"
+    cadena += "float H; //Puntero \n"
+    cadena += "float ";
+
+    for(let i = 0; i < Singleton.getNumberTemporary();i++){
+      cadena += i == 0 ? `t${i}` : `, t${i}`; 
+    }
+
+    cadena += ";//temporales utilizados\n"
+    cadena += `void main(){\n${bodyString}\nreturn 0;\n}`;
+
+
+    ErrorList.showErrors();
+    PrintConsole.printLine("fin traduccion codigo 3 direcciones");
+    return cadena;
+  }
+
 }
