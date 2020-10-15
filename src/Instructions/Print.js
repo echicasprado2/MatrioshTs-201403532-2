@@ -130,19 +130,22 @@ class Print extends Instruction {
                 case EnumType.NUMBER:
 
                     if(resultTemp.type.identifier === "INTEGER"){
-                        result.code += `printf("%d",${resultTemp.value});\n`;
+                        result.code += `printf("%d",(int)${resultTemp.value});\n`;
 
                     }else if(resultTemp.type.identifier === "DOUBLE"){
                         result.code += `printf("%0.10f",${resultTemp.value});\n`;
                     }
 
                     break;
-                case EnumType.NULL:
+                case EnumType.BOOLEAN:
+                    //TODO implementar
+                    break;
+                default:
                     result.code += `printf("%c",(char)110);\n`;
                     result.code += `printf("%c",(char)117);\n`;
                     result.code += `printf("%c",(char)108);\n`;
                     result.code += `printf("%c",(char)108);\n`;
-                    result.code += `printf("\n");\n`;
+                    result.code += `printf("%c",(char)10);\n`;
                     break;
             }
 

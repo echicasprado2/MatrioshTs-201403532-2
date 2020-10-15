@@ -96,7 +96,7 @@ class Value extends Expresion {
         result.value = this.value;
 
         if(this.type.enumType == EnumType.BOOLEAN){
-            result.value = result.value == true ? 1 : 0;
+            result.value = result.value.toLowerCase() == "true" ? 1 : 0;
         }   
 
         if(this.type.enumType == EnumType.STRING){
