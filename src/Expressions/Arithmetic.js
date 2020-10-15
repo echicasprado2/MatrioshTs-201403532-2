@@ -166,7 +166,40 @@ class Arithmetic extends Expresion {
           return result;
         }
 
+        
+        if(result1.type.enumType == EnumType.STRING){
+          if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "INTEGER" || result2.type.enumType == EnumType.BOOLEAN){
+            let tContador = Singleton.getTemporary();
+            let tApuntador = Singleton.getTemporary();
+            
+            result2.code += `${tContador} = P + ${env.size};\n`;
+            result2.code += `${tApuntador} = ${tContador} + 1;\n`;
+            result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
+            result2.code += `P = P + ${env.size};\n`;
+            result2.code += `${C3DMethods.getCallIntegerToString()};\n`;
+            result2.code += `${tApuntador} = P + 0;\n`;
+            result2.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
+            result2.code += `P = P - ${env.size};\n`;
+
+            result2.type.enumType = EnumType.STRING;
+            result2.value = tContador;
+
+          }else if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "DOUBLE"){
+            
+          }
+          
+        }else if(result2.type.enumType == EnumType.STRING){
+          if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "INTEGER" || result1.type.enumType == EnumType.BOOLEAN){
+            
+            
+          }else if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "DOUBLE"){
+            
+          }
+          
+        }
+
         result.type.enumType = EnumType.STRING;
+        result.code = result1.code + result2.code;
 
         if(result1.type.enumType == EnumType.STRING && result2.type.enumType == EnumType.STRING){
           let tContador = Singleton.getTemporary();
@@ -177,7 +210,6 @@ class Arithmetic extends Expresion {
           let l1 = Singleton.getLabel();
           let l2 = Singleton.getLabel();
 
-          result.code = result1.code + result2.code;
           result.code += `${tContador} = H;\n`;
           result.code += `${tApuntador} = H;\n`;
           result.code += `${tPosicionCadena} = ${result1.value};\n`;
@@ -189,7 +221,6 @@ class Arithmetic extends Expresion {
           result.code += `${tPosicionCadena} = ${tPosicionCadena} + 1;\n`;
           result.code += `if(${tAuxiliar} > -1)  goto ${l1};\n`;
           result.code += `${tContador} = ${tContador} - 1;\n`;
-          // result.code += `H = ${tContador};\n`;
           result.code += `${tPosicionCadena} = ${result2.value};\n`;
           result.code += `goto ${l2};\n`;
           result.code += `${l2}:\n`;
@@ -203,10 +234,9 @@ class Arithmetic extends Expresion {
           result.code += `H = ${tContador};\n`;
           result.value = tApuntador;
         }
-        // if(result1.type.enumType == EnumType.NUMBER || result1.type.enumType.BOOLEAN){
 
-        // }
-        break;
+       break;
+
       case EnumType.NUMBER:
         if(!TreatmentOfPrimitiveTypes.numberValid(result1,result2)){
           ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la suma con los tipos ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
@@ -226,7 +256,7 @@ class Arithmetic extends Expresion {
         let t2 = Singleton.getTemporary();
 
         result.code = result1.code + result2.code;
-        result.code += `${t2} = ${result1.value} + ${result2.value};//\n`;
+        result.code += `${t2} = ${result1.value} + ${result2.value};\n`;
         result.value = t2;
         break;
 

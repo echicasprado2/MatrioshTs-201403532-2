@@ -123,7 +123,7 @@ class Value extends Expresion {
             }
             result.code += `Heap[(int)${tPosition}] = -1;//fin de cadena\n`;
             result.code += `${tPosition} = ${tPosition} + 1;\n`
-            result.code += `H = H + ${tPosition};//apunta a la primera posicion basica de Heap\n`;
+            result.code += `H = H + ${tPosition};//apunta a la primera posicion libre de Heap\n`;
         }
 
         return result;
