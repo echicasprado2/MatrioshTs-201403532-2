@@ -107,4 +107,47 @@ class Print extends Instruction {
         return cadena;
     }
 
+
+    getC3D(env){
+        let result = new RESULT();
+        let resultTemp;
+
+        for(const item of this.values){
+            resultTemp = item.getC3D(env);
+            result.code += resultTemp.code;
+
+            switch(resultTemp.type.enumType){
+                case EnumType.STRING:
+                    let t1 = Singleton.getTemporary();
+                    let t2 = Singleton.getTemporary();
+                    result.code += `${t1} = P + ${env.size};//Obtengo inicio del ambito de la funcion a llamar\n`;
+                    result.code += `${t2} = ${t1} + 0;//posicion del parametro a enviar\n`;
+                    result.code += `Stack[(int)${t2}] = ${resultTemp.value};//Paso inicio de string a stack\n`;
+                    result.code += `P = P + ${env.size};//Muevo puntero de stack al ambito de la funcion\n`;
+                    result.code += `${C3DMethods.getCallPrintString()};//llamada de funcion\n`;
+                    result.code += `P = P - ${env.size};//regreso puntero de stack al ambito actual\n`;
+                    break;
+                case EnumType.NUMBER:
+
+                    if(resultTemp.type.identifier === "INTEGER"){
+                        result.code += `printf("%d",${resultTemp.value});\n`;
+
+                    }else if(resultTemp.type.identifier === "DOUBLE"){
+                        result.code += `printf("%0.10f",${resultTemp.value});\n`;
+                    }
+
+                    break;
+                case EnumType.NULL:
+                    result.code += `printf("%c",(char)110);\n`;
+                    result.code += `printf("%c",(char)117);\n`;
+                    result.code += `printf("%c",(char)108);\n`;
+                    result.code += `printf("%c",(char)108);\n`;
+                    result.code += `printf("\n");\n`;
+                    break;
+            }
+
+        }
+        return result;
+    }
+
 }

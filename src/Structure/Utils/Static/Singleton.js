@@ -1,6 +1,14 @@
 class Singleton{
-    static counterTemporary;
-    static counterLabels;
+    static counterTemporary = 0;
+    static counterLabels = 0;
+
+    static cleanTemporarys(){
+        Singleton.counterTemporary = 0;
+    }
+
+    static cleanLabels(){
+        Singleton.counterLabels = 0;
+    }
 
     /**
      * @returns number of temporary
@@ -10,17 +18,24 @@ class Singleton{
     }
 
     /**
+     * @returns number of labels
+     */
+    static getNumberLabels(){
+        return Singleton.counterLabels;
+    }
+
+    /**
      * @returns new temporary
      */
     static getTemporary(){
-        return Singleton.counterTemporary == 0 ? `t${Singleton.counterTemporary}` : `t${Singleton.counterTemporary++}`;
+        return `t${Singleton.counterTemporary++}`;
     }
 
     /**
      * @returns new label
      */
-    static getLabels(){
-        return Singleton.counterLabels == 0 ? `t${Singleton.counterLabels}` : `t${Singleton.counterLabels++}`;
+    static getLabel(){
+        return `L${Singleton.counterLabels++}`;
     }
 
 }

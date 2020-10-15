@@ -9,6 +9,7 @@ class Environment {
         this.previous = previous;
         this.enviromentType = environmentType;
         this.table = new Map();
+        this.size = 0;
     }
 
     insertNewSymbol(name,symbol){

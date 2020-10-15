@@ -8,7 +8,8 @@
 %options case-insensitive
 
 // expresiones regulares
-lex_number               [0-9]+("."[0-9]+)?\b
+lex_decimal              [0-9]+"."[0-9]+
+lex_entero               [0-9]+
 lex_string               [\"\'\`](([^\"\'\`\\])*([\\].)*)*[\"\'\`]
 lex_identificador        [A-Za-z_\ñ\Ñ][A-Za-z_0-9\ñ\Ñ]*
 lex_comentariounilinea   "/""/".*(\r|\n|\r\n|<<EOF>>)
@@ -103,7 +104,8 @@ lex_comentariomultilinea [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]
 "function"    return 'function';
 
 //valores expresiones regulares
-{lex_number}        return 'val_number';
+{lex_decimal}       return 'val_decimal';
+{lex_entero}        return 'val_entero';
 {lex_string}        return 'val_string';
 {lex_identificador} return 'identificador';
 <<EOF>> return 'EOF';
@@ -608,7 +610,9 @@ E   : E '+'   E          { $$ = new Arithmetic(this._$.first_line,this._$.first_
     | E '>'   E          { $$ = new Relational(this._$.first_line,this._$.first_column,new OperationType(EnumOperationType.MORE_THAN),$1,$3); }
     | E '<='  E          { $$ = new Relational(this._$.first_line,this._$.first_column,new OperationType(EnumOperationType.LESS_EQUAL_TO),$1,$3); }
     | E '<'   E          { $$ = new Relational(this._$.first_line,this._$.first_column,new OperationType(EnumOperationType.LESS_THAN),$1,$3); }
-    | val_number         { $$ = new Value(new Type(EnumType.NUMBER,""),$1); }
+//     | val_number         { $$ = new Value(new Type(EnumType.NUMBER,""),$1); }
+    | val_decimal        { $$ = new Value(new Type(EnumType.NUMBER,"DOUBLE"),$1); }
+    | val_entero         { $$ = new Value(new Type(EnumType.NUMBER,"INTEGER"),$1); }
     | val_string         { $$ = new Value(new Type(EnumType.STRING,""),$1); }
     | val_verdadero      { $$ = new Value(new Type(EnumType.BOOLEAN,""),$1); }
     | val_falso          { $$ = new Value(new Type(EnumType.BOOLEAN,""),$1); }

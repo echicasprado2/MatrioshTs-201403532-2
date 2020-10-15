@@ -21,18 +21,7 @@ class Expresion extends Node {
         return "implementar";
     }
 
-    /**
-    * @param env [Environment] enviroment
-    * @return type [Type] return a type, use this for make valids and get c3d
-    */
-    getType(env){}
-
-
-    /**
-    * @param env [Environment] enviroment
-    * @param code [String] use for add code
-    * @return code [String] return string with code
-    */
-    getC3D(env,code){}
-
+    getC3D(env){
+        
+    }
 }
