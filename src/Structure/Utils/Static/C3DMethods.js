@@ -23,7 +23,7 @@ class C3DMethods {
     code += `${t2} = ${t2} + 1;\n`;
     code += `goto ${l1};\n`;
     code += `${l2}://Etiqueta de fin de imprimir cadena\n`;
-    code += `return;\n}\n`;
+    code += `return;\n}\n\n`;
     return code;
   }
 
@@ -81,7 +81,7 @@ class C3DMethods {
     code += `${t1} = P = 0;//\n`;
     code += `Stack[(int)${t1}] = ${t5};//\n`;
 
-    code += `return;\n}\n`;
+    code += `return;\n}\n\n`;
     return code;
   }
 
@@ -114,8 +114,6 @@ class C3DMethods {
     code += `${t1} = P + 8;\n`;
     code += `Stack[(int)${t1}] = 9999999;\n`;
     code += `${t1} = P + 9;\n`;
-    code += `Stack[(int)${t1}] = 999999999;\n`;
-    code += `${t1} = P + 9;\n`;
     code += `Stack[(int)${t1}] = 99999999;\n`;
     code += `${t1} = P + 10;\n`;
     code += `Stack[(int)${t1}] = 999999999;\n`;
@@ -137,8 +135,6 @@ class C3DMethods {
     code += `Stack[(int)${t1}] = 100000000000000000;\n`;
     code += `${t1} = P + 19;\n`;
     code += `Stack[(int)${t1}] = 1000000000000000000;\n`;
-    // code += `${t1} = P + 20;\n`;
-    // code += `Stack[(int)${t1}] = 9223372036854776000;//valor maximo soportado\n`;
     code += `${t1} = P + 1;//Posicion en stack del valor que se mando\n`;
     code += `${t2} = Stack[(int)${t1}];//Tomo el valor que esta de parametro\n`;
     code += `${t3} = 1;\n`;
@@ -154,13 +150,9 @@ class C3DMethods {
     code += `${t1} = P + 0;//\n`;
     code += `Stack[(int)${t1}] = ${t3};//\n`;
 
-    code += `return;\n}\n`;
+    code += `return;\n}\n\n`;
     return code;
   }
-
-  // static getSizeIntegerIntoDouble(){
-  //   //TODO implement
-  // }
 
   static getIntegerToString(){
     let code = "";
@@ -279,29 +271,192 @@ class C3DMethods {
     code += `${t1} = P + 0;\n`;
     code += `Stack[(int)${t1}] = ${t7};\n`;
 
-    code += `return;\n}\n`;
+    code += `return;\n}\n\n`;
     return code;
   }
 
   static getDoubleToString(){
-    //TODO implement
+    let code = "";
+    let t1 = Singleton.getTemporary();
+    let tNumber = Singleton.getTemporary();
+    let tDecimal = Singleton.getTemporary();
+    let tInteger = Singleton.getTemporary();
+    let t2 = Singleton.getTemporary();
+    let t3 = Singleton.getTemporary();
+    let tString1 = Singleton.getTemporary();
+    let tString2 = Singleton.getTemporary();
+    let tAuxDecimal = Singleton.getTemporary();
+
+    let l1 = Singleton.getLabel();
+    let l2 = Singleton.getLabel();
+    let l3 = Singleton.getLabel();
+
+    code += `void __doubleToString__(){\n`;
+    code += `${t1} = P + 1;\n`;
+    code += `${tNumber} = Stack[(int)${t1}] ;\n`;
+    code += `${tInteger} = (int)${tNumber};//parte entera\n`;
+    code += `${tDecimal} = ${tNumber} - (int)${tInteger};//parte decimal\n`;
+    code += `${tDecimal} = (int)(${tDecimal}*100000);//paso parte decimal a entera\n`;
+    code += `${t2} = P + 2;\n`;
+    code += `${t3} = ${t2} + 1;\n`;
+    code += `Stack[(int)${t3}] = ${tInteger};\n`;
+    code += `P = P + 2;\n`;
+    code += `${C3DMethods.getCallIntegerPartIntoDoubleToString()};\n`;
+    code += `${t3} = P + 0;\n`;
+    code += `${tString1} = Stack[(int)${t3}];\n`;
+    code += `P = P - 2;\n`;
+    code += `${tAuxDecimal} = ${tDecimal};\n`;
+    code += `if(${tAuxDecimal} >= 0) goto ${l1};\n`;
+    code += `${tAuxDecimal} = 0 - ${tAuxDecimal};\n`;
+    code += `${l1}:\n`;
+    code += `${t2} = P + 2;\n`;
+    code += `${t3} = ${t2} + 1;\n`;
+    code += `Stack[(int)${t3}] = ${tAuxDecimal};\n`;
+    code += `P = P + 2;\n`;
+    code += `${C3DMethods.getCallIntegerPartIntoDoubleToString()};\n`;
+    code += `${t3} = P + 0;\n`;
+    code += `${tString2} = Stack[(int)${t3}];\n`;
+    code += `P = P - 2;\n`;
+    code += `${t1} = 0;\n`;
+    code += `${l2}:\n`;
+    code += `${t2} = ${tString1} + ${t1};\n`;
+    code += `${t3} = Heap[(int)${t2}];\n`;
+    code += `if(${t3} == -1) goto ${l3};\n`;
+    code += `${t1} = ${t1} + 1;\n`;
+    code += `goto ${l2};\n`;
+    code += `${l3}:\n`;
+    code += `Heap[(int)${t2}] = 46;\n`;
+    code += `${t1} = P + 0;\n`;
+    code += `Stack[(int)${t1}] = ${tString1};\n`;
+
+    code += `return;\n}\n\n`;
+    return code;
   }
 
-  static getIntegerIntoDoubleToString(){
-    //TODO implement
-  }
+  static integerPartIntoDoubleToString(){
+    let code = "";
 
-  static getDecimalPartToString(){
-    //TODO implement
-  }
+    let t1 = Singleton.getTemporary();
+    let t2 = Singleton.getTemporary();
+    let t3 = Singleton.getTemporary();
+    let t4 = Singleton.getTemporary();
+    let t5 = Singleton.getTemporary();
+    let t6 = Singleton.getTemporary();
+    let t7 = Singleton.getTemporary();
+    let t8 = Singleton.getTemporary();
+    let t9 = Singleton.getTemporary();
+    let t10 = Singleton.getTemporary();
+    let t11 = Singleton.getTemporary();
+    let t12 = Singleton.getTemporary();
+    let t13 = Singleton.getTemporary();
+    let t14 = Singleton.getTemporary();
+    let t15 = Singleton.getTemporary();
+    let ti = Singleton.getTemporary();
+    let tj = Singleton.getTemporary();
+    let tmp = Singleton.getTemporary();
 
+    let l1 = Singleton.getLabel();
+    let l2 = Singleton.getLabel();
+    let l3 = Singleton.getLabel();
+    let l4 = Singleton.getLabel();
+    let l5 = Singleton.getLabel();
+    let l6 = Singleton.getLabel();
+    let l7 = Singleton.getLabel();
+    let l8 = Singleton.getLabel();
+    let l9 = Singleton.getLabel();
+
+    code += `void __integerPartIntoDoubleToString__(){\n`;
+    code += `${t1} = P + 1;\n`;
+    code += `${t2} = Stack[(int)${t1}];\n`;
+    code += `if(${t2} >= 0) goto ${l1};\n`;
+    code += `${t2} = 0 - ${t2};\n`;
+    code += `${l1}:\n`;
+    code += `${t3} = P + 2;\n`;
+    code += `${t4} = ${t3} + 1;\n`;
+    code += `Stack[(int)${t4}] = ${t2};\n`;
+    code += `P = P + 2;\n`;
+    code += `${C3DMethods.getCallSizeNumber()};\n`;
+    code += `${t5} = P + 0;\n`;
+    code += `${t6} = Stack[(int)${t5}];\n`;
+    code += `P = P - 2;\n`;
+    code += `${t1} = P + 1;\n`;
+    code += `${t2} = Stack[(int)${t1}];\n`;
+    code += `if(${t2} >= 0) goto ${l2};\n`;
+    code += `${t7} = H;\n`;
+    code += `H = H + ${t6};\n`;
+    code += `H = H + 2;\n`;
+    code += `Heap[(int)${t7}] = -1;\n`;
+    code += `${t8} = ${t6};\n`;
+    code += `${t9} = 0;\n`;
+    code += `${t10} = 0 - ${t2};\n`;
+    code += `${t11} = 1;\n`;
+    code += `${l3}:\n`;
+    code += `if(${t8} <= 0) goto ${l4};\n`;
+    code += `${t9} = ((int)${t10}) % 10;\n`;
+    code += `${t9} = ${t9} + 48;\n`;
+    code += `${t10} = ${t10} / 10;\n`;
+    code += `${t12} = ${t7} + ${t11};\n`;
+    code += `Heap[(int)${t12}] = ${t9};\n`;
+    code += `${t8} = ${t8} - 1;\n`;
+    code += `${t11} = ${t11} + 1;\n`;
+    code += `goto ${l3};\n`;
+    code += `${l4}:\n`;
+    code += `${t12} = ${t7} + ${t11};\n`;
+    code += `Heap[(int)${t12}] = 45;\n`;
+    code += `${t6} = ${t6} + 2;\n`;
+    code += `goto ${l5};\n`;
+    code += `${l2}:\n`;
+    code += `${t7} = H;\n`;
+    code += `H = H + ${t6};\n`;
+    code += `H = H + 1;\n`;
+    code += `Heap[(int)${t7}] = -1;\n`;
+    code += `${t8} = ${t6};\n`;
+    code += `${t9} = 0;\n`;
+    code += `${t10} = ${t2};\n`;
+    code += `${t11} = 1;\n`;
+    code += `${l6}:\n`;
+    code += `if(${t8} <= 0) goto ${l7};\n`;
+    code += `${t9} = ((int)${t10}) % 10;\n`;
+    code += `${t9} = ${t9} + 48;\n`;
+    code += `${t10} = ${t10} / 10;\n`;
+    code += `${t12} = ${t7} + ${t11};\n`;
+    code += `Heap[(int)${t12}] = ${t9};\n`;
+    code += `${t8} = ${t8} - 1;\n`;
+    code += `${t11} = ${t11} + 1;\n`;
+    code += `goto ${l6};\n`;
+    code += `${l7}:\n`;
+    code += `${t6} = ${t6} + 1;\n`;
+    code += `${l5}:\n`;
+    code += `${ti} = 0;\n`;
+    code += `${tj} = ${t6} - 1;\n`;
+    code += `${tmp} = 0;\n`;
+    code += `${l8}:\n`;
+    code += `if(${ti} >= ${tj}) goto ${l9};\n`;
+    code += `${t13} = ${t7} + ${ti};\n`;
+    code += `${tmp} = Heap[(int)${t13}];\n`;
+    code += `${t14} = ${t7} + ${tj};\n`;    
+    code += `${t15} = Heap[(int)${t14}];\n`;
+    code += `Heap[(int)${t13}] = ${t15};\n`;
+    code += `Heap[(int)${t14}] = ${tmp};\n`;
+    code += `${ti} = ${ti} + 1;\n`;
+    code += `${tj} = ${tj} - 1;\n`;
+    code += `goto ${l8};\n`;
+    code += `${l9}:\n`;
+    code += `${t1} = P + 0;\n`;
+    code += `Stack[(int)${t1}] = ${t7};\n`;
+
+    code += `return;\n}\n\n`;
+    return code;
+  }
 
   static getMethods(){
     let methods = "";   
     methods += C3DMethods.getPrintString();
     methods += C3DMethods.getConcatStrings();
     methods += C3DMethods.getSizeNumber();
+    methods += C3DMethods.integerPartIntoDoubleToString();
     methods += C3DMethods.getIntegerToString();
+    methods += C3DMethods.getDoubleToString();
     return methods;
   }
 
@@ -319,6 +474,14 @@ class C3DMethods {
 
   static getCallIntegerToString(){
     return "__integerToString__()";
+  }
+
+  static getCallDoubleToString(){
+    return "__doubleToString__()";
+  }
+
+  static getCallIntegerPartIntoDoubleToString(){
+    return "__integerPartIntoDoubleToString__()";
   }
 
 }

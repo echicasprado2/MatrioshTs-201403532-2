@@ -185,7 +185,20 @@ class Arithmetic extends Expresion {
             result2.value = tContador;
 
           }else if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "DOUBLE"){
-            
+            let tContador = Singleton.getTemporary();
+            let tApuntador = Singleton.getTemporary();
+
+            result2.code += `${tContador} = P + ${env.size};\n`;
+            result2.code += `${tApuntador} = ${tContador} + 1;\n`;
+            result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
+            result2.code += `P = P + ${env.size};\n`;
+            result2.code += `${C3DMethods.getCallDoubleToString()};\n`;
+            result2.code += `${tApuntador} = P + 0;\n`;
+            result2.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
+            result2.code += `P = P -${env.size};\n`;
+
+            result2.type.enumType = EnumType.STRING;
+            result2.value = tContador;
           }
           
         }else if(result2.type.enumType == EnumType.STRING){
