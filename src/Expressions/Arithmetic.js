@@ -125,22 +125,28 @@ class Arithmetic extends Expresion {
     switch(this.operationType.enumOperationType){
       case EnumOperationType.PLUS:
         return this.makePlusC3D(env,result1,result2);
-        default:
-          ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de operacion no es valida ${this.operationType.toString()}`,env.enviromentType));
-          return new RESULT();
-        }
+      
+      case EnumOperationType.MINUS:
+        return this.makeOtherArithmeticOperation(env,result1,result2);
+      
+      case EnumOperationType.MULTIPLICATION:
+        return this.makeOtherArithmeticOperation(env,result1,result2);
+
+      case EnumOperationType.DIVISION:
+        return this.makeOtherArithmeticOperation(env,result1,result2);
+
+      case EnumOperationType.MODULE:
+        return this.makeOtherArithmeticOperation(env,result1,result2);
+
+      default:
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de operacion no es valida ${this.operationType.toString()}`,env.enviromentType));
+        return new RESULT();
+    }
         
   }
 
   makePlusC3D(env,result1,result2){
-    /**
-     * here I make plus only primity values
-     * string
-     * number
-     * booleans
-    */
     let result = new RESULT();
-    
     let enumTypeResultOperation = TreatmentOfPrimitiveTypes.getTopType(result1,result2);
     
     if(enumTypeResultOperation == EnumType.ERROR){
@@ -148,19 +154,14 @@ class Arithmetic extends Expresion {
       return result;
     }
     
-    if(enumTypeResultOperation != EnumType.STRING && 
-      enumTypeResultOperation != EnumType.NUMBER && 
-      enumTypeResultOperation != EnumType.BOOLEAN){
+    if(enumTypeResultOperation != EnumType.STRING && enumTypeResultOperation != EnumType.NUMBER && enumTypeResultOperation != EnumType.BOOLEAN){
         ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La operacion no soporta el tipo: ${enumTypeResultOperation}`,env.enviromentType));
         return result;
-      }
+    }
       
     switch(enumTypeResultOperation){
       case EnumType.STRING:
-        /**
-         * tengo que concatenar las cadenas
-        */
-       
+
         if(!TreatmentOfPrimitiveTypes.stringValid(result1,result2)){
           ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la suma con los tipos ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
           return result;
@@ -168,6 +169,7 @@ class Arithmetic extends Expresion {
 
         
         if(result1.type.enumType == EnumType.STRING){
+
           if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "INTEGER" || result2.type.enumType == EnumType.BOOLEAN){
             let tContador = Singleton.getTemporary();
             let tApuntador = Singleton.getTemporary();
@@ -180,7 +182,7 @@ class Arithmetic extends Expresion {
             result2.code += `${tApuntador} = P + 0;\n`;
             result2.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
             result2.code += `P = P - ${env.size};\n`;
-
+            
             result2.type.enumType = EnumType.STRING;
             result2.value = tContador;
 
@@ -202,27 +204,53 @@ class Arithmetic extends Expresion {
           }
           
         }else if(result2.type.enumType == EnumType.STRING){
+
           if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "INTEGER" || result1.type.enumType == EnumType.BOOLEAN){
+            let tContador = Singleton.getTemporary();
+            let tApuntador = Singleton.getTemporary();
             
+            result1.code += `${tContador} = P + ${env.size};\n`;
+            result1.code += `${tApuntador} = ${tContador} + 1;\n`;
+            result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
+            result1.code += `P = P + ${env.size};\n`;
+            result1.code += `${C3DMethods.getCallIntegerToString()};\n`;
+            result1.code += `${tApuntador} = P + 0;\n`;
+            result1.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
+            result1.code += `P = P - ${env.size};\n`;
+
+            result1.type.enumType = EnumType.STRING;
+            result1.value = tContador;
             
           }else if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "DOUBLE"){
-            
-          }
-          
-        }
+            let tContador = Singleton.getTemporary();
+            let tApuntador = Singleton.getTemporary();
 
+            result1.code += `${tContador} = P + ${env.size};\n`;
+            result1.code += `${tApuntador} = ${tContador} + 1;\n`;
+            result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
+            result1.code += `P = P + ${env.size};\n`;
+            result1.code += `${C3DMethods.getCallDoubleToString()};\n`;
+            result1.code += `${tApuntador} = P + 0;\n`;
+            result1.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
+            result1.code += `P = P -${env.size};\n`;
+            
+            result1.type.enumType = EnumType.STRING;
+            result1.value = tContador;
+          }
+        }
+        
         result.type.enumType = EnumType.STRING;
         result.code = result1.code + result2.code;
-
+        
         if(result1.type.enumType == EnumType.STRING && result2.type.enumType == EnumType.STRING){
           let tContador = Singleton.getTemporary();
           let tApuntador = Singleton.getTemporary();
           let tAuxiliar = Singleton.getTemporary();
           let tPosicionCadena = Singleton.getTemporary();
-
+          
           let l1 = Singleton.getLabel();
           let l2 = Singleton.getLabel();
-
+          
           result.code += `${tContador} = H;\n`;
           result.code += `${tApuntador} = H;\n`;
           result.code += `${tPosicionCadena} = ${result1.value};\n`;
@@ -247,10 +275,11 @@ class Arithmetic extends Expresion {
           result.code += `H = ${tContador};\n`;
           result.value = tApuntador;
         }
-
+        
        break;
 
       case EnumType.NUMBER:
+
         if(!TreatmentOfPrimitiveTypes.numberValid(result1,result2)){
           ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la suma con los tipos ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
           return result;
@@ -267,7 +296,7 @@ class Arithmetic extends Expresion {
         }
 
         let t2 = Singleton.getTemporary();
-
+        
         result.code = result1.code + result2.code;
         result.code += `${t2} = ${result1.value} + ${result2.value};\n`;
         result.value = t2;
@@ -286,6 +315,81 @@ class Arithmetic extends Expresion {
     }
 
     return result;
+  }
+
+  makeOtherArithmeticOperation(env,result1,result2){
+    let result = new RESULT();
+    let enumTypeResultOperation = TreatmentOfPrimitiveTypes.getTopType(result1,result2);
+
+    if(enumTypeResultOperation == EnumType.ERROR){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Tipo para la operacion`,env.enviromentType));
+      return result;
+    }
+    
+    if(enumTypeResultOperation != EnumType.NUMBER && enumTypeResultOperation != EnumType.BOOLEAN){
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La operacion no soporta el tipo: ${enumTypeResultOperation}`,env.enviromentType));
+        return result;
+    }
+    
+    if(!TreatmentOfPrimitiveTypes.numberValid(result1,result2)){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la operacion: ${this.operationType.toString()}, con los tipos ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
+      return result;
+    }
+    
+    if(this.operationType.enumOperationType == EnumOperationType.MODULE && (result1.type.identifier === "DOUBLE" || result2.type.identifier === "DOUBLE")){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la operacion: ${this.operationType.toString()}, con los tipos ${result1.type.identifier.toLowerCase()}, ${result2.type.identifier.toLowerCase()}`,env.enviromentType));
+      return result;
+    }
+
+    
+    if(result1.type.identifier == "DOUBLE"){
+      result.type = result1.type;
+      
+    }else if(result2.type.identifier == "DOUBLE"){
+     result.type = result2.type;
+
+    }else{
+      result.type = result1.type;
+    }
+
+    let t1 = Singleton.getTemporary();
+
+    result.code = result1.code + result2.code;
+    result.code += `${t1} = ${result1.value} ${this.operationType.toString()} ${result2.value};\n`;
+    result.value = t1;
+
+    return result;
+  }
+
+  makePowC3D(env,result1,result2){
+    let result = new RESULT();
+    let enumTypeResultOperation = TreatmentOfPrimitiveTypes.getTopType(result1,result2);
+
+    if(enumTypeResultOperation == EnumType.ERROR){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Tipo para la operacion`,env.enviromentType));
+      return result;
+    }
+    
+    if(enumTypeResultOperation != EnumType.NUMBER && enumTypeResultOperation != EnumType.BOOLEAN){
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La operacion no soporta el tipo: ${enumTypeResultOperation}`,env.enviromentType));
+        return result;
+    }
+    
+    if(!TreatmentOfPrimitiveTypes.numberValid(result1,result2)){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la operacion: ${this.operationType.toString()}, con los tipos ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
+      return result;
+    }
+    
+    if(this.operationType.enumOperationType == EnumOperationType.POWER && (result1.type.identifier === "DOUBLE" || result2.type.identifier === "DOUBLE")){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la operacion: ${this.operationType.toString()}, con los tipos ${result1.type.identifier.toLowerCase()}, ${result2.type.identifier.toLowerCase()}`,env.enviromentType));
+      return result;
+    }
+
+    result = result1.type;
+    result.code = result1.code + result2.code;
+
+    //TODO add loop for make multiplications of value
+
   }
 
 }
