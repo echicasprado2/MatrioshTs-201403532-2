@@ -324,10 +324,38 @@ class Arithmetic extends Expresion {
 
         }
         
-        result.type.enumType = EnumType.STRING;
-        result.code = result1.code + result2.code;
+        if(result1.type.identifier == "NULL"){
+          
+          if(result2.type.identifier == "NULL"){
+            result.type.enumType = EnumType.STRING;
+            result.type.identifier = "NULL";
+            return result;
+          }else{
+            result.type = result2.type;
+            result.value = result2.value;
+            result.code = result2.code;
+            return result;
+          }
+
+        }else if(result2.type.identifier == "NULL"){
+          
+          if(result1.type.identifier == "NULL"){
+            result.type.enumType = EnumType.STRING;
+            result.type.identifier = "NULL";
+            return result;
+          }else{
+            result.type = result1.type;
+            result.value = result1.value;
+            result.code = result1.code;
+            return result;
+          }
+        }
         
         if(result1.type.enumType == EnumType.STRING && result2.type.enumType == EnumType.STRING){
+          
+          result.type.enumType = EnumType.STRING;
+          result.code = result1.code + result2.code;
+          
           let tContador = Singleton.getTemporary();
           let tApuntador = Singleton.getTemporary();
           let tAuxiliar = Singleton.getTemporary();

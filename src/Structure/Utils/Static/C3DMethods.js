@@ -13,9 +13,9 @@ class C3DMethods {
     let l2 = Singleton.getLabel(); 
 
     code += `void __printString__(){\n`
-    // result.code += `${t1} = ${resultTemp.value};//copio el inicio del string que esta en heap, este tiene que estar en stack\n`;
     code += `${t1} = P + 0;//Posicion de referencia en stack hacia inicio de cadena en heap\n`;
     code += `${t2} = Stack[(int)${t1}];//Inicio de cadena heap\n`;
+    code += `if(${t2} < 0) goto ${l2};//cadena vacia\n`;
     code += `${l1}://etiqueta para imprimir\n`;
     code += `${t3} = Heap[(int)${t2}];//obtengo el valor de la posicion en Heap\n`;
     code += `if(${t3} == -1) goto ${l2};//Salgo de imprimir el string \n`;

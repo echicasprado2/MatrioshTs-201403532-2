@@ -254,6 +254,8 @@ class Relational extends Expresion {
       ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
       return new RESULT();
     }
+
+    if(result1)
     
     let tPos = Singleton.getTemporary();
     let tVal = Singleton.getTemporary();
@@ -277,6 +279,7 @@ class Relational extends Expresion {
     result.code = result1.code + result2.code;
     result.code += `${tSuma} = 0;\n`;
     result.code += `${tPos} = ${result1.value};\n`;
+    result.code += `if(${tPos} < 0) goto ${lExit};\n`;
     result.code += `${tVal} = 0;\n`;
     result.code += `${lReturn}:\n`;
     result.code += `${tVal} = Heap[(int)${tPos}];\n`;
@@ -288,6 +291,7 @@ class Relational extends Expresion {
 
     result.code += `${tSuma2} = 0;\n`;
     result.code += `${tPos2} = ${result2.value};\n`;
+    result.code += `if(${tPos2} < 0) goto ${lExit2};\n`;
     result.code += `${tVal2} = 0;\n`;
     result.code += `${lReturn2}:\n`;
     result.code += `${tVal2} = Heap[(int)${tPos2}];\n`;
@@ -305,28 +309,28 @@ class Relational extends Expresion {
     return result;
   }
     
-    likeAndDifferentNumber(env,result1,result2){
-      let result = new RESULT()
+  likeAndDifferentNumber(env,result1,result2){
+    let result = new RESULT()
 
-      if(result1.type.enumType == EnumType.NUMBER && !(result2.type.enumType == EnumType.NUMBER) || result1.type.enumType == EnumType.BOOLEAN && !(result2.type.enumType == EnumType.BOOLEAN)){
-        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
-        return new RESULT();
-      }
+    if(result1.type.enumType == EnumType.NUMBER && !(result2.type.enumType == EnumType.NUMBER) || result1.type.enumType == EnumType.BOOLEAN && !(result2.type.enumType == EnumType.BOOLEAN)){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
+      return new RESULT();
+    }
 
-      let t1 = Singleton.getTemporary();
-      let lTrue = Singleton.getLabel();
-      let lFalse = Singleton.getLabel();
+    let t1 = Singleton.getTemporary();
+    let lTrue = Singleton.getLabel();
+    let lFalse = Singleton.getLabel();
 
-      result.trueLabels.push(lTrue);
-      result.falseLabels.push(lFalse);
+    result.trueLabels.push(lTrue);
+    result.falseLabels.push(lFalse);
 
-      result.code = result1.code + result2.code;
-      result.code += `if(${result1.value} ${this.operationType.toString()} ${result2.value}) goto ${lTrue};\n`;
-      result.code += `goto ${lFalse};\n`;
+    result.code = result1.code + result2.code;
+    result.code += `if(${result1.value} ${this.operationType.toString()} ${result2.value}) goto ${lTrue};\n`;
+    result.code += `goto ${lFalse};\n`;
 
-      result.type.enumType = EnumType.BOOLEAN;
-      result.value = t1;
-      return result;
+    result.type.enumType = EnumType.BOOLEAN;
+    result.value = t1;
+    return result;
   }
 
   executeOtherRelationOperations(env,result1,result2){
