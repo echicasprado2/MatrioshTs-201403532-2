@@ -254,7 +254,7 @@ class Relational extends Expresion {
       ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
       return new RESULT();
     }
-    
+
     let tPos = Singleton.getTemporary();
     let tVal = Singleton.getTemporary();
     let tSuma = Singleton.getTemporary();
@@ -315,12 +315,26 @@ class Relational extends Expresion {
       return new RESULT();
     }
 
+    let lTrue;
+    let lFalse;
     let t1 = Singleton.getTemporary();
-    let lTrue = Singleton.getLabel();
-    let lFalse = Singleton.getLabel();
 
-    result.trueLabels.push(lTrue);
-    result.falseLabels.push(lFalse);
+    result.trueLabels.push(...result1.trueLabels,...result2.trueLabels);
+    result.falseLabels.push(...result1.falseLabels,...result2.falseLabels);
+
+    if(result.trueLabels.length == 0){
+      lTrue = Singleton.getLabel();
+      result.trueLabels.push(lTrue);
+    }else{
+      lTrue = result.trueLabels[result.trueLabels.length - 1];
+    }
+
+    if(result.falseLabels.length == 0){
+      lFalse = Singleton.getLabel();
+      result.falseLabels.push(lFalse);
+    }else{
+      lFalse = result.trueLabels[result.falseLabels.length - 1];
+    }
 
     result.code = result1.code + result2.code;
     result.code += `if(${result1.value} ${this.operationType.toString()} ${result2.value}) goto ${lTrue};\n`;
@@ -350,12 +364,26 @@ class Relational extends Expresion {
       return result;
     }
 
+    let lTrue; 
+    let lFalse;
     let t1 = Singleton.getTemporary();
-    let lTrue = Singleton.getLabel();
-    let lFalse = Singleton.getLabel();
+    
+    result.trueLabels.push(...result1.trueLabels,...result2.trueLabels);
+    result.falseLabels.push(...result1.falseLabels,...result2.falseLabels);
 
-    result.trueLabels.push(lTrue);
-    result.falseLabels.push(lFalse);
+    if(result.trueLabels.length == 0){
+      lTrue = Singleton.getLabel();
+      result.trueLabels.push(lTrue);
+    }else{
+      lTrue = result.trueLabels[result.trueLabels.length - 1];
+    }
+
+    if(result.falseLabels.length == 0){
+      lFalse = Singleton.getLabel();
+      result.falseLabels.push(lFalse);
+    }else{
+      lFalse = result.trueLabels[result.falseLabels.length - 1];
+    }
 
     result.code = result1.code + result2.code;
     result.code += `if(${result1.value} ${this.operationType.toString()} ${result2.value}) goto ${lTrue};\n`;
