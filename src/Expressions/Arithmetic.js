@@ -17,9 +17,6 @@ class Arithmetic extends Expresion {
     this.translatedCode = "";
   }
 
-  /**
-   * obtener el codigo para la traduccion
-   */
   getTranslated() {
     this.translatedCode += this.expresion1.getTranslated();
     this.translatedCode += ` ${this.operationType.toString()} `;
@@ -137,6 +134,9 @@ class Arithmetic extends Expresion {
 
       case EnumOperationType.MODULE:
         return this.makeOtherArithmeticOperation(env,result1,result2);
+
+      case EnumOperationType.POWER:
+        return this.makePowerC3D(env,result1,result2);
 
       default:
         ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de operacion no es valida ${this.operationType.toString()}`,env.enviromentType));
@@ -361,7 +361,7 @@ class Arithmetic extends Expresion {
     return result;
   }
 
-  makePowC3D(env,result1,result2){
+  makePowerC3D(env,result1,result2){
     let result = new RESULT();
     let enumTypeResultOperation = TreatmentOfPrimitiveTypes.getTopType(result1,result2);
 
@@ -385,11 +385,34 @@ class Arithmetic extends Expresion {
       return result;
     }
 
-    result = result1.type;
+    result.type = result1.type;
     result.code = result1.code + result2.code;
 
-    //TODO add loop for make multiplications of value
+    let t1 = Singleton.getTemporary();
+    let tContador = Singleton.getTemporary();
 
+    let lCiclo = Singleton.getLabel();
+    let lPositivo = Singleton.getLabel();
+    let lExit = Singleton.getLabel();
+
+    result.code += `${t1} = 1;\n`;
+    result.code += `${tContador} = 1;\n`;
+    result.code += `if(${result2.value} > 0) goto  ${lPositivo};\n`;
+    result.code += `if(${result2.value} == 0) goto ${lExit};\n`;
+    result.code += `${t1} = -1;\n`;
+    result.code += `${lPositivo}:\n`;
+    result.code += `${tContador} = ${result2.value} * ${tContador};\n`;
+    result.code += `${tContador} = ${tContador} + 1;\n`;
+    result.code += `${lCiclo}:\n`;
+    result.code += `${t1} = ${t1} * ${result1.value};\n`;
+    result.code += `${tContador} = ${tContador} - 1;\n`;
+    result.code += `if(${tContador} != 1) goto ${lCiclo};\n`;
+    result.code += `if(${result2.value} > 0) goto ${lExit};\n`;
+    result.code += `${t1} = 0 - ${t1};\n`;
+    result.code += `${lExit}:\n`;
+
+    result.value = t1;
+    return result;
   }
 
 }
