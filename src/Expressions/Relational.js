@@ -202,4 +202,167 @@ class Relational extends Expresion {
     
     return result;
   }
+
+  getC3D(env){
+    let result1 = this.expresion1.getC3D(env);
+    let result2 = this.expresion2.getC3D(env);
+
+    if(result1 == null || result2 == null || result1.type.enumType == EnumType.ERROR || result2.type.enumType == EnumType.ERROR){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Valores`,env.enviromentType));
+      return new RESULT();
+    }
+
+    switch(this.operationType.enumOperationType){
+      case EnumOperationType.MORE_THAN:
+      case EnumOperationType.LESS_THAN:
+      case EnumOperationType.MORE_EQUAL_TO:
+      case EnumOperationType.LESS_EQUAL_TO:
+        return this.executeOtherRelationOperations(env,result1,result2);
+      case EnumOperationType.LIKE_THAN:
+      case EnumOperationType.DIFFERENT_THAN:
+        return this.executeLikeAndDifferentThan(env,result1,result2);
+    }
+
+  }
+
+  executeLikeAndDifferentThan(env,result1,result2){
+    let result = new RESULT();
+    let enumTypeResultOperation = TreatmentOfPrimitiveTypes.getTopType(result1,result2);
+  
+    if(enumTypeResultOperation == EnumType.ERROR){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Tipo para la operacion`,env.enviromentType));
+      return result;
+    }
+    
+    switch(enumTypeResultOperation){
+      case EnumType.NUMBER:
+      case EnumType.BOOLEAN:
+        return this.likeAndDifferentNumber(env,result1,result2);
+      case EnumType.STRING:
+        return this.likeAndDifferentString(env,result1,result2);
+      default:
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de valor ${enumOperationType.toString()}, no se puede operar`,env.enviromentType));
+        return result;
+    }
+      
+  }
+    
+  likeAndDifferentString(env,result1,result2){
+    let result = new RESULT();
+
+    if(result1.type.enumType != EnumType.STRING || result2.type.enumType != EnumType.STRING){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
+      return new RESULT();
+    }
+    
+    let tPos = Singleton.getTemporary();
+    let tVal = Singleton.getTemporary();
+    let tSuma = Singleton.getTemporary();
+    let lReturn = Singleton.getLabel();
+    let lExit = Singleton.getLabel();
+      
+    let tPos2 = Singleton.getTemporary();
+    let tVal2 = Singleton.getTemporary();
+    let tSuma2 = Singleton.getTemporary();
+    let lReturn2 = Singleton.getLabel();
+    let lExit2 = Singleton.getLabel();
+    
+    let tResul = Singleton.getTemporary();
+    let lTrue = Singleton.getLabel();
+    let lFalse = Singleton.getLabel();
+      
+    result.trueLabels.push(lTrue);
+    result.falseLabels.push(lFalse);
+  
+    result.code = result1.code + result2.code;
+    result.code += `${tSuma} = 0;\n`;
+    result.code += `${tPos} = ${result1.value};\n`;
+    result.code += `${tVal} = 0;\n`;
+    result.code += `${lReturn}:\n`;
+    result.code += `${tVal} = Heap[(int)${tPos}];\n`;
+    result.code += `${tPos} = ${tPos} + 1;\n`;  
+    result.code += `if(${tVal} == 0) goto ${lExit};\n`;
+    result.code += `${tSuma} = ${tSuma} + ${tVal};\n`;
+    result.code += `goto ${lReturn};\n`;
+    result.code += `${lExit}:\n`;
+
+    result.code += `${tSuma2} = 0;\n`;
+    result.code += `${tPos2} = ${result2.value};\n`;
+    result.code += `${tVal2} = 0;\n`;
+    result.code += `${lReturn2}:\n`;
+    result.code += `${tVal2} = Heap[(int)${tPos2}];\n`;
+    result.code += `${tPos2} = ${tPos2} + 1;\n`;
+    result.code += `if(${tVal2} == 0) goto ${lExit2};\n`;
+    result.code += `${tSuma2} = ${tSuma2} + ${tVal2};\n`;
+    result.code += `goto ${lReturn2};\n`;
+    result.code += `${lExit2}:\n`;
+      
+    result.code += `if(${tSuma} ${this.operationType.toString()} ${tSuma2}) goto ${lTrue};\n`;
+    result.code += `goto ${lFalse};\n`;
+  
+    result.type.enumType = EnumType.BOOLEAN;
+    result.value = tResul;
+    return result;
+  }
+    
+    likeAndDifferentNumber(env,result1,result2){
+      let result = new RESULT()
+
+      if(result1.type.enumType == EnumType.NUMBER && !(result2.type.enumType == EnumType.NUMBER) || result1.type.enumType == EnumType.BOOLEAN && !(result2.type.enumType == EnumType.BOOLEAN)){
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
+        return new RESULT();
+      }
+
+      let t1 = Singleton.getTemporary();
+      let lTrue = Singleton.getLabel();
+      let lFalse = Singleton.getLabel();
+
+      result.trueLabels.push(lTrue);
+      result.falseLabels.push(lFalse);
+
+      result.code = result1.code + result2.code;
+      result.code += `if(${result1.value} ${this.operationType.toString()} ${result2.value}) goto ${lTrue};\n`;
+      result.code += `goto ${lFalse};\n`;
+
+      result.type.enumType = EnumType.BOOLEAN;
+      result.value = t1;
+      return result;
+  }
+
+  executeOtherRelationOperations(env,result1,result2){
+    let result = new RESULT();
+    let enumTypeResultOperation = TreatmentOfPrimitiveTypes.getTopType(result1,result2);
+
+    if(enumTypeResultOperation == EnumType.ERROR){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Tipo para la operacion`,env.enviromentType));
+      return result;
+    }
+    
+    if(enumTypeResultOperation != EnumType.NUMBER){
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La operacion no soporta el tipo: ${enumTypeResultOperation}`,env.enviromentType));
+        return result;
+    }
+    
+    if(!TreatmentOfPrimitiveTypes.numberValid(result1,result2)){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la operacion: ${this.operationType.toString()}, con los tipos ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
+      return result;
+    }
+
+    let t1 = Singleton.getTemporary();
+    let lTrue = Singleton.getLabel();
+    let lFalse = Singleton.getLabel();
+
+    result.trueLabels.push(lTrue);
+    result.falseLabels.push(lFalse);
+
+    result.code = result1.code + result2.code;
+    result.code += `if(${result1.value} ${this.operationType.toString()} ${result2.value}) goto ${lTrue};\n`;
+    result.code += `goto ${lFalse};\n`;
+
+    result.type.enumType = EnumType.BOOLEAN;
+    result.value = t1;
+    return result;
+  }
+
+
 }

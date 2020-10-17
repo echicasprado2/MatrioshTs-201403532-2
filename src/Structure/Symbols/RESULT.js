@@ -9,8 +9,8 @@ class RESULT{
         this.type = new Type(EnumType.ERROR,null);
         this.code = "";
         this.value = "";
-        this.trueLabel = "";
-        this.falseLabel = "";
+        this.trueLabels = [];
+        this.falseLabels = [];
         this.exitLabel = "";
     }
 

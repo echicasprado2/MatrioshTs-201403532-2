@@ -138,7 +138,28 @@ class Print extends Instruction {
 
                     break;
                 case EnumType.BOOLEAN:
-                    //TODO implementar
+                    let lExit = Singleton.getLabel();
+
+                    for(let item of resultTemp.trueLabels){
+                        result.code += `${item}:\n`;
+                    }
+                    result.code += `printf("%c",(char)116);\n`;
+                    result.code += `printf("%c",(char)114);\n`;
+                    result.code += `printf("%c",(char)117);\n`;
+                    result.code += `printf("%c",(char)101);\n`;
+                    
+                    result.code += `goto ${lExit};\n`;
+                    
+                    for(let item of resultTemp.falseLabels){
+                        result.code += `${item}:\n`;
+                    }
+                    result.code += `printf("%c",(char)102);\n`;
+                    result.code += `printf("%c",(char)97);\n`;
+                    result.code += `printf("%c",(char)108);\n`;
+                    result.code += `printf("%c",(char)115);\n`;
+                    result.code += `printf("%c",(char)101);\n`;
+                    result.code += `${lExit}:\n`;
+
                     break;
                 default:
                     result.code += `printf("%c",(char)110);\n`;

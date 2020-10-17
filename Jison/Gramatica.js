@@ -506,7 +506,7 @@ case 149: case 150:
  this.$ = new Value(new Type(EnumType.BOOLEAN,""),$$[$0]); 
 break;
 case 151:
- this.$ = new Value(new Type(EnumType.NULL,""),$$[$0]); 
+ this.$ = new Value(new Type(EnumType.NULL,""),-1); 
 break;
 case 152:
  this.$ = $$[$0-1]; this.$.parentesis = true; 

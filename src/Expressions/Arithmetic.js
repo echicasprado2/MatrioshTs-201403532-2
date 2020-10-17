@@ -170,7 +170,7 @@ class Arithmetic extends Expresion {
         
         if(result1.type.enumType == EnumType.STRING){
 
-          if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "INTEGER" || result2.type.enumType == EnumType.BOOLEAN){
+          if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "INTEGER"){
             let tContador = Singleton.getTemporary();
             let tApuntador = Singleton.getTemporary();
             
@@ -201,11 +201,53 @@ class Arithmetic extends Expresion {
 
             result2.type.enumType = EnumType.STRING;
             result2.value = tContador;
+          
+          }else if(result2.type.enumType == EnumType.BOOLEAN){
+            let tInicio = Singleton.getTemporary();
+            let tPosition = Singleton.getTemporary();
+            
+            if(result2.value === 1){
+              result2.code += `${tInicio};\n`;
+              result2.code += `${tPosition} = ${tInicio};\n`;
+              result2.code += `Heap[(int)${tPosition}] = 116;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = 114;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = 117;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = 101;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = -1;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `H = ${tPosition};\n`;
+              
+            }else{
+              result2.code += `${tInicio};\n`;
+              result2.code += `${tPosition} = ${tInicio};\n`;
+              result2.code += `Heap[(int)${tPosition}] = 102;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = 97;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = 108;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = 115;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = 101;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `Heap[(int)${tPosition}] = -1;\n`;
+              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result2.code += `H = ${tPosition};\n`;
+              
+            }
+            
+            result2.type.enumType = EnumType.STRING;
+            result2.value = tInicio;
+
           }
           
         }else if(result2.type.enumType == EnumType.STRING){
 
-          if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "INTEGER" || result1.type.enumType == EnumType.BOOLEAN){
+          if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "INTEGER"){
             let tContador = Singleton.getTemporary();
             let tApuntador = Singleton.getTemporary();
             
@@ -236,7 +278,50 @@ class Arithmetic extends Expresion {
             
             result1.type.enumType = EnumType.STRING;
             result1.value = tContador;
+          
+          }else if(result1.type.enumType == EnumType.BOOLEAN){
+            let tInicio = Singleton.getTemporary();
+            let tPosition = Singleton.getTemporary();
+
+            if(result1.value === 1){
+              result1.code += `${tInicio};\n`;
+              result1.code += `${tPosition} = ${tInicio};\n`;
+              result1.code += `Heap[(int)${tPosition}] = 116;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = 114;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = 117;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = 101;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = -1;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `H = ${tPosition};\n`;
+              
+            }else{
+              result1.code += `${tInicio};\n`;
+              result1.code += `${tPosition} = ${tInicio};\n`;
+              result1.code += `Heap[(int)${tPosition}] = 102;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = 97;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = 108;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = 115;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = 101;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `Heap[(int)${tPosition}] = -1;\n`;
+              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+              result1.code += `H = ${tPosition};\n`;
+              
+            }
+            
+            result1.type.enumType = EnumType.STRING;
+            result1.value = tInicio;
+
           }
+
         }
         
         result.type.enumType = EnumType.STRING;
@@ -382,6 +467,11 @@ class Arithmetic extends Expresion {
     
     if(this.operationType.enumOperationType == EnumOperationType.POWER && (result1.type.identifier === "DOUBLE" || result2.type.identifier === "DOUBLE")){
       ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la operacion: ${this.operationType.toString()}, con los tipos ${result1.type.identifier.toLowerCase()}, ${result2.type.identifier.toLowerCase()}`,env.enviromentType));
+      return result;
+    }
+    
+    if(result1.type.identifier === "NEGATIVO" || result2.type.identifier === "NEGATIVO"){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede hacer la operacion: ${this.operationType.toString()}, con valores negativos ${result1.value}, ${result2.value}`,env.enviromentType));
       return result;
     }
 

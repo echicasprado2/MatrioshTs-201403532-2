@@ -72,6 +72,7 @@
                 actualizarValor.execute(e);
                 
                 return resultExp;
+
             }else if(this.operationType == EnumOperationType.MINUS_MINUS){
                 var actualizarValor;
                 var valorActualizar = new Value(resultExp.type,resultExp.value);
@@ -81,9 +82,11 @@
                 actualizarValor.execute(e);
 
                 return resultExp;
+
             }else if(this.operationType == EnumOperationType.NEGATIVE){
                 resultExp.value = Number(resultExp.value) * -1;
                 return resultExp;
+
             }else if(this.operationType == EnumOperationType.NOT){
                 if(Number(resultExp.value) > 0){
                     resultExp.type = new Type(EnumType.BOOLEAN);
@@ -99,6 +102,7 @@
             if(this.operationType == EnumOperationType.PLUS_PLUS || this.operationType == EnumOperationType.MINUS_MINUS || this.operationType == EnumOperationType.NEGATIVE){
                 ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se se puede realizar la operacion: "${this.operationType.toString()}" a un valor del tipo "${this.resultExp.type.toString()}"`,e.enviromentType));
                 return result;
+
             }else if(this.operationType == EnumOperationType.NOT){
                 if(resultExp.value === 'true' || resultExp.value === true){
                     resultExp.value = false;
@@ -109,6 +113,28 @@
             }
         }
         return result;
+    }
+
+    getC3D(env){
+        let result1 = this.expresion.getC3D(env);
+
+        if(result1 == null || result1.type.enumType == EnumType.ERROR){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion aritmetica, con los valores ${result1.value}, ${result2.value}`,env.enviromentType));
+            return new RESULT();
+        }
+
+        if(this.operationType == EnumOperationType.NEGATIVE){
+            let t1 = Singleton.getTemporary();
+            
+            result1.code += `${t1} 0 - ${result1.value};\n`;
+            result1.value = t1;
+            result1.type.identifier = "NEGATIVO";
+            return result1;
+        }
+
+        //TODO make not, ++ and -- after make asignations
+
+
     }
      
  }

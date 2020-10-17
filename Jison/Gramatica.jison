@@ -616,7 +616,7 @@ E   : E '+'   E          { $$ = new Arithmetic(this._$.first_line,this._$.first_
     | val_string         { $$ = new Value(new Type(EnumType.STRING,""),$1); }
     | val_verdadero      { $$ = new Value(new Type(EnumType.BOOLEAN,""),$1); }
     | val_falso          { $$ = new Value(new Type(EnumType.BOOLEAN,""),$1); }
-    | val_nulo           { $$ = new Value(new Type(EnumType.NULL,""),$1); }
+    | val_nulo           { $$ = new Value(new Type(EnumType.NULL,""),-1); }
 
 
     | par_izq E par_der   { $$ = $2; $$.parentesis = true; }
