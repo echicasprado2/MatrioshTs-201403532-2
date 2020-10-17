@@ -254,8 +254,6 @@ class Relational extends Expresion {
       ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
       return new RESULT();
     }
-
-    if(result1)
     
     let tPos = Singleton.getTemporary();
     let tVal = Singleton.getTemporary();
@@ -279,7 +277,7 @@ class Relational extends Expresion {
     result.code = result1.code + result2.code;
     result.code += `${tSuma} = 0;\n`;
     result.code += `${tPos} = ${result1.value};\n`;
-    result.code += `if(${tPos} < 0) goto ${lExit};\n`;
+    result.code += `if(${tPos}  <0) goto ${lExit};\n`;
     result.code += `${tVal} = 0;\n`;
     result.code += `${lReturn}:\n`;
     result.code += `${tVal} = Heap[(int)${tPos}];\n`;

@@ -144,20 +144,31 @@ execute.addEventListener("click", (e) => {
 //TODO use this for compile to code to intermediate code
 var compile = document.getElementById("compilar");
 compile.addEventListener("click",(e) => {
-  var editor = getTranslate();
+  var editor = getEditor();
+  var editorTranslated = getTranslate();
   var myConsole = getConsole();
   var editorC3D = getEditorC3D();
 
   cleanReportsCompile();
   myConsole.setValue("");
+  
+  if(editor.getValue() != ""){
+    ErrorList.cleanErrorList();
+    var resultTranslated = new AST(Gramatica.parse(editor.getValue())); // obtengo el ast al correr el analizador
+    resultTranslated.translatedSymbolsTable();
+    editorTranslated.setValue(resultTranslated.getTranslated());
 
-  let result = new AST(Gramatica.parse(editor.getValue()));
+  }
+  
+  let result = new AST(Gramatica.parse(editorTranslated.getValue()));
   editCode3D.setValue(result.getC3D());
   myConsole.setValue(PrintConsole.getPrintConsole());
-
+  
   showTableErrorsSymbols();
+  showTableTranslatedSymbols();
   showTableCompileSymbols();
-  showCompileTree(editor.getValue());
+  showTranslatedTree(editor.getValue());
+  showCompileTree(editorTranslated.getValue());
 });
 
 //TODO use this for optimizate intermediate code

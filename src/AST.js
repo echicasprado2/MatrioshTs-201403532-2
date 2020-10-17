@@ -99,7 +99,7 @@ class AST {
     cadena += "\n";
     cadena += metodosNativos;
     cadena += "\n";
-    cadena += `int main(){\n${mainInstructions}\nprintf("%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
+    cadena += `int main(){\n${mainInstructions}\nprintf("\\n%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
 
     ErrorList.showErrors();
     PrintConsole.printLine("fin traduccion codigo 3 direcciones");

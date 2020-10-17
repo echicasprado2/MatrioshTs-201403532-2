@@ -126,9 +126,8 @@
         if(this.operationType == EnumOperationType.NEGATIVE){
             let t1 = Singleton.getTemporary();
             
-            result1.code += `${t1} 0 - ${result1.value};\n`;
+            result1.code += `${t1} = 0 - ${result1.value};\n`;
             result1.value = t1;
-            result1.type.identifier = "NEGATIVO";
             return result1;
         }
 
