@@ -281,7 +281,7 @@ class Relational extends Expresion {
     result.code += `${lReturn}:\n`;
     result.code += `${tVal} = Heap[(int)${tPos}];\n`;
     result.code += `${tPos} = ${tPos} + 1;\n`;  
-    result.code += `if(${tVal} == 0) goto ${lExit};\n`;
+    result.code += `if(${tVal} == -1) goto ${lExit};\n`;
     result.code += `${tSuma} = ${tSuma} + ${tVal};\n`;
     result.code += `goto ${lReturn};\n`;
     result.code += `${lExit}:\n`;
@@ -292,7 +292,7 @@ class Relational extends Expresion {
     result.code += `${lReturn2}:\n`;
     result.code += `${tVal2} = Heap[(int)${tPos2}];\n`;
     result.code += `${tPos2} = ${tPos2} + 1;\n`;
-    result.code += `if(${tVal2} == 0) goto ${lExit2};\n`;
+    result.code += `if(${tVal2} == -1) goto ${lExit2};\n`;
     result.code += `${tSuma2} = ${tSuma2} + ${tVal2};\n`;
     result.code += `goto ${lReturn2};\n`;
     result.code += `${lExit2}:\n`;
