@@ -122,18 +122,32 @@
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion aritmetica, con los valores ${result1.value}, ${result2.value}`,env.enviromentType));
             return new RESULT();
         }
-
+        
         if(this.operationType == EnumOperationType.NEGATIVE){
             let t1 = Singleton.getTemporary();
             
             result1.code += `${t1} = 0 - ${result1.value};\n`;
             result1.value = t1;
             return result1;
+
+        }else if(this.operationType == EnumOperationType.NOT){
+            
+            if(result1.type.enumType != EnumType.BOOLEAN){
+                ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion solo permite valores boolean`,env.enviromentType));
+                return new RESULT();
+            }
+            
+            if(result1.trueLabels.length > 0){
+                let tempTrueLabels = [...result1.trueLabels];
+                
+                result1.trueLabels = [result1.falseLabels];
+                result1.falseLabels = tempTrueLabels;
+            }else{
+                result1.value = (result1.value == 1) ? 0 : 1;
+            }
+            
+            return result1;
         }
-
-        //TODO make not, ++ and -- after make asignations
-
-
     }
      
  }

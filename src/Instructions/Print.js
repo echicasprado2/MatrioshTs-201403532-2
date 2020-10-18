@@ -139,6 +139,17 @@ class Print extends Instruction {
                     break;
                 case EnumType.BOOLEAN:
                     let lExit = Singleton.getLabel();
+                    
+                    if(resultTemp.code == ""){
+                        let lTrue = Singleton.getLabel();
+                        let lFalse = Singleton.getLabel();
+                        resultTemp.trueLabels.push(lTrue);
+                        resultTemp.falseLabels.push(lFalse);
+
+                        resultTemp.code += `if(${resultTemp.value} == 1) goto ${lTrue};\n`;
+                        resultTemp.code += `goto ${lFalse};\n`;
+                        result.code += resultTemp.code
+                    }
 
                     for(let item of resultTemp.trueLabels){
                         result.code += `${item}:\n`;
