@@ -119,7 +119,7 @@
         let result1 = this.expresion.getC3D(env);
 
         if(result1 == null || result1.type.enumType == EnumType.ERROR){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion aritmetica, con los valores ${result1.value}, ${result2.value}`,env.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion aritmetica, con los valores`,env.enviromentType));
             return new RESULT();
         }
         
@@ -140,7 +140,7 @@
             if(result1.trueLabels.length > 0){
                 let tempTrueLabels = [...result1.trueLabels];
                 
-                result1.trueLabels = [result1.falseLabels];
+                result1.trueLabels = [...result1.falseLabels];
                 result1.falseLabels = tempTrueLabels;
             }else{
                 result1.value = (result1.value == 1) ? 0 : 1;

@@ -62,4 +62,39 @@ class Logic extends Expresion {
     
     return result;
   }
+
+  getC3D(env){
+    let result = new RESULT();
+    let result1 = this.expresion1.getC3D(env);
+    let result2 = this.expresion2.getC3D(env);
+
+    if(result1 == null || result2 == null || result1 == undefined || result2 == undefined ||
+      (result1 instanceof Expresion && result1.type.enumType != EnumType.BOOLEAN) ||
+      (result2 instanceof Expresion && result2.type.enumType != EnumType.BOOLEAN)){
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Los tipos de valores no son booleanos, ${result1.type.toString()},${result2.type.toString()}`,env.envrimentType));
+    }
+
+    result.code += result1.code;
+    
+    if(this.operationType.enumOperationType == EnumOperationType.AND){
+      for(let item of result1.trueLabels){
+        result.code += `${item}:\n`;
+      }
+      result.falseLabels.push(...result1.falseLabels);
+      
+    }else if(this.operationType == EnumOperationType.OR){
+      for(let item of result1.falseLabels){
+        result.code += `${item}:\n`;
+      }
+      result.trueLabels.push(...result1.trueLabels);
+    }
+    
+    result.type = result1.type;
+    result.code += result2.code;
+    result.falseLabels.push(...result2.falseLabels);
+    result.trueLabels.push(...result2.trueLabels);
+
+    return result;
+  }
+
 }

@@ -114,8 +114,8 @@ class Arithmetic extends Expresion {
     let result1 = this.expresion1.getC3D(env);
     let result2 = this.expresion2.getC3D(env);
 
-    if(result1 == null || result2 == null || result1.type.enumType == EnumType.ERROR || result2.type.enumType == EnumType.ERROR){
-      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion aritmetica, con los valores ${result1.value}, ${result2.value}`,env.enviromentType));
+    if(result1 == null || result2 == null || result1 == undefined || result2 == undefined || result1.type.enumType == EnumType.ERROR || result2.type.enumType == EnumType.ERROR){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion aritmetica, con los valores`,env.enviromentType));
       return new RESULT();
     }
     
@@ -205,40 +205,47 @@ class Arithmetic extends Expresion {
           }else if(result2.type.enumType == EnumType.BOOLEAN){
             let tInicio = Singleton.getTemporary();
             let tPosition = Singleton.getTemporary();
+            let lExit = Singleton.getLabel();
             
-            if(result2.value === 1){
-              result2.code += `${tInicio};\n`;
-              result2.code += `${tPosition} = ${tInicio};\n`;
-              result2.code += `Heap[(int)${tPosition}] = 116;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = 114;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = 117;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = 101;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = -1;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `H = ${tPosition};\n`;
-              
-            }else{
-              result2.code += `${tInicio};\n`;
-              result2.code += `${tPosition} = ${tInicio};\n`;
-              result2.code += `Heap[(int)${tPosition}] = 102;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = 97;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = 108;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = 115;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = 101;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `Heap[(int)${tPosition}] = -1;\n`;
-              result2.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result2.code += `H = ${tPosition};\n`;
-              
+            for(let item of result2.trueLabels){
+              result2.code += `${item}:\n`;
             }
+            result2.code += `${tInicio} = H;\n`;
+            result2.code += `${tPosition} = ${tInicio};\n`;
+            result2.code += `Heap[(int)${tPosition}] = 116;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = 114;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = 117;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = 101;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = -1;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `H = ${tPosition};\n`;
+            result2.code += `goto ${lExit};\n`;
+              
+            
+            for(let item of result2.falseLabels){
+              result2.code += `${item}:\n`;
+            }
+            result2.code += `${tInicio} = H;\n`;
+            result2.code += `${tPosition} = ${tInicio};\n`;
+            result2.code += `Heap[(int)${tPosition}] = 102;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = 97;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = 108;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = 115;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = 101;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `Heap[(int)${tPosition}] = -1;\n`;
+            result2.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result2.code += `H = ${tPosition};\n`;
+            result2.code += `goto ${lExit};\n`;
+            result2.code += `${lExit}:\n`;
             
             result2.type.enumType = EnumType.STRING;
             result2.value = tInicio;
@@ -282,40 +289,48 @@ class Arithmetic extends Expresion {
           }else if(result1.type.enumType == EnumType.BOOLEAN){
             let tInicio = Singleton.getTemporary();
             let tPosition = Singleton.getTemporary();
+            let lExit = Singleton.getLabel();
 
-            if(result1.value === 1){
-              result1.code += `${tInicio};\n`;
-              result1.code += `${tPosition} = ${tInicio};\n`;
-              result1.code += `Heap[(int)${tPosition}] = 116;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = 114;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = 117;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = 101;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = -1;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `H = ${tPosition};\n`;
-              
-            }else{
-              result1.code += `${tInicio};\n`;
-              result1.code += `${tPosition} = ${tInicio};\n`;
-              result1.code += `Heap[(int)${tPosition}] = 102;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = 97;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = 108;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = 115;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = 101;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `Heap[(int)${tPosition}] = -1;\n`;
-              result1.code += `${tPosition} = ${tPosition} + 1;\n`;
-              result1.code += `H = ${tPosition};\n`;
-              
+            for(let item of result1.trueLabels){
+              result1.code += `${item}:\n`;
             }
+
+            result1.code += `${tInicio} = H;\n`;
+            result1.code += `${tPosition} = ${tInicio};\n`;
+            result1.code += `Heap[(int)${tPosition}] = 116;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = 114;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = 117;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = 101;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = -1;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `H = ${tPosition};\n`;
+            result1.code += `goto ${lExit};\n`;
+              
+            for(let item of result1.falseLabels){
+              result1.code += `${item}:\n`;
+            }
+
+            result1.code += `${tInicio} = H;\n`;
+            result1.code += `${tPosition} = ${tInicio};\n`;
+            result1.code += `Heap[(int)${tPosition}] = 102;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = 97;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = 108;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = 115;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = 101;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `Heap[(int)${tPosition}] = -1;\n`;
+            result1.code += `${tPosition} = ${tPosition} + 1;\n`;
+            result1.code += `H = ${tPosition};\n`;
+            result1.code += `goto ${lExit};\n`;
+            result1.code += `${lExit}:\n`;
             
             result1.type.enumType = EnumType.STRING;
             result1.value = tInicio;

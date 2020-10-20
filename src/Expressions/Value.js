@@ -95,7 +95,14 @@ class Value extends Expresion {
     result.value = this.value;
 
     if (this.type.enumType == EnumType.BOOLEAN) {
+      let trueLabel = Singleton.getLabel();
+      let falseLabel = Singleton.getLabel();
+
       result.value = result.value.toLowerCase() == "true" ? 1 : 0;
+      result.trueLabels.push(trueLabel);
+      result.falseLabels.push(falseLabel);
+      result.code += `if(${result.value} == 1) goto ${trueLabel} ;\n`;
+      result.code += `goto ${falseLabel};\n`;
     }
 
     if (this.type.enumType == EnumType.STRING) {
