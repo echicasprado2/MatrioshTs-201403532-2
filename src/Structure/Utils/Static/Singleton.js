@@ -1,6 +1,16 @@
 class Singleton{
     static counterTemporary = 0;
     static counterLabels = 0;
+    static P = 0;
+    static H = 0;
+
+    static cleanPointerStack(){
+        Singleton.P = 0;
+    }
+
+    static cleanPointerHeap(){
+        Singleton.H = 0;
+    }
 
     static cleanTemporarys(){
         Singleton.counterTemporary = 0;

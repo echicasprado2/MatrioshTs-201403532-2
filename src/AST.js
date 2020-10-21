@@ -88,50 +88,72 @@ class AST {
     let cadena = "";
 
     let metodosNativos = C3DMethods.getMethods();
-    let globalDefinition = this.getDefinition();
+    let globalFunctionDefinition = this.getGlobalFunctionDefinition();
+    let globalVariable = this.getGlobalVariable();
     let mainInstructions = this.getMainInstructions();
     let header = this.getHeaderC3D();
     
 
     cadena += header;
     cadena += "\n";
-    cadena += globalDefinition;
+    cadena += globalFunctionDefinition;
     cadena += "\n";
     cadena += metodosNativos;
     cadena += "\n";
-    cadena += `int main(){\n${mainInstructions}\nprintf("\\n%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
+    cadena += `int main(){\n${globalVariable}\n${mainInstructions}\nprintf("\\n%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
 
     ErrorList.showErrors();
     PrintConsole.printLine("fin traduccion codigo 3 direcciones");
     return cadena;
   }
 
-  getDefinition(){
+  getGlobalFunctionDefinition(){
     let cadena = "";
+    /* TODO aqui tengo que hacer varias pasadas, este debe de funcionar para definir funciones
+      entre estas tengo que hacer una para llenar la tabla de simbolos,
+      entre los simbolos va un array de ambitos para saber hasta donde esta,
+      tambien tengo que agregar 2 metodos a las instrucciones el
+      * getsize -> para saber cuantas variables tiene declaradas
+      * primera pasada -> para guardar las variables en la tabla de simbolos, este no guarda valores en las variables
+      * getC3D -> que va a generar el codigo con toda la informacion previa, este debe de guardar los valores de las variables 
+    */ 
     return cadena;
   }
+
+  getGlobalTypeDefinition(){
+    /*  TODO tengo que mantener la definicion del type, para validar las declaraciones de estos.
+     */
+  }
+
+  getGlobalVariable(){
+    /* TODO declaraciones globales, tengo que hacer uso de stack y heap
+    */
+   let cadena = "";
+
+   for(var i = 0; i < this.instruccions.length; i++){
+     if((this.instruccions[i] instanceof Declaration) || 
+      (this.instruccions[i] instanceof DeclarationTypes) ||
+      (this.instruccions[i] instanceof DeclarationArray)){
+       this.instruccions[i].fillTable(this.environmentCompile,false);
+     }
+   }
+
+   for(var i = 0; i < this.instruccions.length; i++){
+    if((this.instruccions[i] instanceof Declaration) || 
+     (this.instruccions[i] instanceof DeclarationTypes) ||
+     (this.instruccions[i] instanceof DeclarationArray)){
+      
+    }
+  }
+
+   return `${cadena}\n`;
+  }
+
 
   getMainInstructions(){
     this.getSizeMain();
 
     let cadena = "";
-    // for(var i = 0; i < this.instruccions.length;i++){
-    //   if(this.instruccions[i] instanceof TypeDefinition){
-    //     (this.instruccions[i]).execute(this.environmentExecute);
-    //   }
-    // }
-
-    // for(var i = 0; i < this.instruccions.length; i++){
-    //   if(this.instruccions[i] instanceof Function){
-    //     (this.instruccions[i]).execute(this.environmentExecute);
-    //   }
-    // }
-
-    // for(var i = 0; i < this.instruccions.length; i++){
-    //   if(this.instruccions[i] instanceof Declaration || this.instruccions[i] instanceof DeclarationArray || this.instruccions[i] instanceof DeclarationTypes){
-    //     (this.instruccions[i]).execute(this.environmentExecute);
-    //   }
-    // }
 
     for(var i = 0; i < this.instruccions.length; i++){
       if(!(this.instruccions[i] instanceof TypeDefinition) &&
@@ -140,14 +162,6 @@ class AST {
        !(this.instruccions[i] instanceof DeclarationTypes) &&
        !(this.instruccions[i] instanceof DeclarationArray)){
 
-        // if(this.instruccions[i] instanceof Instruction){
-        //   cadena += (this.instruccions[i]).getC3D(this.environmentCompile);
-
-        // }else if(this.instruccions[i] instanceof Expresion){
-        //   cadena += (this.instruccions[i]).getC3D(this.environmentCompile);
-
-        // }       
-        
         if(this.instruccions[i] instanceof Instruction || this.instruccions[i] instanceof Expresion){
           cadena += (this.instruccions[i]).getC3D(this.environmentCompile).code;
 
@@ -165,7 +179,7 @@ class AST {
       if(item instanceof Declaration || 
         item instanceof DeclarationArray || 
         item instanceof DeclarationTypes){
-          counter++;
+          counter += item.getSize();
       }
     }
     this.environmentCompile.size = counter;
@@ -198,6 +212,8 @@ class AST {
     ShowGraphTs.clean();
     Singleton.cleanTemporarys();
     Singleton.cleanLabels();
+    Singleton.cleanPointerStack();
+    Singleton.cleanPointerHeap();
   }
 
 }

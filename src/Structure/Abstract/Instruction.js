@@ -16,4 +16,16 @@ class Instruction extends Node {
         return "implementar";
     }
 
+    getC3D(env,isTableFull){
+        return null;
+    }
+
+    getSize(instruccions){
+        return 0;
+    }
+
+    fillTable(env,instruccions){
+        return null;
+    }
+
 }

@@ -68,7 +68,7 @@ class Declaration extends Instruction {
     
     cadena += "]";
     return cadena;
-}
+  }
 
   translatedSymbolsTable(e) {
     for (var i = 0; i < this.ids.length; i++) {
@@ -175,4 +175,26 @@ class Declaration extends Instruction {
 
     return null;
   }
+
+  getC3D(env,){
+    return null;
+  }
+
+  getSize(){
+    return this.ids.length;
+  }
+
+  fillTable(env){
+    if (this.typeDeclaration.enumType == EnumDeclarationType.CONST) {
+      if (this.value == null) {
+        for (var i = 0; i < this.ids.length; i++) {
+          ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La constante: "${this.ids[i]}" no tiene asignacion de un valor, debe tener valor`,e.enviromentType));
+        }
+        return null;
+      }
+    }
+    
+    return null;
+  }
+
 }

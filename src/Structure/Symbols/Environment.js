@@ -39,16 +39,7 @@ class Environment {
                         symbol.value.value
                         )
                     );
-                
-                // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-                //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
-                //     //TODO update data into symbols
-                // }else{
-                //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
-                // }
-
             }
-
         }
         return;
     }
@@ -88,13 +79,6 @@ class Environment {
                                 symbol.value.value
                                 )
                             );
-
-                        // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-                        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,null));
-                        // }else{
-                        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,symbol.value.value));
-                        // }
-
                         return;
                     }
 
@@ -126,13 +110,6 @@ class Environment {
                             symbol.value.value
                             )
                         );
-
-                    // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-                    //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,null));
-                    // }else{
-                    //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,e.enviromentType,symbol.value.value));
-                    // }
-
                     return;
                 }
             }
@@ -160,13 +137,6 @@ class Environment {
                     symbol.value.value
                     )
                 );
-
-            // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-            //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
-            // }else{
-            //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
-            // }
-
             return null;
         }
 
@@ -194,13 +164,6 @@ class Environment {
                 symbol.value.value
                 )
             );
-
-        // if(symbol.value instanceof TypeDefinition || symbol.value instanceof Function){
-        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,null));
-        // }else{
-        //     TableReport.addExecute(new NodeTableSymbols(symbol.line,symbol.column,symbol.id,symbol.type,this.enviromentType,symbol.value.value));
-        // }
-        
     }
 
     searchSymbol(name){
