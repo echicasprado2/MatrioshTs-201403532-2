@@ -371,37 +371,20 @@ class Arithmetic extends Expresion {
           result.type.enumType = EnumType.STRING;
           result.code = result1.code + result2.code;
           
-          let tContador = Singleton.getTemporary();
-          let tApuntador = Singleton.getTemporary();
-          let tAuxiliar = Singleton.getTemporary();
-          let tPosicionCadena = Singleton.getTemporary();
-          
-          let l1 = Singleton.getLabel();
-          let l2 = Singleton.getLabel();
-          
-          result.code += `${tContador} = H;\n`;
-          result.code += `${tApuntador} = H;\n`;
-          result.code += `${tPosicionCadena} = ${result1.value};\n`;
-          result.code += `goto ${l1};\n`;
-          result.code  += `${l1}:\n`;
-          result.code += `${tAuxiliar} = Heap[(int)${tPosicionCadena}];\n`;
-          result.code += `Heap[(int)${tContador}] = ${tAuxiliar};\n`;
-          result.code += `${tContador} = ${tContador} + 1;\n`;
-          result.code += `${tPosicionCadena} = ${tPosicionCadena} + 1;\n`;
-          result.code += `if(${tAuxiliar} > -1)  goto ${l1};\n`;
-          result.code += `${tContador} = ${tContador} - 1;\n`;
-          result.code += `${tPosicionCadena} = ${result2.value};\n`;
-          result.code += `goto ${l2};\n`;
-          result.code += `${l2}:\n`;
-          result.code += `${tAuxiliar} = Heap[(int)${tPosicionCadena}];\n`;
-          result.code += `Heap[(int)${tContador}] = ${tAuxiliar};\n`;
-          result.code += `${tContador} = ${tContador} + 1;\n`;
-          result.code += `${tPosicionCadena} = ${tPosicionCadena} + 1;\n`;
-          result.code += `if(${tAuxiliar} > -1) goto ${l2};\n`;
-          result.code += `Heap[(int)${tContador}] = -1;\n`;
-          result.code += `${tContador} = ${tContador} + 1;\n`;
-          result.code += `H = ${tContador};\n`;
-          result.value = tApuntador;
+          let t1 = Singleton.getTemporary();
+          let t2 = Singleton.getTemporary();
+
+          result.code += `${t1} = P + ${env.size};//cambio al proximo ambito\n`;
+          result.code += `${t2} = ${t1} + 1;//posicion primer parametro\n`;
+          result.code += `Stack[(int)${t2}] = ${result1.value};//apuntador a primera cadena\n`;
+          result.code += `${t2} = ${t1} + 2;//posicion segundo parametro\n`;
+          result.code += `Stack[(int)${t2}] = ${result2.value};//apuntador a segunda cadena\n`;
+          result.code += `P = P + ${env.size};//cambiamos al siguiente ambito\n`;
+          result.code += `${C3DMethods.getCallConcatStrings()};//llamo funcion para concatenar strings\n`;
+          result.code += `${t2} = P + 0;//posicion de return\n`;
+          result.code += `${t1} = Stack[(int)${t2}];//copio el puntero a heap\n`;
+          result.code += `P = P - ${env.size};//regreso al entorno actual\n`;
+          result.value = t1;
         }
         
        break;
@@ -426,6 +409,27 @@ class Arithmetic extends Expresion {
         let t2 = Singleton.getTemporary();
         
         result.code = result1.code + result2.code;
+
+        if(result1.type.enumType == EnumType.BOOLEAN){
+          for(let item of result1.trueLabels){
+            result.code += `${item}:\n`;
+          }
+
+          for(let item of result1.falseLabels){
+            result.code += `${item}:\n`;
+          }
+        }
+
+        if(result2.type.enumType == EnumType.BOOLEAN){
+          for(let item of result2.trueLabels){
+            result.code += `${item}:\n`;
+          }
+
+          for(let item of result2.falseLabels){
+            result.code += `${item}:\n`;
+          }
+        }
+
         result.code += `${t2} = ${result1.value} + ${result2.value};\n`;
         result.value = t2;
         break;
@@ -437,6 +441,23 @@ class Arithmetic extends Expresion {
         let t1 = Singleton.getTemporary();
         
         result.code = result1.code + result2.code;
+        
+        for(let item of result1.trueLabels){
+          result.code += `${item}:\n`;
+        }
+
+        for(let item of result2.trueLabels){
+          result.code += `${item}:\n`;
+        }
+
+        for(let item of result1.falseLabels){
+          result.code += `${item}:\n`;
+        }
+
+        for(let item of result2.falseLabels){
+          result.code += `${item}:\n`;
+        }
+
         result.code += `${t1} = ${result1.value} + ${result2.value};//suma de booleanos\n`
         result.value = t1;
         break;
@@ -483,6 +504,27 @@ class Arithmetic extends Expresion {
     let t1 = Singleton.getTemporary();
 
     result.code = result1.code + result2.code;
+
+    if(result1.type.enumType == EnumType.BOOLEAN){
+      for(let item of result1.trueLabels){
+        result.code += `${item}:\n`;
+      }
+
+      for(let item of result1.falseLabels){
+        result.code += `${item}:\n`;
+      }
+    }
+
+    if(result2.type.enumType == EnumType.BOOLEAN){
+      for(let item of result2.trueLabels){
+        result.code += `${item}:\n`;
+      }
+
+      for(let item of result2.falseLabels){
+        result.code += `${item}:\n`;
+      }
+    }
+
     result.code += `${t1} = ${result1.value} ${this.operationType.toString()} ${result2.value};\n`;
     result.value = t1;
 
@@ -498,7 +540,7 @@ class Arithmetic extends Expresion {
       return result;
     }
     
-    if(enumTypeResultOperation != EnumType.NUMBER && enumTypeResultOperation != EnumType.BOOLEAN){
+    if(enumTypeResultOperation != EnumType.NUMBER){
         ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La operacion no soporta el tipo: ${enumTypeResultOperation}`,env.enviromentType));
         return result;
     }
@@ -520,6 +562,26 @@ class Arithmetic extends Expresion {
 
     result.type = result1.type;
     result.code = result1.code + result2.code;
+
+    if(result1.type.enumType == EnumType.BOOLEAN){
+      for(let item of result1.trueLabels){
+        result.code += `${item}:\n`;
+      }
+
+      for(let item of result1.falseLabels){
+        result.code += `${item}:\n`;
+      }
+    }
+
+    if(result2.type.enumType == EnumType.BOOLEAN){
+      for(let item of result2.trueLabels){
+        result.code += `${item}:\n`;
+      }
+
+      for(let item of result2.falseLabels){
+        result.code += `${item}:\n`;
+      }
+    }
 
     let t1 = Singleton.getTemporary();
     let tContador = Singleton.getTemporary();

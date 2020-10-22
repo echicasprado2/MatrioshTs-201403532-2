@@ -24,21 +24,21 @@ class Environment {
 
                 this.table.set(name,symbol);
 
-                TableReport.addExecute(
-                    new NodeTableSymbols(
-                        symbol.line,
-                        symbol.column,
-                        symbol.id,
-                        symbol.type,
-                        symbol.typeDeclaration,
-                        symbol.typeValue,
-                        symbol.size,
-                        symbol.position,
-                        symbol.dimensions,
-                        this.enviromentType,
-                        symbol.value.value
-                        )
-                    );
+                // TableReport.addExecute(
+                //     new NodeTableSymbols(
+                //         symbol.line,
+                //         symbol.column,
+                //         symbol.id,
+                //         symbol.type,
+                //         symbol.typeDeclaration,
+                //         symbol.typeValue,
+                //         symbol.size,
+                //         symbol.position,
+                //         symbol.dimensions,
+                //         this.enviromentType,
+                //         symbol.value.value
+                //         )
+                //     );
             }
         }
         return;
@@ -64,21 +64,21 @@ class Environment {
 
                         e.table.set(name,symbol);
 
-                        TableReport.addExecute(
-                            new NodeTableSymbols(
-                                symbol.line,
-                                symbol.column,
-                                symbol.id,
-                                symbol.type,
-                                symbol.typeDeclaration,
-                                symbol.typeValue,
-                                symbol.size,
-                                symbol.position,
-                                symbol.dimensions,
-                                e.enviromentType,
-                                symbol.value.value
-                                )
-                            );
+                        // TableReport.addExecute(
+                        //     new NodeTableSymbols(
+                        //         symbol.line,
+                        //         symbol.column,
+                        //         symbol.id,
+                        //         symbol.type,
+                        //         symbol.typeDeclaration,
+                        //         symbol.typeValue,
+                        //         symbol.size,
+                        //         symbol.position,
+                        //         symbol.dimensions,
+                        //         e.enviromentType,
+                        //         symbol.value.value
+                        //         )
+                        //     );
                         return;
                     }
 
@@ -95,21 +95,21 @@ class Environment {
 
                     e.table.set(name,symbol);
 
-                    TableReport.addExecute(
-                        new NodeTableSymbols(
-                            symbol.line,
-                            symbol.column,
-                            symbol.id,
-                            symbol.type,
-                            symbol.typeDeclaration,
-                            symbol.typeValue,
-                            symbol.size,
-                            symbol.position,
-                            symbol.dimensions,
-                            e.enviromentType,
-                            symbol.value.value
-                            )
-                        );
+                    // TableReport.addExecute(
+                    //     new NodeTableSymbols(
+                    //         symbol.line,
+                    //         symbol.column,
+                    //         symbol.id,
+                    //         symbol.type,
+                    //         symbol.typeDeclaration,
+                    //         symbol.typeValue,
+                    //         symbol.size,
+                    //         symbol.position,
+                    //         symbol.dimensions,
+                    //         e.enviromentType,
+                    //         symbol.value.value
+                    //         )
+                    //     );
                     return;
                 }
             }
@@ -122,21 +122,21 @@ class Environment {
 
             this.table.set(name,symbol);
 
-            TableReport.addExecute(
-                new NodeTableSymbols(
-                    symbol.line,
-                    symbol.column,
-                    symbol.id,
-                    symbol.type,
-                    symbol.typeDeclaration,
-                    symbol.typeValue,
-                    symbol.size,
-                    symbol.position,
-                    symbol.dimensions,
-                    this.enviromentType,
-                    symbol.value.value
-                    )
-                );
+            // TableReport.addExecute(
+            //     new NodeTableSymbols(
+            //         symbol.line,
+            //         symbol.column,
+            //         symbol.id,
+            //         symbol.type,
+            //         symbol.typeDeclaration,
+            //         symbol.typeValue,
+            //         symbol.size,
+            //         symbol.position,
+            //         symbol.dimensions,
+            //         this.enviromentType,
+            //         symbol.value.value
+            //         )
+            //     );
             return null;
         }
 
@@ -149,31 +149,60 @@ class Environment {
 
         this.table.set(name,symbol);
 
-        TableReport.addExecute(
-            new NodeTableSymbols(
-                symbol.line,
-                symbol.column,
-                symbol.id,
-                symbol.type,
-                symbol.typeDeclaration,
-                symbol.typeValue,
-                symbol.size,
-                symbol.position,
-                symbol.dimensions,
-                this.enviromentType,
-                symbol.value.value
-                )
-            );
+        // TableReport.addExecute(
+        //     new NodeTableSymbols(
+        //         symbol.line,
+        //         symbol.column,
+        //         symbol.id,
+        //         symbol.type,
+        //         symbol.typeDeclaration,
+        //         symbol.typeValue,
+        //         symbol.size,
+        //         symbol.position,
+        //         symbol.dimensions,
+        //         this.enviromentType,
+        //         symbol.value.value
+        //         )
+        //     );
     }
 
     searchSymbol(name){
         for(var e = this; e != null; e = e.previous){
             if(e.table.has(name)){// busca si el simbolo existe en el ambito
-                var returnSymbol = e.table.get(name);
-                return new Symbol(returnSymbol.line,returnSymbol.column,returnSymbol.id,returnSymbol.type,returnSymbol.typeDeclaration,returnSymbol.value,returnSymbol.dimensions);
+                let item = e.table.get(name);   
+                let newSymbol;
+
+                newSymbol = new Symbol(
+                    item.line,
+                    item.column,
+                    item.id,
+                    item.type,
+                    item.typeDeclaration,
+                    item.typeValue,
+                    item.typeEnvironment,
+                    item.arrayEnvironments,
+                    item.size,
+                    item.positionRelativa,
+                    item.dimensions,
+                    item.displayTemporary,
+                    item.location,
+                    item.value
+                );
+                
+                return newSymbol;
             }
         }
         return null;
+    }
+
+    getArrayEnvironments(){
+        let environments = [];
+
+        for(let e = this; e != null; e = e.previous){
+            environments.push(e.enviromentType.toString());
+        }
+        
+        return environments;
     }
 
 }

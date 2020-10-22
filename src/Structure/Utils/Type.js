@@ -13,6 +13,7 @@ var EnumType;
     EnumType["ERROR"] = "ERROR";
     EnumType["FUNCTION"] = "FUNCTION";
     EnumType["VARIABLE"] = "VARIABLE";
+    EnumType["VALOR"] = "VALOR";
 })(EnumType || (EnumType = {}));
 /**
  * @class type use for type anyone expresion with value

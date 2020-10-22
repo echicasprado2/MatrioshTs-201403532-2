@@ -1,15 +1,15 @@
 class Singleton{
     static counterTemporary = 0;
     static counterLabels = 0;
-    static P = 0;
-    static H = 0;
+    static positionRelativeOfStack = 0;
+    static positionRelativeOfHeap = 0;
 
     static cleanPointerStack(){
-        Singleton.P = 0;
+        Singleton.positionRelativeOfStack = 0;
     }
 
     static cleanPointerHeap(){
-        Singleton.H = 0;
+        Singleton.positionRelativeOfHeap = 0;
     }
 
     static cleanTemporarys(){
@@ -46,6 +46,13 @@ class Singleton{
      */
     static getLabel(){
         return `L${Singleton.counterLabels++}`;
+    }
+
+    /**
+     * @returns position relative of stack
+     */
+    static getPosStack(){
+        return Singleton.positionRelativeOfStack++;
     }
 
 }

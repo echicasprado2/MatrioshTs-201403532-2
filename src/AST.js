@@ -130,23 +130,23 @@ class AST {
     */
    let cadena = "";
 
-   for(var i = 0; i < this.instruccions.length; i++){
-     if((this.instruccions[i] instanceof Declaration) || 
+    for(var i = 0; i < this.instruccions.length; i++){
+      if((this.instruccions[i] instanceof Declaration) || 
+       (this.instruccions[i] instanceof DeclarationTypes) ||
+       (this.instruccions[i] instanceof DeclarationArray)){
+        this.instruccions[i].fillTable(this.environmentCompile);
+      }
+    }
+
+    for(var i = 0; i < this.instruccions.length; i++){
+      if((this.instruccions[i] instanceof Declaration) || 
       (this.instruccions[i] instanceof DeclarationTypes) ||
       (this.instruccions[i] instanceof DeclarationArray)){
-       this.instruccions[i].fillTable(this.environmentCompile,false);
-     }
-   }
-
-   for(var i = 0; i < this.instruccions.length; i++){
-    if((this.instruccions[i] instanceof Declaration) || 
-     (this.instruccions[i] instanceof DeclarationTypes) ||
-     (this.instruccions[i] instanceof DeclarationArray)){
-      
+        cadena += this.instruccions[i].getC3D(this.environmentCompile);
+      }
     }
-  }
-
-   return `${cadena}\n`;
+    console.table(this.environmentCompile.table);
+    return `${cadena}\n`;
   }
 
 
@@ -154,6 +154,7 @@ class AST {
     this.getSizeMain();
 
     let cadena = "";
+    cadena += `P = P + ${this.environmentCompile.size};\n`;
 
     for(var i = 0; i < this.instruccions.length; i++){
       if(!(this.instruccions[i] instanceof TypeDefinition) &&

@@ -101,11 +101,10 @@ class Value extends Expresion {
       result.value = result.value.toLowerCase() == "true" ? 1 : 0;
       result.trueLabels.push(trueLabel);
       result.falseLabels.push(falseLabel);
-      result.code += `if(${result.value} == 1) goto ${trueLabel} ;\n`;
+      result.code += `if(${result.value} == 1) goto ${trueLabel};\n`;
       result.code += `goto ${falseLabel};\n`;
-    }
-
-    if (this.type.enumType == EnumType.STRING) {
+    
+    }else if (this.type.enumType == EnumType.STRING) {
       tInicio = Singleton.getTemporary();
       tPosition = Singleton.getTemporary();
 
@@ -139,7 +138,13 @@ class Value extends Expresion {
       result.code += `Heap[(int)${tPosition}] = -1;//fin de cadena\n`;
       result.code += `${tPosition} = ${tPosition} + 1;\n`;
       result.code += `H = ${tPosition};//apunta a la primera posicion libre de Heap\n`;
+    
+    }else if(this.type.enumType == EnumType.NULL){
+      result.value = -1;
+      result.code = '';
     }
+
+
 
     return result;
   }

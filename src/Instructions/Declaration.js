@@ -129,7 +129,6 @@ class Declaration extends Instruction {
     for(var i = 0; i < this.ids.length; i++){
 
       if(result == null){
-        // e.insertNewSymbol(this.ids[i],new Symbol(this.line,this.column,this.ids[i],this.type,this.typeDeclaration,new Value(new Type(EnumType.NULL,null),"",0)));
         e.insertNewSymbol(this.ids[i],new Symbol(this.line,this.column,this.ids[i],new Type(EnumType.VARIABLE,null),this.typeDeclaration,this.type,null,new Value(new Type(EnumType.NULL,null),"",0)));
       }else{
         /* TODO here part i valid to type and identifier
@@ -176,8 +175,26 @@ class Declaration extends Instruction {
     return null;
   }
 
-  getC3D(env,){
-    return null;
+  getC3D(env){
+    let result = new RESULT();
+    let resultExpresion = null;
+    let symbolOfVariable;
+
+    if(this.value != null){
+      resultExpresion = this.value.getC3D(env);
+      if(resultExpresion == null || resultExpresion.type.enumType == EnumType.ERROR) return null;
+    }else{
+      let valueInit = this.getInitialValue();
+      resultExpresion = valueInit.getC3D(env);
+    }
+
+    for(let item of this.ids){
+      symbolOfVariable = env.searchSymbol(item);
+      if(symbolOfVariable != null)
+        result.code += this.getC3DOfDeclaration(env,symbolOfVariable,resultExpresion);
+    }
+
+    return result.code;
   }
 
   getSize(){
@@ -188,13 +205,124 @@ class Declaration extends Instruction {
     if (this.typeDeclaration.enumType == EnumDeclarationType.CONST) {
       if (this.value == null) {
         for (var i = 0; i < this.ids.length; i++) {
-          ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La constante: "${this.ids[i]}" no tiene asignacion de un valor, debe tener valor`,e.enviromentType));
+          ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La constante: "${this.ids[i]}" no tiene asignacion de un valor, debe tener valor`,env.enviromentType));
         }
         return null;
       }
     }
     
+    for(let item of this.ids){
+      this.saveVariableIntoEnvironment(env,item);
+    }
+
     return null;
+  }
+
+  saveVariableIntoEnvironment(env,id){
+    let location;
+    let enviroments;
+    let exists;
+    let newSymbol;
+
+    exists = env.searchSymbol(id);
+
+    if(exists != null){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La variable ${id}, ya existe`,env.enviromentType));
+      return null;
+    }
+
+    if(this.type.enumType == EnumType.NUMBER || this.type.enumType == EnumType.BOOLEAN){
+      location = new Location(EnumLocation.STACK);
+    }else{
+      location = new Location(EnumLocation.HEAP);
+    }
+
+    enviroments = env.getArrayEnvironments();
+
+    newSymbol = new Symbol(
+      this.line,
+      this.column,
+      id,
+      this.type,
+      this.typeDeclaration,
+      new Type(EnumType.VALOR,null),
+      env.enviromentType,
+      enviroments,
+      1,
+      Singleton.getPosStack(),
+      1,
+      null,
+      location,
+      null
+    );
+    
+    env.insertNewSymbol(id,newSymbol);
+    return null;
+  }
+
+  getC3DOfDeclaration(env,symbolOfVariable,resultExpresion){
+    let tPosStack;
+
+    if(symbolOfVariable == null) return '';
+
+    if(symbolOfVariable.type.enumType != resultExpresion.type.enumType){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de valor es diferente al tipo de variable ${symbolOfVariable.type.toString()} != ${resultExpresion.type.toString()}`,env.enviromentType));
+      return '';
+    }
+
+    if(resultExpresion.type.enumType == EnumType.BOOLEAN){
+      let t1 = Singleton.getTemporary();
+      let lexit = Singleton.getLabel();
+
+      resultExpresion.code += `//declaracion de valor boolean\n`;
+      for(const item of resultExpresion.trueLabels){
+        resultExpresion.code += `${item}:\n`;
+      }
+
+      resultExpresion.value = t1;
+      resultExpresion.code += `${t1} = 1;\n`;
+      resultExpresion.code += `goto ${lexit};\n`;
+
+      for(const item of resultExpresion.falseLabels){
+        resultExpresion.code += `${item}:\n`;
+      }
+
+      resultExpresion.code += `${t1} = 0;\n`;
+      resultExpresion.code += `goto ${lexit};\n`;
+      resultExpresion.code += `${lexit}://salida de guardar valor booleano\n`;
+    }
+
+    tPosStack = Singleton.getTemporary()
+
+    if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.MAIN){
+      resultExpresion.code += `${tPosStack} = ${symbolOfVariable.positionRelativa};//variable global\n`;
+    }else{
+      resultExpresion.code += `${tPosStack} = P + ${symbolOfVariable.positionRelativa};//variable local\n`;
+    }
+
+    resultExpresion.code += `Stack[(int)${tPosStack}] = ${resultExpresion.value};//guardar valor en stack de la declaracion\n`;
+    return resultExpresion.code;
+  }
+
+  getInitialValue(){
+
+    switch(this.type.enumType){
+
+      case EnumType.NUMBER:
+        return new Value(new Type(EnumType.NUMBER,null),0);
+
+      case EnumType.BOOLEAN:
+        return new Value(new Type(EnumType.BOOLEAN,null),'false');
+
+      case EnumType.STRING:
+        return new Value(new Type(EnumType.STRING,null),'');
+
+      case EnumType.ARRAY:
+        return new Value(new Type(EnumType.NULL,null),null);
+
+      case EnumType.TYPE:
+        return new Value(new Type(EnumType.TYPE,this.type.identifier),null);
+    }
   }
 
 }
