@@ -85,6 +85,7 @@ class AST {
 
   getC3D(){
     this.cleanVariableC3D();
+    this.getSizeMain();
     let cadena = "";
 
     let metodosNativos = C3DMethods.getMethods();
@@ -100,7 +101,7 @@ class AST {
     cadena += "\n";
     cadena += metodosNativos;
     cadena += "\n";
-    cadena += `int main(){\n${globalVariable}\n${mainInstructions}\nprintf("\\n%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
+    cadena += `int main(){\n${globalVariable}${mainInstructions}printf("\\n%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
 
     ErrorList.showErrors();
     PrintConsole.printLine("fin traduccion codigo 3 direcciones");
@@ -108,7 +109,6 @@ class AST {
   }
 
   getGlobalFunctionDefinition(){
-    let cadena = "";
     /* TODO aqui tengo que hacer varias pasadas, este debe de funcionar para definir funciones
       entre estas tengo que hacer una para llenar la tabla de simbolos,
       entre los simbolos va un array de ambitos para saber hasta donde esta,
@@ -117,7 +117,18 @@ class AST {
       * primera pasada -> para guardar las variables en la tabla de simbolos, este no guarda valores en las variables
       * getC3D -> que va a generar el codigo con toda la informacion previa, este debe de guardar los valores de las variables 
     */ 
-    return cadena;
+
+    let cadena = '';
+
+    for(let item of this.instruccions){
+      if(item instanceof Function) item.fillTable(this.environmentCompile);
+    }
+
+    for(let item of this.instruccions){
+      if(item instanceof Function) cadena += item.getC3D(this.environmentCompile);
+    }
+
+    return `${cadena}\n`;
   }
 
   getGlobalTypeDefinition(){
@@ -145,16 +156,12 @@ class AST {
         cadena += this.instruccions[i].getC3D(this.environmentCompile);
       }
     }
-    console.table(this.environmentCompile.table);
     return `${cadena}\n`;
   }
 
 
   getMainInstructions(){
-    this.getSizeMain();
-
     let cadena = "";
-    cadena += `P = P + ${this.environmentCompile.size};\n`;
 
     for(var i = 0; i < this.instruccions.length; i++){
       if(!(this.instruccions[i] instanceof TypeDefinition) &&
@@ -213,7 +220,7 @@ class AST {
     ShowGraphTs.clean();
     Singleton.cleanTemporarys();
     Singleton.cleanLabels();
-    Singleton.cleanPointerStack();
+    Singleton.cleanPointerStackInit();
     Singleton.cleanPointerHeap();
   }
 

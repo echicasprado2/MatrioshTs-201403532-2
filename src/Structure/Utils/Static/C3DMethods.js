@@ -78,7 +78,7 @@ class C3DMethods {
     code += `${t10} = ${t5} + ${t7};\n`;
     code += `Heap[(int)${t10}] = -1;\n`;
     code += `H = ${t10} + 1;\n`;
-    code += `${t1} = P = 0;//\n`;
+    code += `${t1} = P + 0;//\n`;
     code += `Stack[(int)${t1}] = ${t5};//\n`;
 
     code += `return;\n}\n\n`;

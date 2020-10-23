@@ -61,4 +61,12 @@ class Block extends Instruction {
     return null;
   }
 
+  getSize(){
+    let counter = 0;
+    for(let item of this.sentences){
+      if(item instanceof Instruction) counter += item.getSize();
+    }
+    return counter;
+  }
+
 }

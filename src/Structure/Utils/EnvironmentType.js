@@ -24,7 +24,7 @@ class EnvironmentType {
     }
 
     toString() {
-        if(this.enumEnvironmentType === EnvironmentType.TYPE){
+        if(this.enumEnvironmentType === EnvironmentType.TYPE || this.enumEnvironmentType === EnvironmentType.FUNCTION){
             return this.name;
         }else{
             return this.enumEnvironmentType.toString();

@@ -168,7 +168,7 @@ class Environment {
 
     searchSymbol(name){
         for(var e = this; e != null; e = e.previous){
-            if(e.table.has(name)){// busca si el simbolo existe en el ambito
+            if(e.table.has(name.toLowerCase())){// busca si el simbolo existe en el ambito
                 let item = e.table.get(name);   
                 let newSymbol;
 

@@ -25,7 +25,6 @@ class Access extends Expresion {
     }
 
     getValue(e) {
-        //TODO test para types
         var result = new Value(new Type(EnumType.ERROR,""),"Error");
         var resultSymbolAccess;
 
@@ -62,6 +61,7 @@ class Access extends Expresion {
 
         }else if(resultSymbolAccess instanceof Value){
             return resultSymbolAccess;
+
         }else{
             
             if(resultSymbolAccess.type.enumType == EnumType.NULL){
@@ -73,5 +73,50 @@ class Access extends Expresion {
             return result;
         }
     }
+
+    getC3D(env){
+        let result = new RESULT();
+        let resultAccess;
+
+        if(this.value.length == 1){
+            resultAccess = this.value[0].getC3D(env);
+            if(resultAccess == null){
+                return '';
+            }else{
+                result = this.getC3DVariablePrimitive(env,resultAccess);
+            }
+        }
+        return result;
+    }
+
+    getC3DVariablePrimitive(env,symbol){
+        let result = new RESULT();
+        let tPosStack = Singleton.getTemporary();
+        let tValStack = Singleton.getTemporary();
+
+        result.symbol = symbol;
+        result.type = symbol.type;
+        result.value = tValStack;
+
+        if(symbol.typeEnvironment.enumEnvironmentType == EnumEnvironmentType.MAIN){
+            result.code += `${tPosStack} = ${symbol.positionRelativa};//Posicion de la variable global en stack\n`;
+        }else{
+            result.code += `${tPosStack} = P + ${symbol.positionRelativa};//Posicion de la variable en el entorno local\n`;
+        }
+
+        result.code += `${tValStack} = Stack[(int)${tPosStack}];//Obtengo valor de stack\n`;
+
+        if(result.type.enumType == EnumType.BOOLEAN){
+            let ltrue = Singleton.getLabel();
+            let lfalse = Singleton.getLabel();
+            result.trueLabels = [ltrue];
+            result.falseLabels = [lfalse];
+            result.code += `if(${tValStack} == 1) goto ${ltrue};\n`;
+            result.code += `goto ${lfalse};\n`;
+        }
+
+        return result;
+    }
+
 
 }

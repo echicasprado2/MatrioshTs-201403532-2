@@ -242,7 +242,7 @@ class Declaration extends Instruction {
     newSymbol = new Symbol(
       this.line,
       this.column,
-      id,
+      id.toLowerCase(),
       this.type,
       this.typeDeclaration,
       new Type(EnumType.VALOR,null),
@@ -301,6 +301,10 @@ class Declaration extends Instruction {
     }
 
     resultExpresion.code += `Stack[(int)${tPosStack}] = ${resultExpresion.value};//guardar valor en stack de la declaracion\n`;
+
+    symbolOfVariable.type = resultExpresion.type;
+    env.insert(symbolOfVariable.id,symbolOfVariable);
+
     return resultExpresion.code;
   }
 

@@ -1,4 +1,5 @@
 class Function extends Instruction {
+
   /**
    *
    * @param {*} line
@@ -447,4 +448,80 @@ class Function extends Instruction {
     return null;
   }
   
+  fillTable(env){
+    let symbolFunction;
+    let symbolParam;
+    let arrayEnvironments;
+    let location;
+    let environmentFunction;
+    let block;
+    let exists = env.searchSymbol(this.identifier);
+
+    if(exists != null){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La funcion: ${this.identifier}, ya se encuentra definida`,env.enviromentType));
+      return null;
+    }
+
+    Singleton.cleanPointerStackFunction();
+    environmentFunction = new Environment(env,new EnvironmentType(EnumEnvironmentType.FUNCTION,this.identifier));
+    arrayEnvironments = environmentFunction.getArrayEnvironments();
+    location = new Location(EnumLocation.STACK);
+    block = new Block(this.instructions);
+    
+    for(let param of this.parameters){
+      symbolParam = new Symbol(
+        param.line,
+        param.column,
+        param.identifier,
+        param.type,
+        param.typeDeclaration,
+        new Type(EnumType.VALOR,null),
+        environmentFunction.enviromentType,
+        arrayEnvironments,
+        1,
+        Singleton.getPosStack(),
+        1,
+        null,
+        location,
+        null
+      );
+      
+      environmentFunction.insertParameter(param.identifier,symbolParam);
+    }
+    
+    for(item of block.sentences){
+      if(item instanceof Instruction) item.fillTable(environmentFunction);
+    }
+
+    symbolFunction = new Symbol(
+      this.line,
+      this.column,
+      this.identifier,
+      this.type,
+      new DeclarationType(EnumDeclarationType.NULL),
+      new Type(EnumType.FUNCTION,null),
+      env.enviromentType,
+      env.getArrayEnvironments(),
+      this.getSize(),
+      -1,
+      1, //Este lo tengo que cambiar por la dimension
+      null,
+      null,
+      environmentFunction //Voy a guardar su entorno aca
+    );
+
+    env.insertNewSymbol(this.identifier,symbolFunction);
+    return null;
+  }
+
+  getC3D(env){
+    
+  }
+
+  getSize(){
+    let block = new Block(this.instructions);
+    return block.getSize() + this.parameters.length + 1;
+  }
+
+
 }

@@ -4,8 +4,12 @@ class Singleton{
     static positionRelativeOfStack = 0;
     static positionRelativeOfHeap = 0;
 
-    static cleanPointerStack(){
+    static cleanPointerStackInit(){
         Singleton.positionRelativeOfStack = 0;
+    }
+
+    static cleanPointerStackFunction(){
+        Singleton.positionRelativeOfStack = 1;
     }
 
     static cleanPointerHeap(){

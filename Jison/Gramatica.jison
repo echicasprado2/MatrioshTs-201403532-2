@@ -149,7 +149,7 @@ lex_comentariomultilinea [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]
 /* GRAMATICA */
 
 INIT: SENTENCES EOF { return $1; }
-    | EOF
+    | EOF           { return []; }
     ;
 
 SENTENCES: SENTENCES SENTENCE { $$ = $1; $$.push($2); }

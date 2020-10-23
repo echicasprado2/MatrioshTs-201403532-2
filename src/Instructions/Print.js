@@ -185,4 +185,8 @@ class Print extends Instruction {
         return result;
     }
 
+    getSize(){
+        return 0;
+    }
+
 }

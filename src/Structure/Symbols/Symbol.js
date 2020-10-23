@@ -29,6 +29,6 @@ class Symbol {
         this.dimensions = dimensions;              // para arreglos, para saber cuantas dimenciones tengo que manejar
         this.displayTemporary = displayTemporary;  // para almacenar los temporales que aun no se utilizan, en una llamada de funcion
         this.location = location                   // localizacion de variable, puede ser hepa o stack
-        this.value = value;                        // valor primitivo, o temporal que contiene el valor 
+        this.value = value;//no lo uso para codigo de 3 direcciones                   // valor primitivo, o temporal que contiene el valor 
     }
 }

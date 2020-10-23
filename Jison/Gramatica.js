@@ -86,6 +86,9 @@ switch (yystate) {
 case 1:
  return $$[$0-1]; 
 break;
+case 2:
+ return []; 
+break;
 case 3: case 119:
  this.$ = $$[$0-1]; this.$.push($$[$0]); 
 break;
