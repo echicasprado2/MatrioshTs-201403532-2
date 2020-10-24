@@ -101,8 +101,14 @@ class If extends Instruction {
         let result = new RESULT();
         let resultIf;
 
+        result.code += `//---------- INICIO IF--------------\n`;
+
         for(let item of this.ifList){
             resultIf = item.getC3D(env);
+
+            result.breakLabels.push(...resultIf.breakLabels);
+            result.continueLabels.push(...resultIf.continueLabels);
+            
             result.code += resultIf.code;
             
             for(let fl of resultIf.falseLabels){
@@ -113,6 +119,11 @@ class If extends Instruction {
         
         if(this.haveElse){   
             resultIf = this.blockElse.getC3D(this.enviromentElse);
+            
+            result.breakLabels.push(...resultIf.breakLabels);
+            result.continueLabels.push(...resultIf.continueLabels);
+            
+            result.code += `//--------------- BLOCK ELSE ------------\n`;
             result.code += resultIf.code;
         }
 

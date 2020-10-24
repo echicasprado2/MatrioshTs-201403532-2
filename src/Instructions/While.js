@@ -88,7 +88,57 @@ class While extends Instruction {
     }
 
     getC3D(env){
+        let result = new RESULT();
+        let resultCondition;
+        let resultBlock;
+        let linit;
 
+        resultCondition = this.condition.getC3D(env);
+        resultBlock = this.block.getC3D(this.environment);
+
+        if(resultCondition.type.enumType == EnumType.ERROR){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error con la condicion`,env.enviromentType));
+            return result;
+            
+        }else if(resultCondition.type.enumType != EnumType.BOOLEAN){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La condicion no es booleana, tipo de condiciont ${resultCondition.type.toString()}`,env.enviromentType));
+            return result;
+        }
+
+        result.trueLabels = [...resultCondition.trueLabels];
+        result.falseLabels = [...resultCondition.falseLabels];
+        
+        linit = Singleton.getLabel();
+
+        result.code += `//----------- WHILE ------------------;\n`;
+        result.code += `${linit}://inicio de while\n`;
+        result.code += resultCondition.code;
+
+        result.code += `//condicion verdadera de while\n`;
+        for(let item of result.trueLabels){
+            result.code += `${item}:\n`;
+        }
+        
+        result.code += resultBlock.code;
+        
+        result.code += `//continue de while\n`;
+        for(let lc of resultBlock.continueLabels){
+            result.code += `${lc}:\n`;
+        }
+        
+        result.code += `goto ${linit};//inicio de while para volver a evaluar\n`;
+        
+        result.code += `//condicion falsa de while\n`;
+        for(let lf of result.falseLabels){
+            result.code += `${lf}:\n`;
+        }
+        
+        result.code += `//break de while\n`;
+        for(let lb of resultBlock.breakLabels){
+            result.code += `${lb}:\n`;
+        }
+
+        return result;
     }
 
     fillTable(env){
@@ -100,6 +150,5 @@ class While extends Instruction {
     getSize(){
         return 0;
     }
-
 
 }

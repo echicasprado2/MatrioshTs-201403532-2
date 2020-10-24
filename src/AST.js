@@ -156,6 +156,7 @@ class AST {
         cadena += this.instruccions[i].getC3D(this.environmentCompile).code;
       }
     }
+    cadena += `P = P + ${this.environmentCompile.size};\n`;
     return `${cadena}\n`;
   }
 

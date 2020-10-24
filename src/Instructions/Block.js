@@ -63,10 +63,18 @@ class Block extends Instruction {
 
   getC3D(env){
     let result = new RESULT();
+    let resultSentence;
     result.type.enumType = EnumType.BLOCK;
 
     for(let item of this.sentences) {
-      result.code += item.getC3D(env).code;
+      resultSentence = item.getC3D(env);
+
+      result.trueLabels.push(...resultSentence.trueLabels);
+      result.falseLabels.push(...resultSentence.falseLabels);
+      result.breakLabels.push(...resultSentence.breakLabels);
+      result.continueLabels.push(...resultSentence.continueLabels);
+      result.exitLabels.push(...resultSentence.exitLabels);
+      result.code += resultSentence.code;
     }
 
     return result;

@@ -87,11 +87,11 @@ class BlockIf extends Instruction {
         resultBlock = this.block.getC3D(this.enviroment);
 
         if(resultCondition.type.enumType == EnumType.ERROR){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error con la condicion`,this.enviroment.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error con la condicion`,env.enviromentType));
             return result;
             
         }else if(resultCondition.type.enumType != EnumType.BOOLEAN){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La condicion no es booleana, tipo de condiciont ${resultCondition.type.toString()}`,this.enviroment.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La condicion no es booleana, tipo de condiciont ${resultCondition.type.toString()}`,env.enviromentType));
             return result;
         }
 
@@ -99,8 +99,11 @@ class BlockIf extends Instruction {
 
         result.trueLabels = [...resultCondition.trueLabels];
         result.falseLabels = [...resultCondition.falseLabels];
+        result.breakLabels = [...resultBlock.breakLabels];
+        result.continueLabels = [...resultBlock.continueLabels];
         result.exitLabels.push(lexit);
 
+        result.code += `//----------  BLOCK IF -----------------\n`;
         result.code += resultCondition.code;
         
         for(let item of result.trueLabels){
