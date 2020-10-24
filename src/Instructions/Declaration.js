@@ -182,7 +182,7 @@ class Declaration extends Instruction {
 
     if(this.value != null){
       resultExpresion = this.value.getC3D(env);
-      if(resultExpresion == null || resultExpresion.type.enumType == EnumType.ERROR) return null;
+      if(resultExpresion == null || resultExpresion.type.enumType == EnumType.ERROR) return result;
     }else{
       let valueInit = this.getInitialValue();
       resultExpresion = valueInit.getC3D(env);
@@ -287,7 +287,7 @@ class Declaration extends Instruction {
     tPosStack = Singleton.getTemporary()
 
     if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.MAIN){
-      resultExpresion.code += `${tPosStack} = ${symbolOfVariable.positionRelativa};//variable global\n`;
+      resultExpresion.code += `${tPosStack} = ${symbolOfVariable.positionRelativa} + 0;//variable global\n`;
     }else{
       resultExpresion.code += `${tPosStack} = P + ${symbolOfVariable.positionRelativa};//variable local\n`;
     }

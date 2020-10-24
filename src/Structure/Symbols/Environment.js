@@ -13,6 +13,7 @@ class Environment {
     }
 
     insertNewSymbol(name,symbol){
+        name = name.toLowerCase();
         
         if(this.table.has(name)){
             ErrorList.addError(new ErrorNode(symbol.line,symbol.column,new ErrorType(EnumErrorType.SEMANTIC),`La variable ya existe: ${name}`,this.enviromentType));
@@ -50,6 +51,7 @@ class Environment {
      * @param {*} symbol 
      */
     insert(name,symbol){
+        name = name.toLowerCase();
 
         //busco un entorno de funcion o type o global, para guardar el valor
         for(var e = this; e != null; e = e.previous){
@@ -144,7 +146,7 @@ class Environment {
     }
 
     insertParameter(name,symbol){
-
+        name = name.toLowerCase();
         symbol.typeEnvironment = this.enviromentType;
 
         this.table.set(name,symbol);
@@ -167,6 +169,7 @@ class Environment {
     }
 
     searchSymbol(name){
+        name = name.toLowerCase();
         for(var e = this; e != null; e = e.previous){
             if(e.table.has(name.toLowerCase())){// busca si el simbolo existe en el ambito
                 let item = e.table.get(name);   
@@ -176,9 +179,9 @@ class Environment {
                     item.line,
                     item.column,
                     item.id,
-                    item.type,
+                    new Type(item.type.enumType,item.type.identifier),
                     item.typeDeclaration,
-                    item.typeValue,
+                    new Type(item.typeValue.enumType,item.typeValue.identifier),
                     item.typeEnvironment,
                     item.arrayEnvironments,
                     item.size,

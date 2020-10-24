@@ -251,7 +251,73 @@ class Assignment extends Instruction {
 
 
     getC3D(env){
+        let resultExpresion = null;
+        let symbolVariable = null;
+        let tmpAccess = new Access(this.line,this.column,this.access);
 
+        if(this.value == null){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No tiene valor para asignar a variable`,env.enviromentType));
+        }
+
+        symbolVariable = tmpAccess.getC3D(env).symbol;
+        resultExpresion = this.value.getC3D(env);
+
+        if(symbolVariable == null || resultExpresion == null || resultExpresion.type.enumType == EnumType.ERROR){
+            return new RESULT();
+        }
+
+        if(symbolVariable.type.enumType != resultExpresion.type.enumType){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo del valor no coincide con el tipo de la variable ${symbolVariable.type.toString()} != ${resultExpresion.type.toString()}`,env.enviromentType));
+            return new RESULT();;
+        }
+
+        return this.getC3DOfAssignment(env,symbolVariable,resultExpresion);
+    }
+
+    getC3DOfAssignment(env,symbolOfVariable,resultExpresion){
+        let result = new RESULT();
+        let tPosStack;
+
+        result.value = resultExpresion.value;
+        result.type = resultExpresion.type;
+        result.code = resultExpresion.code;
+
+        if(resultExpresion.type.enumType == EnumType.BOOLEAN){
+            let t1 = Singleton.getTemporary();
+            let lexit = Singleton.getLabel();
+            
+            result.value = t1;
+            result.code += `//asignacion de valor boolean;\n`;
+
+            for(let item of resultExpresion.trueLabels){
+                result.code += `${item}:\n`;
+            }
+
+            result.code += `${t1} = 1;\n`;
+            result.code += `goto ${lexit};\n`;
+            
+            for(let item of resultExpresion.falseLabels){
+                result.code += `${item}:\n`;
+            }
+            
+            result.code += `${t1} = 0;\n`;
+            result.code += `goto ${lexit};\n`;
+            result.code += `${lexit}:\n`;
+        }
+
+        tPosStack = Singleton.getTemporary();
+
+        if(symbolOfVariable.typeEnvironment.enumEnvironmentType == EnumEnvironmentType.MAIN){
+            result.code += `${tPosStack} = ${symbolOfVariable.positionRelativa} + 0;//asignar a variable global\n`;
+        }else{
+            result.code += `${tPosStack} = P + ${symbolOfVariable.positionRelativa};//asignar a variable global\n`;
+        }
+
+        result.code += `Stack[(int)${tPosStack}] = ${result.value};//Guardo el valor nuevo en su posicion de stack\n`;
+
+        symbolOfVariable.type = resultExpresion.type;
+        env.insert(symbolOfVariable.id,symbolOfVariable);
+        return result;
     }
 
     fillTable(env){
