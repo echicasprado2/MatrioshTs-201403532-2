@@ -46,4 +46,17 @@ class TypeAttributeDefinition extends Instruction {
         /** este funciona igual que los parametros para las funciones */
     }
 
+    getC3D(env){
+
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
+
 }

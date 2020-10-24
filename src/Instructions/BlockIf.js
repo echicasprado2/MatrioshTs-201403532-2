@@ -76,4 +76,16 @@ class BlockIf extends Instruction {
         return null;
     }
 
+    getC3D(env){
+        
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 }

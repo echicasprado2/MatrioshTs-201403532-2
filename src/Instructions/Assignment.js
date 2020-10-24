@@ -249,4 +249,17 @@ class Assignment extends Instruction {
         return dimension;
     }
 
+
+    getC3D(env){
+
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 }

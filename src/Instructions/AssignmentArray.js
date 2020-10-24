@@ -144,4 +144,16 @@ class AssignmentArray extends Instruction {
         return values;
     }
 
+    getC3D(env){
+        
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 }

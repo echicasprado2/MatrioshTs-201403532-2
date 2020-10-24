@@ -217,5 +217,17 @@ class DeclarationArray extends Instruction {
         return true;
     }
 
+    getC3D(env){
+        
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 
 }

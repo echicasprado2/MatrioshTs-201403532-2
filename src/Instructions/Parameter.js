@@ -70,4 +70,16 @@ class Parameter extends Instruction{
         }
     }
 
+    getC3D(env){
+        return '';
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 }

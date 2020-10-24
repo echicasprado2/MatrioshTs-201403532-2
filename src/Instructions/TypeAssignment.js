@@ -47,4 +47,17 @@ class TypeAssignment extends Instruction {
         throw new Error("Method not implemented.");
     }
 
+    getC3D(env){
+
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
+
 }

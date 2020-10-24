@@ -189,4 +189,8 @@ class Print extends Instruction {
         return 0;
     }
 
+    fillTable(env){
+        return null;
+    }
+
 }

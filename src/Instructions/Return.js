@@ -52,4 +52,16 @@ class Return extends Instruction {
         return this;
     }
 
+    getC3D(env){
+
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 }

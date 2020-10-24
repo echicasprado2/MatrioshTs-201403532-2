@@ -61,6 +61,14 @@ class Block extends Instruction {
     return null;
   }
 
+  getC3D(env){
+        
+  }
+
+  fillTable(env){
+      return null;
+  }
+
   getSize(){
     let counter = 0;
     for(let item of this.sentences){

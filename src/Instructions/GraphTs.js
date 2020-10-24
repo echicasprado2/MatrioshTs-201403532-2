@@ -88,4 +88,16 @@ class GraphTs extends Instruction {
         return null;
     }
 
+    getC3D(env){
+        return '';
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 }

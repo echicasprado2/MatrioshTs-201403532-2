@@ -53,4 +53,16 @@ class CaseSwitch extends Instruction {
         return this.block.execute(e);
     }
 
+    getC3D(env){
+        
+    }
+
+    fillTable(env){
+        return null;
+    }
+
+    getSize(){
+        return 0;
+    }
+
 }
