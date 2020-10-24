@@ -99,7 +99,7 @@ class BlockIf extends Instruction {
 
         result.trueLabels = [...resultCondition.trueLabels];
         result.falseLabels = [...resultCondition.falseLabels];
-        result.exitLabel.push(lexit);
+        result.exitLabels.push(lexit);
 
         result.code += resultCondition.code;
         

@@ -50,4 +50,8 @@ class Id extends Expresion {
         }
     }
 
+    fillTable(env){
+        return null;
+    }
+
 }

@@ -108,7 +108,7 @@ class If extends Instruction {
             for(let fl of resultIf.falseLabels){
                 result.code += `${fl}:\n`;
             }
-            result.exitLabel.push(...resultIf.exitLabel);
+            result.exitLabels.push(...resultIf.exitLabels);
         }
         
         if(this.haveElse){   
@@ -116,7 +116,7 @@ class If extends Instruction {
             result.code += resultIf.code;
         }
 
-        for(let le of result.exitLabel){
+        for(let le of result.exitLabels){
             result.code += `${le}:\n`;
         }
 

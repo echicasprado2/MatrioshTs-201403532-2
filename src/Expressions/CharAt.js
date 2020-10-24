@@ -33,4 +33,7 @@ class CharAt extends Expresion {
         //TODO implement this
     }
 
+    fillTable(env){
+        return null;
+    }
 }

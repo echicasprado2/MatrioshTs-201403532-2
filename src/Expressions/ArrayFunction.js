@@ -111,4 +111,8 @@ class ArrayFunction extends Expresion {
     //TODO implement this
   }
 
+  fillTable(env){
+    return null;
+  }
+
 }

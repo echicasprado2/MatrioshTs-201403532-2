@@ -394,5 +394,8 @@ class Relational extends Expresion {
     return result;
   }
 
+  fillTable(env){
+    return null;
+  }
 
 }

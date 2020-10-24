@@ -11,7 +11,9 @@ class RESULT{
         this.value = "";
         this.trueLabels = [];
         this.falseLabels = [];
-        this.exitLabel = [];
+        this.breakLabels = [];
+        this.continueLabels = [];
+        this.exitLabels = [];
     }
 
 }

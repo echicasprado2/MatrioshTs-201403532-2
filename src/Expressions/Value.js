@@ -165,4 +165,9 @@ class Value extends Expresion {
         return char;
     }
   }
+
+  fillTable(env){
+    return null;
+  }
+  
 }

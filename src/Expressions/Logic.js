@@ -97,4 +97,8 @@ class Logic extends Expresion {
     return result;
   }
 
+  fillTable(env){
+    return null;
+  }
+
 }

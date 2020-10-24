@@ -37,4 +37,8 @@ class Concat extends Expresion {
     getC3D(env,code){
         //TODO implement this
     }
+
+    fillTable(env){
+        return null;
+    }
 }

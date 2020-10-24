@@ -27,4 +27,8 @@ class ToUpperCase extends Expresion {
     getC3D(env){
     //TODO implement this
     }
+
+    fillTable(env){
+        return null;
+    }
 }

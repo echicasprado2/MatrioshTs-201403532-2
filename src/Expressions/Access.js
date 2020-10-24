@@ -118,5 +118,9 @@ class Access extends Expresion {
         return result;
     }
 
+    fillTable(env){
+        return null;
+    }
+
 
 }

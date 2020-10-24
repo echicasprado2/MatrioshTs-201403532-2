@@ -14,6 +14,8 @@ class While extends Instruction {
         this.block = block;
 
         this.translatedCode = "";
+
+        this.environment = null;
     }
 
     getTranslated(){
@@ -90,6 +92,8 @@ class While extends Instruction {
     }
 
     fillTable(env){
+        this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.WHILE,null));
+        this.block.fillTable(this.environment);
         return null;
     }
 

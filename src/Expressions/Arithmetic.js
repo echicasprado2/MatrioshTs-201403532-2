@@ -610,4 +610,8 @@ class Arithmetic extends Expresion {
     return result;
   }
 
+  fillTable(env){
+    return null;
+}
+
 }

@@ -36,7 +36,30 @@ class Break extends Instruction {
     }
 
     getC3D(env){
-        
+        let result = new RESULT();
+        let isValid = false;
+
+        for(var env = e; env != null; env = env.previous){
+            if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.FOR
+                || env.enviromentType.enumEnvironmentType == EnumEnvironmentType.FOR_IN
+                || env.enviromentType.enumEnvironmentType == EnumEnvironmentType.FOR_OF
+                || env.enviromentType.enumEnvironmentType == EnumEnvironmentType.SWITCH
+                || env.enviromentType.enumEnvironmentType == EnumEnvironmentType.WHILE
+                || env.enviromentType.enumEnvironmentType == EnumEnvironmentType.DO){
+                    isValid = true;
+                }
+        }
+
+        if(!isValid){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El break no viene dentro de un ciclo`,env.enviromentType));
+            return result;
+        }
+
+        let lb = Singleton.getLabel();
+        result.type.enumType = EnumType.BREAK;
+        result.breaklabels.push(lb);
+        result.code += `goto ${lb};\n`;
+        return result;
     }
 
     fillTable(env){
