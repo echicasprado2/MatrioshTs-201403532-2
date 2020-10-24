@@ -107,4 +107,8 @@ class ArrayFunction extends Expresion {
     return new Value(new Type(EnumType.NUMBER,null),symbol.value.value.length);
   }
 
+  getC3D(env){
+    //TODO implement this
+  }
+
 }

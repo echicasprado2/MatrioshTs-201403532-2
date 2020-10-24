@@ -47,4 +47,8 @@ class Ternary extends Expresion {
         }
     }
 
+    getC3D(env){
+        //TODO implement this
+    }
+
 }

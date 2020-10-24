@@ -31,12 +31,9 @@ class Concat extends Expresion {
     }
 
     getValue(e) {
-        //TODO implement this
+        return '';
     }
 
-    validType(env,code){
-        //TODO implement this
-    }
     getC3D(env,code){
         //TODO implement this
     }

@@ -29,4 +29,8 @@ class CharAt extends Expresion {
         throw new Error("Method not implemented.");
     }
 
+    getC3D(env){
+        //TODO implement this
+    }
+
 }

@@ -24,4 +24,8 @@ class ToLowerCase extends Expresion {
         return "";
     }
 
+    getC3D(env){
+        //TODO implement this
+    }
+
 }

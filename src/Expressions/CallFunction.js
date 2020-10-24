@@ -239,5 +239,8 @@ class CallFunction extends Expresion {
         return true;
     }
 
+    getC3D(env){
+        //TODO implement this
+    }
 
 }

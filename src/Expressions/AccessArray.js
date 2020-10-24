@@ -99,4 +99,8 @@ class AccessArray extends Expresion {
     return arrayDimension;
   }
 
+  getC3D(env){
+    //TODO implement this
+  }
+
 }

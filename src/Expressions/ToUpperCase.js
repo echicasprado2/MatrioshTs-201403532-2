@@ -24,10 +24,7 @@ class ToUpperCase extends Expresion {
         throw new Error("Method not implemented.");
     }
 
-    validType(env,code){
-    //TODO implement this
-    }
-    getC3D(env,code){
+    getC3D(env){
     //TODO implement this
     }
 }
