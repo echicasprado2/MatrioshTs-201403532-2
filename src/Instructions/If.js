@@ -142,6 +142,9 @@ class If extends Instruction {
 
         if(this.haveElse){
             this.enviromentElse = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
+            this.environment.size = this.getSize();
+            Singleton.cleanPointerStackInit();
+
             this.blockElse.fillTable(this.enviromentElse);
         }
 

@@ -7,6 +7,7 @@ class Switch extends Instruction {
         this.casesList = cases;
 
         this.translatedCode = "";
+        this.environment = null;
     }
 
     getTranslated(){
@@ -104,6 +105,11 @@ class Switch extends Instruction {
     }
 
     fillTable(env){
+        this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.SWITCH,null));
+        this.environment.size = this.getSize();
+        Singleton.cleanPointerStackInit();
+        
+        this.block.fillTable(this.environment);
         return null;
     }
 

@@ -118,6 +118,9 @@ class BlockIf extends Instruction {
 
     fillTable(env){
         this.enviroment = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
+        this.environment.size = this.getSize();
+        Singleton.cleanPointerStackInit();
+        
         this.block.fillTable(this.enviroment);
         return null;
     }
