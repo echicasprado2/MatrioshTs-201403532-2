@@ -17,6 +17,7 @@ class BlockIf extends Instruction {
         this.isElseIf =isElseIf;
 
         this.translatedCode = "";
+        this.enviroment = null;
     }
 
     getTranslated(){
@@ -77,10 +78,44 @@ class BlockIf extends Instruction {
     }
 
     getC3D(env){
+        let result = new RESULT();
+        let resultCondition;
+        let resultBlock;
+        let lexit;
+
+        resultCondition = this.expresion.getC3D(env);
+        resultBlock = this.block.getC3D(this.enviroment);
+
+        if(resultCondition.type.enumType == EnumType.ERROR){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error con la condicion`,this.enviroment.enviromentType));
+            return result;
+            
+        }else if(resultCondition.type.enumType != EnumType.BOOLEAN){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La condicion no es booleana, tipo de condiciont ${resultCondition.type.toString()}`,this.enviroment.enviromentType));
+            return result;
+        }
+
+        lexit = Singleton.getLabel();
+
+        result.trueLabels = [...resultCondition.trueLabels];
+        result.falseLabels = [...resultCondition.falseLabels];
+        result.exitLabel.push(lexit);
+
+        result.code += resultCondition.code;
         
+        for(let item of result.trueLabels){
+            result.code += `${item}:\n`;
+        }
+
+        result.code += resultBlock.code;
+        result.code += `goto ${lexit};\n`;
+
+        return result;
     }
 
     fillTable(env){
+        this.enviroment = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
+        this.block.fillTable(this.enviroment);
         return null;
     }
 

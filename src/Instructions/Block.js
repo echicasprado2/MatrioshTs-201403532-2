@@ -62,11 +62,21 @@ class Block extends Instruction {
   }
 
   getC3D(env){
-        
+    let result = new RESULT();
+    result.type.enumType = EnumType.BLOCK;
+
+    for(let item of this.sentences) {
+      result.code += item.getC3D(env).code;
+    }
+
+    return result;
   }
 
   fillTable(env){
-      return null;
+    for(let item of this.sentences){
+      if(item instanceof Instruction) item.fillTable(env);
+    }
+    return null;
   }
 
   getSize(){

@@ -194,7 +194,7 @@ class Declaration extends Instruction {
         result.code += this.getC3DOfDeclaration(env,symbolOfVariable,resultExpresion);
     }
 
-    return result.code;
+    return result;
   }
 
   getSize(){
@@ -221,15 +221,7 @@ class Declaration extends Instruction {
   saveVariableIntoEnvironment(env,id){
     let location;
     let enviroments;
-    let exists;
     let newSymbol;
-
-    exists = env.searchSymbol(id);
-
-    if(exists != null){
-      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La variable ${id}, ya existe`,env.enviromentType));
-      return null;
-    }
 
     if(this.type.enumType == EnumType.NUMBER || this.type.enumType == EnumType.BOOLEAN){
       location = new Location(EnumLocation.STACK);

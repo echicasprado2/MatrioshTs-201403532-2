@@ -14,8 +14,8 @@ class If extends Instruction {
         this.ifList = ifList;
         this.haveElse = haveElse;
         this.blockElse = blockElse;
-
         this.translatedCode = "";
+        this.enviromentElse = null;
     }
 
     getTranslated(){
@@ -98,10 +98,42 @@ class If extends Instruction {
     }
 
     getC3D(env){
+        let result = new RESULT();
+        let resultIf;
+
+        for(let item of this.ifList){
+            resultIf = item.getC3D(env);
+            result.code += resultIf.code;
+            
+            for(let fl of resultIf.falseLabels){
+                result.code += `${fl}:\n`;
+            }
+            result.exitLabel.push(...resultIf.exitLabel);
+        }
         
+        if(this.haveElse){   
+            resultIf = this.blockElse.getC3D(this.enviromentElse);
+            result.code += resultIf.code;
+        }
+
+        for(let le of result.exitLabel){
+            result.code += `${le}:\n`;
+        }
+
+        return result;
     }
 
     fillTable(env){
+
+        for(let item of this.ifList){
+            item.fillTable(env);
+        }
+
+        if(this.haveElse){
+            this.enviromentElse = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
+            this.blockElse.fillTable(this.enviromentElse);
+        }
+
         return null;
     }
 

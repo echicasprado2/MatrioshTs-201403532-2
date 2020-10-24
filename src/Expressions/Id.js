@@ -43,7 +43,7 @@ class Id extends Expresion {
         let resultSymbol = env.searchSymbol(this.identifier);
 
         if(resultSymbol == null){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El identificador: ${this.identifier}, no se encontro`,e.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El identificador: ${this.identifier}, no se encontro`,env.enviromentType));
             return result;
         }else{
             return resultSymbol;

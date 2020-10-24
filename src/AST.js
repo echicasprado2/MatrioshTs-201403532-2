@@ -153,7 +153,7 @@ class AST {
       if((this.instruccions[i] instanceof Declaration) || 
       (this.instruccions[i] instanceof DeclarationTypes) ||
       (this.instruccions[i] instanceof DeclarationArray)){
-        cadena += this.instruccions[i].getC3D(this.environmentCompile);
+        cadena += this.instruccions[i].getC3D(this.environmentCompile).code;
       }
     }
     return `${cadena}\n`;
@@ -162,6 +162,16 @@ class AST {
 
   getMainInstructions(){
     let cadena = "";
+
+    for(let item of this.instruccions){
+      if(!(item instanceof TypeDefinition) && 
+        !(item instanceof Function) &&
+        !(item instanceof Declaration) &&
+        !(item instanceof DeclarationTypes) &&
+        !(item instanceof DeclarationArray)){
+          if(item instanceof Instruction) item.fillTable(this.environmentCompile);
+        }
+    }
 
     for(var i = 0; i < this.instruccions.length; i++){
       if(!(this.instruccions[i] instanceof TypeDefinition) &&

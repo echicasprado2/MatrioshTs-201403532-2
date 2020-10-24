@@ -64,7 +64,7 @@ class Access extends Expresion {
 
         }else{
             
-            if(resultSymbolAccess.type.enumType == EnumType.NULL){
+            if(resultSymbolAccess.type.enumType == EnumType.NULL || resultSymbolAccess.type.enumType == EnumType.ERROR){
                 ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La variable: "${resultSymbolAccess.id}", no tiene valor asignado`,e.enviromentType));
             }
 
@@ -80,8 +80,8 @@ class Access extends Expresion {
 
         if(this.value.length == 1){
             resultAccess = this.value[0].getC3D(env);
-            if(resultAccess == null){
-                return '';
+            if(resultAccess == null || resultAccess.type.enumType == EnumType.ERROR){
+                return result;
             }else{
                 result = this.getC3DVariablePrimitive(env,resultAccess);
             }

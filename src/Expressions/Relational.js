@@ -208,7 +208,7 @@ class Relational extends Expresion {
     let result2 = this.expresion2.getC3D(env);
 
     if(result1 == null || result2 == null || result1.type.enumType == EnumType.ERROR || result2.type.enumType == EnumType.ERROR){
-      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Valores`,env.enviromentType));
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Valores en operacion ${this.operationType.toString()}`,env.enviromentType));
       return new RESULT();
     }
 

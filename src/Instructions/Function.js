@@ -22,6 +22,8 @@ class Function extends Instruction {
 
     this.copyIdentifierOfDeclarations = [];
     this.copyIdentifierOfNestedFuncions = [];
+
+    this.environment = null;
   }
 
   /**
@@ -453,7 +455,6 @@ class Function extends Instruction {
     let symbolParam;
     let arrayEnvironments;
     let location;
-    let environmentFunction;
     let block;
     let exists = env.searchSymbol(this.identifier);
 
@@ -463,8 +464,8 @@ class Function extends Instruction {
     }
 
     Singleton.cleanPointerStackFunction();
-    environmentFunction = new Environment(env,new EnvironmentType(EnumEnvironmentType.FUNCTION,this.identifier));
-    arrayEnvironments = environmentFunction.getArrayEnvironments();
+    this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.FUNCTION,this.identifier));
+    arrayEnvironments = this.environment.getArrayEnvironments();
     location = new Location(EnumLocation.STACK);
     block = new Block(this.instructions);
     
@@ -476,7 +477,7 @@ class Function extends Instruction {
         param.type,
         param.typeDeclaration,
         new Type(EnumType.VALOR,null),
-        environmentFunction.enviromentType,
+        this.environment.enviromentType,
         arrayEnvironments,
         1,
         Singleton.getPosStack(),
@@ -486,11 +487,11 @@ class Function extends Instruction {
         null
       );
       
-      environmentFunction.insertParameter(param.identifier,symbolParam);
+      this.environment.insertParameter(param.identifier,symbolParam);
     }
     
     for(item of block.sentences){
-      if(item instanceof Instruction) item.fillTable(environmentFunction);
+      if(item instanceof Instruction) item.fillTable(this.environment);
     }
 
     symbolFunction = new Symbol(
@@ -507,7 +508,7 @@ class Function extends Instruction {
       1, //Este lo tengo que cambiar por la dimension
       null,
       null,
-      environmentFunction //Voy a guardar su entorno aca
+      null
     );
 
     env.insertNewSymbol(this.identifier,symbolFunction);
