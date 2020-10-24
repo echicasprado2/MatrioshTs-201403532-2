@@ -43,7 +43,6 @@ class Continue extends Instruction {
             if(item.enviromentType.enumEnvironmentType == EnumEnvironmentType.FOR
                 || item.enviromentType.enumEnvironmentType == EnumEnvironmentType.FOR_IN
                 || item.enviromentType.enumEnvironmentType == EnumEnvironmentType.FOR_OF
-                || item.enviromentType.enumEnvironmentType == EnumEnvironmentType.SWITCH
                 || item.enviromentType.enumEnvironmentType == EnumEnvironmentType.WHILE
                 || item.enviromentType.enumEnvironmentType == EnumEnvironmentType.DO){
                     isValid = true;

@@ -101,7 +101,51 @@ class Switch extends Instruction {
     }
 
     getC3D(env){
+        let result = new RESULT();
+        let resulCondition;
+        let resulCase;
+        let lexit = Singleton.getLabel();
+        
+        resulCondition = this.condition.getC3D(env);
+        result.code += resulCondition.code;
+        
+        for(let item of this.casesList){
+            resulCase = item.getC3D(this.environment);
 
+            result.exitLabels.push(...resulCase.exitLabels);
+
+            if(resulCase.trueLabels == 0){
+                resulCase.trueLabels.push(Singleton.getLabel());
+            }
+            
+            if(resulCase.falseLabels == 0){
+                resulCase.falseLabels.push(Singleton.getLabel());
+            }
+
+            if(item.isCase){
+                result.code += `if(${resulCondition.value} == ${resulCase.value}) goto ${resulCase.trueLabels[0]};\n`;
+                result.code += `goto ${resulCase.falseLabels[0]};\n`;
+            }
+            
+            result.code += resulCase.code;
+            result.code += `goto ${lexit};//salgo de switch\n`;
+            
+            if(item.isCase){
+                result.code += `//condicion false case\n`;
+                for(let lf of resulCase.falseLabels){
+                    result.code += `${lf}:\n`;
+                }
+            }
+        }
+        
+        result.exitLabels.push(lexit);
+        
+        result.code += `//salida de switch\n`;
+        for(let item of result.exitLabels){
+            result.code += `${item}:\n`;
+        }
+
+        return result;
     }
 
     fillTable(env){
@@ -109,12 +153,19 @@ class Switch extends Instruction {
         this.environment.size = this.getSize();
         Singleton.cleanPointerStackInit();
         
-        this.block.fillTable(this.environment);
+        for(let item of this.casesList){
+            item.fillTable(this.environment);
+        }
+
         return null;
     }
 
     getSize(){
-        return 0;
+        let counter = 0;
+        for(let item of this.casesList){
+            counter += item.getSize();
+        }
+        return counter;
     }
 
 
