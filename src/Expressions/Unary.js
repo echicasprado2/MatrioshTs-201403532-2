@@ -123,14 +123,14 @@
             return new RESULT();
         }
         
-        if(this.operationType == EnumOperationType.NEGATIVE){
+        if(this.operationType == EnumOperationType.NEGATIVE && result1.type.enumType == EnumType.NUMBER){
             let t1 = Singleton.getTemporary();
             
             result1.code += `${t1} = 0 - ${result1.value};\n`;
             result1.value = t1;
             return result1;
 
-        }else if(this.operationType == EnumOperationType.NOT){
+        }else if(this.operationType == EnumOperationType.NOT && result1.type.enumType == EnumType.BOOLEAN){
             
             if(result1.type.enumType != EnumType.BOOLEAN){
                 ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Operacion solo permite valores boolean`,env.enviromentType));
@@ -147,11 +147,38 @@
             }
             
             return result1;
+        
+        }else if(this.operationType == EnumOperationType.PLUS_PLUS && result1.type.enumType == EnumType.NUMBER){
+            let t1 = Singleton.getTemporary();
+            let tpos = Singleton.getTemporary();
+
+            result1.code += `${t1} = ${result1.value} + 1;//aumento variable en 1 ejemplo: i++\n`;
+            result1.code += `${tpos} = P + ${result1.symbol.positionRelativa};//posicion de variable en el entorno\n`;
+            result1.code += `Stack[(int)${tpos}] = ${t1};//guardo el nuevo valor de la variable\n`;
+            result1.value = t1;
+            return result1;
+
+        }else if(this.operationType == EnumOperationType.MINUS_MINUS && result1.type.enumType == EnumType.NUMBER){
+            let t1 = Singleton.getTemporary();
+            let tpos = Singleton.getTemporary();
+
+            result1.code += `${t1} = ${result1.value} - 1;//resto la variable en 1 ejemplo: i--\n`;
+            result1.code += `${tpos} = P + ${result1.symbol.positionRelativa};//posicion de variable en el entorno\n`;
+            result1.code += `Stack[(int)${tpos}] = ${t1};//guardo el nuevo valor de la variable\n`;
+            result1.value = t1;
+            return result1;
         }
+
+        ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error en operacion unaria ${this.operationType.toString()}`));
+        return new RESULT();
     }
 
     fillTable(env){
         return null;
+    }
+
+    getSize(){
+        return 0;
     }
      
  }

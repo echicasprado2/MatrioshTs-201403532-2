@@ -152,7 +152,12 @@ class If extends Instruction {
     }
 
     getSize(){
-        return 0;
+        let counter = 0;
+        for(let b of this.ifList){
+            counter += b.getSize();
+        }
+        counter += this.blockElse.getSize();
+        return counter;
     }
 
 }

@@ -107,4 +107,8 @@ class AccessArray extends Expresion {
     return null;
   }
 
+  getSize(){
+    return 0;
+  }
+
 }

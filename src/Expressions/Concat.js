@@ -41,4 +41,8 @@ class Concat extends Expresion {
     fillTable(env){
         return null;
     }
+    
+    getSize(){
+        return 0;
+    }
 }

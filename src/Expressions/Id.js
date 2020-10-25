@@ -54,4 +54,8 @@ class Id extends Expresion {
         return null;
     }
 
+    getSize(){
+        return 0;
+    }
+
 }

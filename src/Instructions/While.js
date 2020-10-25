@@ -151,7 +151,7 @@ class While extends Instruction {
     }
 
     getSize(){
-        return 0;
+        return this.block.getSize();
     }
 
 }

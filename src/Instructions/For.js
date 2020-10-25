@@ -18,6 +18,8 @@ class For extends Instruction {
         this.block = block;
 
         this.translatedCode = "";
+
+        this.environment = null;
     }
 
     getTranslated(){
@@ -60,6 +62,7 @@ class For extends Instruction {
                 ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se se puede declarar mas de una variable`,envFor.enviromentType));
             }
             this.declaration.execute(envFor);
+
         }else if(this.declaration instanceof Assignment){
             this.declaration.execute(envFor);
         }
@@ -111,15 +114,103 @@ class For extends Instruction {
     }
 
     getC3D(env){
+        let result = new RESULT();
+        let resultDeclaration;
+        let resultCondition;
+        let resultExpresion;
+        let resultBlock;
+
+        if(this.declaration instanceof Declaration && this.declaration.ids.length > 1){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se se puede declarar mas de una variable`,this.environmentCondition.enviromentType));
+        }
+
+        resultDeclaration = this.declaration.getC3D(this.environment);
+        resultCondition = this.condition.getC3D(this.environment);
+        resultExpresion = this.expression.getC3D(this.environment);
+        resultBlock = this.block.getC3D(this.environment);
+
+        if(resultCondition.type.enumType == EnumType.ERROR){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'Error con la declaracion',this.environmentCondition.enviromentType));
+            return result;
+        }
         
+        if(resultExpresion.type.enumType == EnumType.ERROR){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'Error con la expresion',this.environmentCondition.enviromentType));
+            return result;
+        }
+
+        if(resultCondition.type.enumType != EnumType.BOOLEAN){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'La condicion no es booleana',this.environmentCondition.enviromentType));
+            return result;
+        }
+
+        let linit = Singleton.getLabel();
+
+        result.code += `//------------------- FOR ---------------\n`;
+        result.code += `//------------------- DECLARACION DE FOR ---------------\n`;
+        result.code += resultDeclaration.code;
+        result.code += `//------------------- INICIO DE FOR ---------------\n`;
+        result.code += `${linit}:\n`;
+        result.code += `//------------------- CONDICION DE FOR ---------------\n`;
+        result.code += resultCondition.code;
+        
+        result.code += `//------------------- ETIQUETA VERDADERA DE FOR ---------------\n`;
+        for(let lt  of resultCondition.trueLabels){
+            result.code += `${lt}:\n`;
+        }
+        
+        result.code += `//------------------- BLOCK DE FOR ---------------\n`;
+        result.code += resultBlock.code;
+        result.code += `//------------------- ETIQUETA CONTINUE DE FOR ---------------\n`;
+        for(let lc of resultBlock.continueLabels){
+            result.code += `${lc}:\n`;
+        }
+        
+        result.code += `//------------------- EXPRESION DE FOR ---------------\n`;
+        result.code += resultExpresion.code;
+        result.code += `//------------------- SALTO A INICIO DE FOR ---------------\n`;
+        result.code += `goto ${linit};\n`;
+        
+        result.code += `//------------------- ETIQUETA DE BREAK DE FOR ---------------\n`;
+        for(let lb of resultBlock.breakLabels){
+            result.code += `${lb}:\n`;
+        }
+
+        result.code += `//------------------- CONDICION FALSA DE FOR ---------------\n`;
+        for(let lf of resultCondition.falseLabels){
+            result.code += `${lf}:\n`;
+        }
+
+        return result;
     }
 
     fillTable(env){
+        this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.FOR,null));
+        this.environment.size = this.getSize();
+        Singleton.cleanPointerStackInit();
+        
+        this.declaration.fillTable(this.environment);
+        this.condition.fillTable(this.environment);
+        this.expression.fillTable(this.environment);
+        this.block.fillTable(this.environment);
+
         return null;
     }
 
     getSize(){
-        return 0;
+        return this.getSizeCondition() + this.getSizeBlock();
+    }
+
+    getSizeCondition(){
+        let counter = 0;
+        counter += this.declaration.getSize();
+        counter += this.condition.getSize();
+        counter += this.expression.getSize();
+        return counter;
+    }
+
+    getSizeBlock(){
+        return this.block.getSize();
     }
 
 }

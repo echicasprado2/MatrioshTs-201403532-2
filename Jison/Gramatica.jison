@@ -527,7 +527,7 @@ CASE:     case E dos_puntos SENTENCES  { $$ = new CaseSwitch(this._$.first_line,
         | default dos_puntos           { $$ = new CaseSwitch(this._$.first_line,this._$.first_column,"",new Block([]),false,false); }
         ;
 
-SENTENCE_FOR: for par_izq TYPE_DECLARATION L_ID '=' E punto_y_coma E punto_y_coma E par_der BLOCK 
+SENTENCE_FOR: for par_izq TYPE_DECLARATION L_ID dos_puntos TYPE '=' E punto_y_coma E punto_y_coma E par_der BLOCK 
         { $$ = new For(
                 this._$.first_line,
                 this._$.first_column,
@@ -536,11 +536,11 @@ SENTENCE_FOR: for par_izq TYPE_DECLARATION L_ID '=' E punto_y_coma E punto_y_com
                         this._$.first_column,
                         $3,
                         $4,
-                        new Type(EnumType.NULL,null),
-                        $6),
-                $8,
+                        $6,
+                        $8),
                 $10,
-                $12); 
+                $12,
+                $14); 
         }
         | for par_izq ID_ASSIGNMENT '=' E punto_y_coma E punto_y_coma E par_der BLOCK 
         { $$ = new For(
