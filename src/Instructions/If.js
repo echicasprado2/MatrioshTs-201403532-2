@@ -124,9 +124,11 @@ class If extends Instruction {
             result.continueLabels.push(...resultIf.continueLabels);
             
             result.code += `//--------------- BLOCK ELSE ------------\n`;
+            // result.code += `P = P + ${env.size};\n`;
             result.code += resultIf.code;
+            // result.code += `P = P - ${env.size};\n`;
         }
-
+        
         for(let le of result.exitLabels){
             result.code += `${le}:\n`;
         }
@@ -142,8 +144,8 @@ class If extends Instruction {
 
         if(this.haveElse){
             this.enviromentElse = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
-            this.environment.size = this.getSize();
-            Singleton.cleanPointerStackInit();
+            this.enviromentElse.size = env.size;
+            // Singleton.cleanPointerStackInit();
 
             this.blockElse.fillTable(this.enviromentElse);
         }
@@ -156,7 +158,7 @@ class If extends Instruction {
         for(let b of this.ifList){
             counter += b.getSize();
         }
-        counter += this.blockElse.getSize();
+        if(this.blockElse != "") counter += this.blockElse.getSize();
         return counter;
     }
 

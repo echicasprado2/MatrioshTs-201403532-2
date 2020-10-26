@@ -150,8 +150,8 @@ class Switch extends Instruction {
 
     fillTable(env){
         this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.SWITCH,null));
-        this.environment.size = this.getSize();
-        Singleton.cleanPointerStackInit();
+        this.environment.size = env.size;
+        // Singleton.cleanPointerStackInit();
         
         for(let item of this.casesList){
             item.fillTable(this.environment);

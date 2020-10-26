@@ -156,7 +156,6 @@ class AST {
         cadena += this.instruccions[i].getC3D(this.environmentCompile).code;
       }
     }
-    cadena += `P = P + ${this.environmentCompile.size};\n`;
     return `${cadena}\n`;
   }
 
@@ -195,11 +194,7 @@ class AST {
   getSizeMain(){
     let counter = 0;
     for(let item of this.instruccions){
-      if(item instanceof Declaration || 
-        item instanceof DeclarationArray || 
-        item instanceof DeclarationTypes){
           counter += item.getSize();
-      }
     }
     this.environmentCompile.size = counter;
   }

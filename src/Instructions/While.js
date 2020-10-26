@@ -143,8 +143,8 @@ class While extends Instruction {
 
     fillTable(env){
         this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.WHILE,null));
-        this.environment.size = this.getSize();
-        Singleton.cleanPointerStackInit();
+        this.environment.size = env.size;
+        // Singleton.cleanPointerStackInit();
         
         this.block.fillTable(this.environment);
         return null;

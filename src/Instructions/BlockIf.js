@@ -109,17 +109,19 @@ class BlockIf extends Instruction {
         for(let item of result.trueLabels){
             result.code += `${item}:\n`;
         }
-
+        
+        // result.code += `P = P + ${env.size};\n`;
         result.code += resultBlock.code;
         result.code += `goto ${lexit};\n`;
-
+        // result.code += `P = P - ${env.size};\n`;
+        
         return result;
     }
-
+    
     fillTable(env){
         this.enviroment = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
-        this.environment.size = this.getSize();
-        Singleton.cleanPointerStackInit();
+        this.enviroment.size = env.size;
+        // Singleton.cleanPointerStackInit();
         
         this.block.fillTable(this.enviroment);
         return null;
