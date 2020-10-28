@@ -366,7 +366,6 @@ class Relational extends Expresion {
 
     let lTrue; 
     let lFalse;
-    let t1 = Singleton.getTemporary();
     
     result.trueLabels.push(...result1.trueLabels,...result2.trueLabels);
     result.falseLabels.push(...result1.falseLabels,...result2.falseLabels);
@@ -390,7 +389,6 @@ class Relational extends Expresion {
     result.code += `goto ${lFalse};\n`;
 
     result.type.enumType = EnumType.BOOLEAN;
-    result.value = t1;
     return result;
   }
 

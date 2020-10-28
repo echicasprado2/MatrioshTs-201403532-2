@@ -144,27 +144,18 @@ class Print extends Instruction {
                     result.code += `goto ${lexit};//salida\n`;
                     result.code += `${lexit}:\n`;
 
-                    // if(resultTemp.type.identifier === "INTEGER"){
-                    //     result.code += `printf("%d",(int)${resultTemp.value});\n`;
-
-                    // }else if(resultTemp.type.identifier === "DOUBLE"){
-                    //     result.code += `printf("%0.10f",${resultTemp.value});\n`;
-                    // }
-
                     break;
                 case EnumType.BOOLEAN:
                     let lExit = Singleton.getLabel();
-                    
-                    if(resultTemp.code == ""){
-                        let lTrue = Singleton.getLabel();
-                        let lFalse = Singleton.getLabel();
-                        resultTemp.trueLabels.push(lTrue);
-                        resultTemp.falseLabels.push(lFalse);
+                    let lTrue = Singleton.getLabel();
+                    let lFalse = Singleton.getLabel();
 
-                        resultTemp.code += `if(${resultTemp.value} == 1) goto ${lTrue};\n`;
-                        resultTemp.code += `goto ${lFalse};\n`;
-                        result.code += resultTemp.code
-                    }
+                    resultTemp.trueLabels.push(lTrue);
+                    resultTemp.falseLabels.push(lFalse);
+
+                    result.code += `if(${resultTemp.value} == 1) goto ${lTrue};\n`;
+                    result.code += `goto ${lFalse};\n`;
+                    
 
                     for(let item of resultTemp.trueLabels){
                         result.code += `${item}:\n`;

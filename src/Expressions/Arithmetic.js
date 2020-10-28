@@ -170,38 +170,69 @@ class Arithmetic extends Expresion {
         
         if(result1.type.enumType == EnumType.STRING){
 
-          if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "INTEGER"){
-            let tContador = Singleton.getTemporary();
-            let tApuntador = Singleton.getTemporary();
+          // if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "INTEGER"){
+          //   let tContador = Singleton.getTemporary();
+          //   let tApuntador = Singleton.getTemporary();
             
-            result2.code += `${tContador} = P + ${env.size};\n`;
-            result2.code += `${tApuntador} = ${tContador} + 1;\n`;
-            result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
-            result2.code += `P = P + ${env.size};\n`;
-            result2.code += `${C3DMethods.getCallIntegerToString()};\n`;
-            result2.code += `${tApuntador} = P + 0;\n`;
-            result2.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
-            result2.code += `P = P - ${env.size};\n`;
+          //   result2.code += `${tContador} = P + ${env.size};\n`;
+          //   result2.code += `${tApuntador} = ${tContador} + 1;\n`;
+          //   result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
+          //   result2.code += `P = P + ${env.size};\n`;
+          //   result2.code += `${C3DMethods.getCallIntegerToString()};\n`;
+          //   result2.code += `${tApuntador} = P + 0;\n`;
+          //   result2.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
+          //   result2.code += `P = P - ${env.size};\n`;
             
-            result2.type.enumType = EnumType.STRING;
-            result2.value = tContador;
+          //   result2.type.enumType = EnumType.STRING;
+          //   result2.value = tContador;
 
-          }else if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "DOUBLE"){
-            let tContador = Singleton.getTemporary();
-            let tApuntador = Singleton.getTemporary();
+          // }else if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "DOUBLE"){
+          //   let tContador = Singleton.getTemporary();
+          //   let tApuntador = Singleton.getTemporary();
 
-            result2.code += `${tContador} = P + ${env.size};\n`;
-            result2.code += `${tApuntador} = ${tContador} + 1;\n`;
-            result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
-            result2.code += `P = P + ${env.size};\n`;
-            result2.code += `${C3DMethods.getCallDoubleToString()};\n`;
-            result2.code += `${tApuntador} = P + 0;\n`;
-            result2.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
-            result2.code += `P = P -${env.size};\n`;
+          //   result2.code += `${tContador} = P + ${env.size};\n`;
+          //   result2.code += `${tApuntador} = ${tContador} + 1;\n`;
+          //   result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
+          //   result2.code += `P = P + ${env.size};\n`;
+          //   result2.code += `${C3DMethods.getCallDoubleToString()};\n`;
+          //   result2.code += `${tApuntador} = P + 0;\n`;
+          //   result2.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
+          //   result2.code += `P = P -${env.size};\n`;
 
-            result2.type.enumType = EnumType.STRING;
-            result2.value = tContador;
+          //   result2.type.enumType = EnumType.STRING;
+          //   result2.value = tContador;
           
+          // }
+          if(result2.type.enumType == EnumType.NUMBER){
+            let tContador = Singleton.getTemporary();
+            let tApuntador = Singleton.getTemporary();
+            let tentero = Singleton.getTemporary();
+            let tdecimal = Singleton.getTemporary();
+            let ldecimal = Singleton.getLabel();
+            let lexit = Singleton.getLabel();
+
+            result2.code += `${tContador} = P + ${env.size};//apuntador a nuevo ambito\n`;
+            result2.code += `${tApuntador} = ${tContador} + 1;//apuntador a espacio de parametro\n`;
+            result2.code += `Stack[(int)${tApuntador}] = ${result2.value};//paso el parametro\n`;
+            result2.code += `${tentero} = ${result2.value};//copio valor\n`;
+            result2.code += `${tdecimal} = ${tentero} - (int)${result2.value};//hago resta para ver si tiene un lado decimal\n`;
+            result2.code += `${tdecimal} = ${tdecimal} * 100;//paso lado decimal a entero\n`;
+            result2.code += `if(${tdecimal} > 0) goto ${ldecimal};//verifico si el lado decimal existe\n`;
+            result2.code += `P = P + ${env.size};//nuevo ammbito\n`;
+            result2.code += `${C3DMethods.getCallIntegerToString()};\n`;
+            result2.code += `goto ${lexit};\n`;
+            result2.code += `${ldecimal}:\n`;
+            result2.code += `P = P + ${env.size};//nuevo ammbito\n`;
+            result2.code += `${C3DMethods.getCallDoubleToString()};\n`;
+            result2.code += `goto ${lexit};\n`;
+            result2.code += `${lexit}:\n`;
+            result2.code += `${tApuntador} = P + 0;//posicion de return\n`;
+            result2.code += `${tContador} = Stack[(int)${tApuntador}];//guardo valor de return\n`;
+            result2.code += `P = P - ${env.size};//regreso al ambito local\n`;
+            
+            result2.type.enumType = EnumType.STRING;
+            result2.value = tContador;
+
           }else if(result2.type.enumType == EnumType.BOOLEAN){
             let tInicio = Singleton.getTemporary();
             let tPosition = Singleton.getTemporary();
@@ -254,38 +285,70 @@ class Arithmetic extends Expresion {
           
         }else if(result2.type.enumType == EnumType.STRING){
 
-          if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "INTEGER"){
-            let tContador = Singleton.getTemporary();
-            let tApuntador = Singleton.getTemporary();
+          // if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "INTEGER"){
+          //   let tContador = Singleton.getTemporary();
+          //   let tApuntador = Singleton.getTemporary();
             
-            result1.code += `${tContador} = P + ${env.size};\n`;
-            result1.code += `${tApuntador} = ${tContador} + 1;\n`;
-            result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
-            result1.code += `P = P + ${env.size};\n`;
-            result1.code += `${C3DMethods.getCallIntegerToString()};\n`;
-            result1.code += `${tApuntador} = P + 0;\n`;
-            result1.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
-            result1.code += `P = P - ${env.size};\n`;
+          //   result1.code += `${tContador} = P + ${env.size};\n`;
+          //   result1.code += `${tApuntador} = ${tContador} + 1;\n`;
+          //   result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
+          //   result1.code += `P = P + ${env.size};\n`;
+          //   result1.code += `${C3DMethods.getCallIntegerToString()};\n`;
+          //   result1.code += `${tApuntador} = P + 0;\n`;
+          //   result1.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
+          //   result1.code += `P = P - ${env.size};\n`;
 
-            result1.type.enumType = EnumType.STRING;
-            result1.value = tContador;
+          //   result1.type.enumType = EnumType.STRING;
+          //   result1.value = tContador;
             
-          }else if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "DOUBLE"){
-            let tContador = Singleton.getTemporary();
-            let tApuntador = Singleton.getTemporary();
+          // }else if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "DOUBLE"){
+          //   let tContador = Singleton.getTemporary();
+          //   let tApuntador = Singleton.getTemporary();
 
-            result1.code += `${tContador} = P + ${env.size};\n`;
-            result1.code += `${tApuntador} = ${tContador} + 1;\n`;
-            result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
-            result1.code += `P = P + ${env.size};\n`;
-            result1.code += `${C3DMethods.getCallDoubleToString()};\n`;
-            result1.code += `${tApuntador} = P + 0;\n`;
-            result1.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
-            result1.code += `P = P -${env.size};\n`;
+          //   result1.code += `${tContador} = P + ${env.size};\n`;
+          //   result1.code += `${tApuntador} = ${tContador} + 1;\n`;
+          //   result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
+          //   result1.code += `P = P + ${env.size};\n`;
+          //   result1.code += `${C3DMethods.getCallDoubleToString()};\n`;
+          //   result1.code += `${tApuntador} = P + 0;\n`;
+          //   result1.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
+          //   result1.code += `P = P -${env.size};\n`;
             
-            result1.type.enumType = EnumType.STRING;
-            result1.value = tContador;
+          //   result1.type.enumType = EnumType.STRING;
+          //   result1.value = tContador;
           
+          // }else 
+          if(result1.type.enumType == EnumType.NUMBER){
+            let tContador = Singleton.getTemporary();
+            let tApuntador = Singleton.getTemporary();
+            let tentero = Singleton.getTemporary();
+            let tdecimal = Singleton.getTemporary();
+            let ldecimal = Singleton.getLabel();
+            let lexit = Singleton.getLabel();
+
+            result1.code += `${tContador} = P + ${env.size};//apuntador a nuevo ambito\n`;
+            result1.code += `${tApuntador} = ${tContador} + 1;//apuntador a espacio de parametro\n`;
+            result1.code += `Stack[(int)${tApuntador}] = ${result1.value};//paso el parametro\n`;
+            
+            result1.code += `${tentero} = ${result1.value};//copio valor\n`;
+            result1.code += `${tdecimal} = ${tentero} - (int)${result1.value};//hago resta para ver si tiene un lado decimal\n`;
+            result1.code += `${tdecimal} = ${tdecimal} * 100;//paso lado decimal a entero\n`;
+            result1.code += `if(${tdecimal} > 0) goto ${ldecimal};//verifico si el lado decimal existe\n`;
+            result1.code += `P = P + ${env.size};//nuevo ammbito\n`;
+            result1.code += `${C3DMethods.getCallIntegerToString()};\n`;
+            result1.code += `goto ${lexit};\n`;
+            result1.code += `${ldecimal}:\n`;
+            result1.code += `P = P + ${env.size};//nuevo ammbito\n`;
+            result1.code += `${C3DMethods.getCallDoubleToString()};\n`;
+            result1.code += `goto ${lexit};\n`;
+            result1.code += `${lexit}:\n`;
+            result1.code += `${tApuntador} = P + 0;//posicion de return\n`;
+            result1.code += `${tContador} = Stack[(int)${tApuntador}];//guardo valor de return\n`;
+            result1.code += `P = P - ${env.size};//regreso al ambito local\n`;
+            
+            result1.type.enumType = EnumType.STRING;
+            result1.value = tContador;
+
           }else if(result1.type.enumType == EnumType.BOOLEAN){
             let tInicio = Singleton.getTemporary();
             let tPosition = Singleton.getTemporary();
@@ -525,7 +588,12 @@ class Arithmetic extends Expresion {
       }
     }
 
-    result.code += `${t1} = ${result1.value} ${this.operationType.toString()} ${result2.value};\n`;
+    if(this.operationType.enumOperationType == EnumOperationType.MODULE){
+      result.code += `${t1} = (int)${result1.value} ${this.operationType.toString()} (int)${result2.value};\n`;
+    }else{
+      result.code += `${t1} = ${result1.value} ${this.operationType.toString()} ${result2.value};\n`;
+    }
+
     result.value = t1;
 
     return result;

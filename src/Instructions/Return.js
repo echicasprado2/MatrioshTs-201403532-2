@@ -78,14 +78,32 @@ class Return extends Instruction {
 
             result = resultExpresion;
 
-            result.code += `${t1} = P + 0;\n`;
-            result.code += `Stack[(int)${t1}] = ${result.value};\n`;
+            if(result.type.enumType == EnumType.BOOLEAN){
+                for(let lt of resultExpresion.trueLabels){
+                    result.code += `${lt}:\n`;
+                }
+                result.code += `${t1} = P + 0;\n`;
+                result.code += `Stack[(int)${t1}] = 1;\n`;
+                result.code += `goto ${lexit};//retorno\n`;
+
+                for(let lf of resultExpresion.falseLabels){
+                    result.code += `${lf}:\n`;
+                }
+                result.code += `${t1} = P + 0;\n`;
+                result.code += `Stack[(int)${t1}] = 0;\n`;
+                result.code += `goto ${lexit};//retorno\n`;
+
+            }else{
+                result.code += `${t1} = P + 0;\n`;
+                result.code += `Stack[(int)${t1}] = ${result.value};\n`;
+                result.code += `goto ${lexit};//retorno\n`;
+            }
             result.value = t1;
         }
 
-        result.code += `goto ${lexit};//retorno\n`;
         result.exitLabels.push(lexit);
-        
+        result.trueLabels = [];
+        result.falseLabels = [];
         return result;
     }
 
