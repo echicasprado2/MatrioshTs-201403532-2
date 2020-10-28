@@ -244,13 +244,14 @@ class CallFunction extends Expresion {
         + buscar el symbolo de la funcion, si no existe es error
         + validar que el numero de parametros de envio y de la funcion son el mismo, si es diferente es error
         + validar el tipo de valores con el tipo de parametro
-        - primero tengo que ver que temporales aun no se aun usado para guarlos en stack,
+        - primero tengo que ver que temporales aun no se usan para guarlos en stack,
         - luego tengo que calcular el nuevo tamaño de mi entorno actual,
-        - luego tengo que pasar los parametros que trae
-        - tengo que cambiar el puntero de stack
-        - llamar a la funcion
-        - regresar el puntero stack
-        - luego el block de codigo tiene que continuar normal
+        + luego tengo que pasar los parametros que trae
+        + tengo que cambiar el puntero de stack
+        + llamar a la funcion
+        + regresar el puntero stack
+        - tengo que sacar los temporales no usados del stack
+        + luego el block de codigo tiene que continuar normal
         */
         let result = new RESULT();
         let resultExpresion;

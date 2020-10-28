@@ -125,9 +125,7 @@ class If extends Instruction {
             result.exitLabels.push(...resultIf.exitLabels);
 
             result.code += `//--------------- BLOCK ELSE ------------\n`;
-            // result.code += `P = P + ${env.size};\n`;
             result.code += resultIf.code;
-            // result.code += `P = P - ${env.size};\n`;
         }
 
         return result;
@@ -142,7 +140,6 @@ class If extends Instruction {
         if(this.haveElse){
             this.enviromentElse = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
             this.enviromentElse.size = env.size;
-            // Singleton.cleanPointerStackInit();
 
             this.blockElse.fillTable(this.enviromentElse);
         }

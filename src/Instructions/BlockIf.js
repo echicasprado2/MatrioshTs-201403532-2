@@ -111,10 +111,8 @@ class BlockIf extends Instruction {
             result.code += `${item}:\n`;
         }
         
-        // result.code += `P = P + ${env.size};\n`;
         result.code += resultBlock.code;
         result.code += `goto ${lexit};\n`;
-        // result.code += `P = P - ${env.size};\n`;
         
         return result;
     }
@@ -122,7 +120,6 @@ class BlockIf extends Instruction {
     fillTable(env){
         this.enviroment = new Environment(env,new EnvironmentType(EnumEnvironmentType.IF,null));
         this.enviroment.size = env.size;
-        // Singleton.cleanPointerStackInit();
         
         this.block.fillTable(this.enviroment);
         return null;

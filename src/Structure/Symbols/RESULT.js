@@ -14,6 +14,7 @@ class RESULT{
         this.breakLabels = [];
         this.continueLabels = [];
         this.exitLabels = [];
+        this.displayTemporary = [];
     }
 
 }

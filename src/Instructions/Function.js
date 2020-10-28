@@ -516,16 +516,12 @@ class Function extends Instruction {
 
   getC3D(env){
     let resultBlock;
-    let symbolFunction;
-    let resultParm;
     let result = new RESULT();
     let block = new Block(this.instructions);
 
-    symbolFunction = env.searchSymbol(this.identifier);
     resultBlock = block.getC3D(this.environment);
-
+    
     result.code += `void ${this.identifier}(){\n`;
-
     result.code += resultBlock.code;
 
     for(let le of resultBlock.exitLabels){

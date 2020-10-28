@@ -191,22 +191,6 @@ class AST {
       cadena += `${le}:\n`;
     }
 
-    // for(var i = 0; i < this.instruccions.length; i++){
-    //   if(!(this.instruccions[i] instanceof TypeDefinition) &&
-    //    !(this.instruccions[i] instanceof Function) && 
-    //    !(this.instruccions[i] instanceof Declaration) && 
-    //    !(this.instruccions[i] instanceof DeclarationTypes) &&
-    //    !(this.instruccions[i] instanceof DeclarationArray)){
-
-    //     if(this.instruccions[i] instanceof Instruction || this.instruccions[i] instanceof Expresion){
-    //       cadena += (this.instruccions[i]).getC3D(this.environmentCompile).code;
-    //       lexits.push();
-
-    //     }
-        
-    //   }
-    // }
-
     return `${cadena}\n`;
   }
 
