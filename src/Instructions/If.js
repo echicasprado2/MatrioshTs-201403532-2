@@ -108,13 +108,13 @@ class If extends Instruction {
 
             result.breakLabels.push(...resultIf.breakLabels);
             result.continueLabels.push(...resultIf.continueLabels);
+            result.exitLabels.push(...resultIf.exitLabels);
             
             result.code += resultIf.code;
             
             for(let fl of resultIf.falseLabels){
                 result.code += `${fl}:\n`;
             }
-            result.exitLabels.push(...resultIf.exitLabels);
         }
         
         if(this.haveElse){   
@@ -122,15 +122,12 @@ class If extends Instruction {
             
             result.breakLabels.push(...resultIf.breakLabels);
             result.continueLabels.push(...resultIf.continueLabels);
-            
+            result.exitLabels.push(...resultIf.exitLabels);
+
             result.code += `//--------------- BLOCK ELSE ------------\n`;
             // result.code += `P = P + ${env.size};\n`;
             result.code += resultIf.code;
             // result.code += `P = P - ${env.size};\n`;
-        }
-        
-        for(let le of result.exitLabels){
-            result.code += `${le}:\n`;
         }
 
         return result;

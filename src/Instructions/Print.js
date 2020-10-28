@@ -128,13 +128,28 @@ class Print extends Instruction {
                     result.code += `P = P - ${env.size};//regreso puntero de stack al ambito actual\n`;
                     break;
                 case EnumType.NUMBER:
+                    let tentero = Singleton.getTemporary();
+                    let tdecimal = Singleton.getTemporary();
+                    let ldecimal = Singleton.getLabel();
+                    let lexit = Singleton.getLabel();
 
-                    if(resultTemp.type.identifier === "INTEGER"){
-                        result.code += `printf("%d",(int)${resultTemp.value});\n`;
+                    result.code += `${tentero} = ${resultTemp.value};//copio valor que quiero imprimir\n`;
+                    result.code += `${tdecimal} = ${tentero} - (int)${resultTemp.value};//hago una resta para verificar si es decimal\n`;
+                    result.code += `${tdecimal} = ${tdecimal} * 100;//multiplico la parte decimal\n`;
+                    result.code += `if(${tdecimal} > 0) goto ${ldecimal};//si es decimal, hago un salto\n`;
+                    result.code += `printf("%d",(int)${resultTemp.value});//si es entero lo imprimo de una vez\n`;
+                    result.code += `goto ${lexit};//salida\n`;
+                    result.code += `${ldecimal}:\n`;
+                    result.code += `printf("%0.10f",${resultTemp.value});//imprimo decimal\n`;
+                    result.code += `goto ${lexit};//salida\n`;
+                    result.code += `${lexit}:\n`;
 
-                    }else if(resultTemp.type.identifier === "DOUBLE"){
-                        result.code += `printf("%0.10f",${resultTemp.value});\n`;
-                    }
+                    // if(resultTemp.type.identifier === "INTEGER"){
+                    //     result.code += `printf("%d",(int)${resultTemp.value});\n`;
+
+                    // }else if(resultTemp.type.identifier === "DOUBLE"){
+                    //     result.code += `printf("%0.10f",${resultTemp.value});\n`;
+                    // }
 
                     break;
                 case EnumType.BOOLEAN:

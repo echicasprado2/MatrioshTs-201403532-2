@@ -240,10 +240,75 @@ class CallFunction extends Expresion {
     }
 
     getC3D(env){
-        //TODO implement this
+        /* TODO
+        + buscar el symbolo de la funcion, si no existe es error
+        + validar que el numero de parametros de envio y de la funcion son el mismo, si es diferente es error
+        + validar el tipo de valores con el tipo de parametro
+        - primero tengo que ver que temporales aun no se aun usado para guarlos en stack,
+        - luego tengo que calcular el nuevo tamaño de mi entorno actual,
+        - luego tengo que pasar los parametros que trae
+        - tengo que cambiar el puntero de stack
+        - llamar a la funcion
+        - regresar el puntero stack
+        - luego el block de codigo tiene que continuar normal
+        */
+        let result = new RESULT();
+        let resultExpresion;
+        let resultParameterDefinition;
+        let resultParameter;
+        let symbolFunction;
+        let codeValue = "";
+        let codePositionStackValue = "";
+        let tpos = Singleton.getTemporary();
+        let t1 = Singleton.getTemporary();
+
+        symbolFunction = env.searchSymbol(this.identifier);
+
+        if(symbolFunction == null || symbolFunction.typeValue.enumType != EnumType.FUNCTION){
+           ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se encontro la funcion`,env.enviromentType));
+           return result;
+        }
+
+        if(this.parametros.length != symbolFunction.value.parameters.length){
+           ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error numero de parametros`,env.enviromentType));
+           return result;
+        }
+
+        codePositionStackValue += `${t1} = P + ${env.size};//Ambito de la funcion a llamar, paso de parametros\n`;
+
+        for(let i = 0; i < this.parametros.length; i++){
+           resultExpresion = this.parametros[i].getC3D(env);
+           resultParameterDefinition = symbolFunction.value.parameters[i];
+           
+            if(resultExpresion.type.enumType != resultParameterDefinition.type.enumType){
+               ErrorLiss.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error el tipo de valor no es el mismo que del parametro`,env.enviromentType));
+            }
+            
+           resultParameter = symbolFunction.value.environment.searchSymbol(resultParameterDefinition.identifier);
+
+           codeValue += resultExpresion.code;
+
+           codePositionStackValue += `${tpos} = ${t1} + ${resultParameter.positionRelativa};\n`;
+           codePositionStackValue += `Stack[(int)${tpos}] = ${resultExpresion.value};\n`;
+        }
+        result.code += codeValue;
+        result.code += codePositionStackValue;
+        result.code += `P = P + ${env.size};//me posiciono en el siguiente ambito\n`;
+        result.code += `${symbolFunction.id}();//llamada de funcion\n`
+        result.code += `${tpos} = P + 0;//recupero valor de retorno\n`;
+        result.code += `${t1} = Stack[(int)${tpos}];\n`;
+        result.code += `P = P - ${env.size};//regreso al ambito local\n`;
+        result.type = symbolFunction.type;
+        result.value = t1;
+        return result;
     }
 
     fillTable(env){
+        if(this.parametros.length > 0){
+            for(let item of this.parametros){
+                item.fillTable(env);
+            }
+        }
         return null;
     }
 

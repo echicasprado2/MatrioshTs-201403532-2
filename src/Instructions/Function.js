@@ -28,7 +28,7 @@ class Function extends Instruction {
 
   /**
    *
-   * @param {*} instruction
+   * @param {Instruction} instruction
    */
   addInstruction(instruction) {
     this.instructions.push(instruction);
@@ -41,7 +41,7 @@ class Function extends Instruction {
 
   /**
    *
-   * @param {*} nested
+   * @param {Function} nested
    */
   addFunction(nested) {
     this.nestedFunctions.push(nested);
@@ -465,6 +465,7 @@ class Function extends Instruction {
 
     Singleton.cleanPointerStackFunction();
     this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.FUNCTION,this.identifier));
+    this.environment.size = this.getSize();
     arrayEnvironments = this.environment.getArrayEnvironments();
     location = new Location(EnumLocation.STACK);
     block = new Block(this.instructions);
@@ -476,7 +477,7 @@ class Function extends Instruction {
         param.identifier,
         param.type,
         param.typeDeclaration,
-        new Type(EnumType.VALOR,null),
+        new Type(EnumType.PARAMETER,null),
         this.environment.enviromentType,
         arrayEnvironments,
         1,
@@ -490,10 +491,8 @@ class Function extends Instruction {
       this.environment.insertParameter(param.identifier,symbolParam);
     }
     
-    for(item of block.sentences){
-      if(item instanceof Instruction) item.fillTable(this.environment);
-    }
-
+    block.fillTable(this.environment);
+    
     symbolFunction = new Symbol(
       this.line,
       this.column,
@@ -508,7 +507,7 @@ class Function extends Instruction {
       1, //Este lo tengo que cambiar por la dimension
       null,
       null,
-      null
+      this
     );
 
     env.insertNewSymbol(this.identifier,symbolFunction);
@@ -516,13 +515,31 @@ class Function extends Instruction {
   }
 
   getC3D(env){
-    
+    let resultBlock;
+    let symbolFunction;
+    let resultParm;
+    let result = new RESULT();
+    let block = new Block(this.instructions);
+
+    symbolFunction = env.searchSymbol(this.identifier);
+    resultBlock = block.getC3D(this.environment);
+
+    result.code += `void ${this.identifier}(){\n`;
+
+    result.code += resultBlock.code;
+
+    for(let le of resultBlock.exitLabels){
+      result.code += `${le}:\n`;
+    }
+
+    result.code += `return;\n`;
+    result.code += `}\n`;
+    return result;
   }
 
   getSize(){
     let block = new Block(this.instructions);
     return block.getSize() + this.parameters.length + 1;
   }
-
 
 }

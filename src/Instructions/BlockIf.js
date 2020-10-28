@@ -101,6 +101,7 @@ class BlockIf extends Instruction {
         result.falseLabels = [...resultCondition.falseLabels];
         result.breakLabels = [...resultBlock.breakLabels];
         result.continueLabels = [...resultBlock.continueLabels];
+        result.exitLabels = [...resultBlock.exitLabels];
         result.exitLabels.push(lexit);
 
         result.code += `//----------  BLOCK IF -----------------\n`;

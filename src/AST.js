@@ -97,9 +97,9 @@ class AST {
 
     cadena += header;
     cadena += "\n";
-    cadena += globalFunctionDefinition;
-    cadena += "\n";
     cadena += metodosNativos;
+    cadena += "\n";
+    cadena += globalFunctionDefinition;
     cadena += "\n";
     cadena += `int main(){\n${globalVariable}${mainInstructions}printf("\\n%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
 
@@ -125,7 +125,7 @@ class AST {
     }
 
     for(let item of this.instruccions){
-      if(item instanceof Function) cadena += item.getC3D(this.environmentCompile);
+      if(item instanceof Function) cadena += item.getC3D(this.environmentCompile).code;
     }
 
     return `${cadena}\n`;
@@ -162,6 +162,8 @@ class AST {
 
   getMainInstructions(){
     let cadena = "";
+    let resultInstruction;
+    let lexits = [];
 
     for(let item of this.instruccions){
       if(!(item instanceof TypeDefinition) && 
@@ -173,20 +175,37 @@ class AST {
         }
     }
 
-    for(var i = 0; i < this.instruccions.length; i++){
-      if(!(this.instruccions[i] instanceof TypeDefinition) &&
-       !(this.instruccions[i] instanceof Function) && 
-       !(this.instruccions[i] instanceof Declaration) && 
-       !(this.instruccions[i] instanceof DeclarationTypes) &&
-       !(this.instruccions[i] instanceof DeclarationArray)){
-
-        if(this.instruccions[i] instanceof Instruction || this.instruccions[i] instanceof Expresion){
-          cadena += (this.instruccions[i]).getC3D(this.environmentCompile).code;
-
-        }
-        
+    for(let item of this.instruccions){
+      if(!(item instanceof TypeDefinition) &&
+       !(item instanceof Function) && 
+       !(item instanceof Declaration) &&
+       !(item instanceof DeclarationTypes) && 
+       !(item instanceof DeclarationArray)){
+        resultInstruction = item.getC3D(this.environmentCompile);
+        cadena += resultInstruction.code;
+        lexits.push(...resultInstruction.exitLabels);
       }
     }
+
+    for(let le of lexits){
+      cadena += `${le}:\n`;
+    }
+
+    // for(var i = 0; i < this.instruccions.length; i++){
+    //   if(!(this.instruccions[i] instanceof TypeDefinition) &&
+    //    !(this.instruccions[i] instanceof Function) && 
+    //    !(this.instruccions[i] instanceof Declaration) && 
+    //    !(this.instruccions[i] instanceof DeclarationTypes) &&
+    //    !(this.instruccions[i] instanceof DeclarationArray)){
+
+    //     if(this.instruccions[i] instanceof Instruction || this.instruccions[i] instanceof Expresion){
+    //       cadena += (this.instruccions[i]).getC3D(this.environmentCompile).code;
+    //       lexits.push();
+
+    //     }
+        
+    //   }
+    // }
 
     return `${cadena}\n`;
   }
@@ -194,7 +213,7 @@ class AST {
   getSizeMain(){
     let counter = 0;
     for(let item of this.instruccions){
-          counter += item.getSize();
+      if(!(item instanceof Function)) counter += item.getSize();
     }
     this.environmentCompile.size = counter;
   }

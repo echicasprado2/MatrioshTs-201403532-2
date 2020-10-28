@@ -18,6 +18,7 @@ var EnumType;
     EnumType["BLOCK"] = "BLOCK";
     EnumType["BREAK"] = "BREAK";
     EnumType["CONTINUE"] = "CONTINUE";
+    EnumType["PARAMETER"] = "PARAMETER";
 })(EnumType || (EnumType = {}));
 /**
  * @class type use for type anyone expresion with value

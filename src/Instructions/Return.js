@@ -53,10 +53,44 @@ class Return extends Instruction {
     }
 
     getC3D(env){
+        let isIntoFunction = false;
+        let resultExpresion;
+        let lexit = Singleton.getLabel();
+        let result = new RESULT();
 
+        for(let e = env; e != null; e = e.previous){
+            if(e.enviromentType.enumEnvironmentType == EnumEnvironmentType.FUNCTION){
+                isIntoFunction = true;
+                break;
+            }
+        }
+
+        if(!isIntoFunction){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Return no esta dentro de una funcion`,env.enviromentType));
+            return result;
+        }
+
+        result.type.enumType = EnumType.VOID;
+        
+        if(this.returnExpresion) {
+            let t1 = Singleton.getTemporary();
+            resultExpresion = this.expression.getC3D(env);
+
+            result = resultExpresion;
+
+            result.code += `${t1} = P + 0;\n`;
+            result.code += `Stack[(int)${t1}] = ${result.value};\n`;
+            result.value = t1;
+        }
+
+        result.code += `goto ${lexit};//retorno\n`;
+        result.exitLabels.push(lexit);
+        
+        return result;
     }
 
     fillTable(env){
+        if(this.returnExpresion) this.expression.fillTable(env);
         return null;
     }
 
