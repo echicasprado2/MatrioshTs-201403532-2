@@ -288,31 +288,11 @@ class CallFunction extends Expresion {
             }
             
             resultParameter = symbolFunction.value.environment.searchSymbol(resultParameterDefinition.identifier);
-
-            // codeValue += resultExpresion.code;
-
-            // if(resultExpresion.type.enumType == EnumType.BOOLEAN){
-            //     for(let lt  of resultExpresion.trueLabels){
-            //         codeValue += `${lt}:\n`;
-            //     }
-            //     codePositionStackValue += `${tpos} = ${t1} + ${resultParameter.positionRelativa};\n`;
-            //     codePositionStackValue += `Stack[(int)${tpos}] = 1;\n`;
-                
-            //     for(let lf of resultExpresion.falseLabels){
-            //         codeValue += `${lf}:\n`;
-            //     }
-            //     codePositionStackValue += `${tpos} = ${t1} + ${resultParameter.positionRelativa};\n`;
-            //     codePositionStackValue += `Stack[(int)${tpos}] = 1;\n`;
-
-            // }else{
-            //     codePositionStackValue += `${tpos} = ${t1} + ${resultParameter.positionRelativa};\n`;
-            //     codePositionStackValue += `Stack[(int)${tpos}] = ${resultExpresion.value};\n`;
-            // }
-
-
+            result.code += `//codigo de valor de parametro a pasar\n`;
             result.code += resultExpresion.code;
             
             if(resultExpresion.type.enumType == EnumType.BOOLEAN){
+                result.code += `//pasar valor boolean como parametro\n`;
                 lnext = Singleton.getLabel();
                 for(let lt of resultExpresion.trueLabels){
                     result.code += `${lt}:\n`;
@@ -320,16 +300,18 @@ class CallFunction extends Expresion {
                 result.code += `${tpos} = ${t1} + ${resultParameter.positionRelativa};\n`;
                 result.code += `Stack[(int)${tpos}] = 1;\n`;
                 result.code += `goto ${lnext};\n`;
-
+                
                 for(let lf of resultExpresion.falseLabels){
                     result.code += `${lf}:\n`;
                 }
                 result.code += `${tpos} = ${t1} + ${resultParameter.positionRelativa};\n`;
                 result.code += `Stack[(int)${tpos}] = 0;\n`;
                 result.code += `goto ${lnext};\n`;
+                result.code += `//etiqueta para seguir con los demas parametros\n`;
                 result.code += `${lnext}:\n`;
-
+                
             }else{
+                result.code += `//guardo valor de parametro en stack\n`;
                 result.code += `${tpos} = ${t1} + ${resultParameter.positionRelativa};\n`;
                 result.code += `Stack[(int)${tpos}] = ${resultExpresion.value};\n`;
             }
@@ -337,8 +319,6 @@ class CallFunction extends Expresion {
 
         }
 
-        // result.code += codeValue;
-        // result.code += codePositionStackValue;
         result.code += `P = P + ${env.size};//me posiciono en el siguiente ambito\n`;
         result.code += `${symbolFunction.id}();//llamada de funcion\n`
         result.code += `${tpos} = P + 0;//recupero valor de retorno\n`;

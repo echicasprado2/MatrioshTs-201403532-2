@@ -55,6 +55,7 @@ class Return extends Instruction {
     getC3D(env){
         let isIntoFunction = false;
         let resultExpresion;
+        let typeReturn;
         let lexit = Singleton.getLabel();
         let result = new RESULT();
 
@@ -75,6 +76,16 @@ class Return extends Instruction {
         if(this.returnExpresion) {
             let t1 = Singleton.getTemporary();
             resultExpresion = this.expression.getC3D(env);
+
+            typeReturn = env.getTypeReturnFunction();
+
+            if(typeReturn.enumType != resultExpresion.type.enumType){
+                ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de valor de return no es el mismo que de la funcion, ${typeReturn.toString()} != ${resultExpresion.type.toString()}`,env.enviromentType));
+                result.exitLabels.push(lexit);
+                result.trueLabels = [];
+                result.falseLabels = [];
+                return result;
+            }
 
             result = resultExpresion;
 

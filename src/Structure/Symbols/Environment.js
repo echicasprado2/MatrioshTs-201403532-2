@@ -208,4 +208,18 @@ class Environment {
         return environments;
     }
 
+    getTypeReturnFunction(){
+        let environmentFunction;
+        let symbolFunction;
+        for(let e = this;e != null;e = e.previous){
+            if(e.enviromentType.enumEnvironmentType == EnumEnvironmentType.FUNCTION){
+                environmentFunction = e;
+                break;
+            }
+        }
+
+        symbolFunction = this.searchSymbol(environmentFunction.enviromentType.name);
+        return symbolFunction.type;
+    }
+
 }
