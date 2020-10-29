@@ -528,7 +528,7 @@ class Function extends Instruction {
       result.code += `${le}:\n`;
     }
 
-    result.code += `return;\n`;
+    result.code += `return 0;\n`;
     result.code += `}\n`;
     return result;
   }

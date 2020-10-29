@@ -112,7 +112,11 @@ class Switch extends Instruction {
         for(let item of this.casesList){
             resulCase = item.getC3D(this.environment);
 
+            result.trueLabels.push(...resulCase.trueLabels);
+            result.falseLabels.push(...resulCase.falseLabels);
             result.exitLabels.push(...resulCase.exitLabels);
+            result.continueLabels.push(...resulCase.continueLabels);
+            result.breakLabels.push(...resulCase.breakLabels);
 
             if(resulCase.trueLabels == 0){
                 resulCase.trueLabels.push(Singleton.getLabel());
@@ -138,12 +142,13 @@ class Switch extends Instruction {
             }
         }
         
-        result.exitLabels.push(lexit);
-        
         result.code += `//salida de switch\n`;
-        for(let item of result.exitLabels){
+        result.breakLabels.push(lexit);
+        for(let item of result.breakLabels){
             result.code += `${item}:\n`;
         }
+
+        result.breakLabels = [];
 
         return result;
     }

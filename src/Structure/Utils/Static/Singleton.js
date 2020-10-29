@@ -3,6 +3,7 @@ class Singleton{
     static counterLabels = 0;
     static positionRelativeOfStack = 0;
     static positionRelativeOfHeap = 0;
+    static displayTemporary = [];
 
     static cleanPointerStackInit(){
         Singleton.positionRelativeOfStack = 0;
@@ -24,6 +25,27 @@ class Singleton{
         Singleton.counterLabels = 0;
     }
 
+    static cleanDisplayTemporary(){
+        Singleton.displayTemporary = [];
+    }
+
+    /**
+     * 
+     * @param {String} temporal
+     */
+    static addTemporaryIntoDisplay(node){
+        Singleton.displayTemporary.push(node);
+    }
+
+    /**
+     * 
+     * @param {String} name of temporary
+     */
+    static deleteTemporaryIntoDisplay(name){
+        let index = Singleton.displayTemporary.indexOf(name);
+        if(index >= 0) Singleton.displayTemporary.splice(index,1);
+    }
+
     /**
      * @returns number of temporary
      */
@@ -42,7 +64,9 @@ class Singleton{
      * @returns new temporary
      */
     static getTemporary(){
-        return `t${Singleton.counterTemporary++}`;
+        let tmp = `t${Singleton.counterTemporary++}`; 
+        Singleton.addTemporaryIntoDisplay(tmp);
+        return tmp;
     }
 
     /**
@@ -57,6 +81,13 @@ class Singleton{
      */
     static getPosStack(){
         return Singleton.positionRelativeOfStack++;
+    }
+
+    /**
+     * @returns array de temporales no usados
+     */
+    static getDisplayTemporary(){
+        return Singleton.displayTemporary;
     }
 
 }

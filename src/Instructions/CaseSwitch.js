@@ -100,8 +100,10 @@ class CaseSwitch extends Instruction {
     if (this.haveBlock) {
       resultBlock = this.block.getC3D(env);
 
-      result.continueLabels = [...resultBlock.continueLabels];
-      result.exitLabels.push(...resultBlock.breakLabels);
+      result.trueLabels.push(...resultBlock.trueLabels);
+      result.falseLabels.push(...resultBlock.falseLabels);
+      result.breakLabels.push(...resultBlock.breakLabels);
+      result.continueLabels.push(...resultBlock.continueLabels);
       result.exitLabels.push(...resultBlock.exitLabels);
       result.code += resultBlock.code;
     }

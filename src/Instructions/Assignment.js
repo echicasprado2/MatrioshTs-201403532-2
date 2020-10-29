@@ -317,6 +317,10 @@ class Assignment extends Instruction {
 
         symbolOfVariable.type = resultExpresion.type;
         env.insert(symbolOfVariable.id,symbolOfVariable);
+
+        Singleton.deleteTemporaryIntoDisplay(tPosStack);
+        Singleton.deleteTemporaryIntoDisplay(result.value);
+        
         return result;
     }
 

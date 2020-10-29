@@ -56,6 +56,7 @@ class Return extends Instruction {
         let isIntoFunction = false;
         let resultExpresion;
         let typeReturn;
+        let tposReturn;
         let lexit = Singleton.getLabel();
         let result = new RESULT();
 
@@ -74,47 +75,54 @@ class Return extends Instruction {
         result.type.enumType = EnumType.VOID;
         
         if(this.returnExpresion) {
-            let t1 = Singleton.getTemporary();
-            resultExpresion = this.expression.getC3D(env);
 
+            resultExpresion = this.expression.getC3D(env);
             typeReturn = env.getTypeReturnFunction();
 
             if(typeReturn.enumType != resultExpresion.type.enumType){
                 ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de valor de return no es el mismo que de la funcion, ${typeReturn.toString()} != ${resultExpresion.type.toString()}`,env.enviromentType));
                 result.exitLabels.push(lexit);
-                result.trueLabels = [];
-                result.falseLabels = [];
                 return result;
             }
 
-            result = resultExpresion;
-
+            result.type = resultExpresion.type;
+            result.breakLabels.push(...resultExpresion.breakLabels);
+            result.continueLabels.push(...resultExpresion.continueLabels);
+            result.exitLabels.push(...resultExpresion.exitLabels);
+            result.code += resultExpresion.code;
+            
+            tposReturn = Singleton.getTemporary();
+            
             if(result.type.enumType == EnumType.BOOLEAN){
+                let tbool = Singleton.getTemporary();
+
                 for(let lt of resultExpresion.trueLabels){
                     result.code += `${lt}:\n`;
                 }
-                result.code += `${t1} = P + 0;\n`;
-                result.code += `Stack[(int)${t1}] = 1;\n`;
-                result.code += `goto ${lexit};//retorno\n`;
+                result.code += `${tposReturn} = P + 0;\n`;
+                result.code += `${tbool} = 1;\n`;
+                result.code += `Stack[(int)${tposReturn}] = ${tbool};\n`;
+                result.code += `goto ${lexit};//salida de retorno\n`;
 
                 for(let lf of resultExpresion.falseLabels){
                     result.code += `${lf}:\n`;
                 }
-                result.code += `${t1} = P + 0;\n`;
-                result.code += `Stack[(int)${t1}] = 0;\n`;
-                result.code += `goto ${lexit};//retorno\n`;
-
+                result.code += `${tposReturn} = P + 0;\n`;
+                result.code += `${tbool} = 0;\n`;
+                result.code += `Stack[(int)${tposReturn}] = ${tbool};\n`;
+                result.code += `goto ${lexit};//salida de retorno\n`;
+                result.value = tbool;
             }else{
-                result.code += `${t1} = P + 0;\n`;
-                result.code += `Stack[(int)${t1}] = ${result.value};\n`;
-                result.code += `goto ${lexit};//retorno\n`;
+                result.code += `${tposReturn} = P + 0;\n`;
+                result.code += `Stack[(int)${tposReturn}] = ${resultExpresion.value};\n`;
+                result.code += `goto ${lexit};//salida de retorno\n`;
+                result.value = resultExpresion.value;
             }
-            result.value = t1;
-        }
 
+            Singleton.deleteTemporaryIntoDisplay(tposReturn);
+        }
+        
         result.exitLabels.push(lexit);
-        result.trueLabels = [];
-        result.falseLabels = [];
         return result;
     }
 

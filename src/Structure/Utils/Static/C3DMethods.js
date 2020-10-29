@@ -24,6 +24,11 @@ class C3DMethods {
     code += `goto ${l1};\n`;
     code += `${l2}://Etiqueta de fin de imprimir cadena\n`;
     code += `return;\n}\n\n`;
+
+    Singleton.deleteTemporaryIntoDisplay(t1);
+    Singleton.deleteTemporaryIntoDisplay(t2);
+    Singleton.deleteTemporaryIntoDisplay(t3);
+
     return code;
   }
 
@@ -82,6 +87,18 @@ class C3DMethods {
     code += `Stack[(int)${t1}] = ${t5};//\n`;
 
     code += `return;\n}\n\n`;
+
+    Singleton.deleteTemporaryIntoDisplay(t1);
+    Singleton.deleteTemporaryIntoDisplay(t2);
+    Singleton.deleteTemporaryIntoDisplay(t3);
+    Singleton.deleteTemporaryIntoDisplay(t4);
+    Singleton.deleteTemporaryIntoDisplay(t5);
+    Singleton.deleteTemporaryIntoDisplay(t6);
+    Singleton.deleteTemporaryIntoDisplay(t7);
+    Singleton.deleteTemporaryIntoDisplay(t8);
+    Singleton.deleteTemporaryIntoDisplay(t9);
+    Singleton.deleteTemporaryIntoDisplay(t10);
+
     return code;
   }
 
@@ -151,6 +168,14 @@ class C3DMethods {
     code += `Stack[(int)${t1}] = ${t3};//\n`;
 
     code += `return;\n}\n\n`;
+
+    Singleton.deleteTemporaryIntoDisplay(t1);
+    Singleton.deleteTemporaryIntoDisplay(t2);
+    Singleton.deleteTemporaryIntoDisplay(t3);
+    Singleton.deleteTemporaryIntoDisplay(t4);
+    Singleton.deleteTemporaryIntoDisplay(t5);
+    Singleton.deleteTemporaryIntoDisplay(t6);
+
     return code;
   }
 
@@ -272,17 +297,38 @@ class C3DMethods {
     code += `Stack[(int)${t1}] = ${t7};\n`;
 
     code += `return;\n}\n\n`;
+
+    Singleton.deleteTemporaryIntoDisplay(t1);
+    Singleton.deleteTemporaryIntoDisplay(t2);
+    Singleton.deleteTemporaryIntoDisplay(t3);
+    Singleton.deleteTemporaryIntoDisplay(t4);
+    Singleton.deleteTemporaryIntoDisplay(t5);
+    Singleton.deleteTemporaryIntoDisplay(t6);
+    Singleton.deleteTemporaryIntoDisplay(t7);
+    Singleton.deleteTemporaryIntoDisplay(t8);
+    Singleton.deleteTemporaryIntoDisplay(t9);
+    Singleton.deleteTemporaryIntoDisplay(t10);
+    Singleton.deleteTemporaryIntoDisplay(t11);
+    Singleton.deleteTemporaryIntoDisplay(t12);
+    Singleton.deleteTemporaryIntoDisplay(t13);
+    Singleton.deleteTemporaryIntoDisplay(t14);
+    Singleton.deleteTemporaryIntoDisplay(t15);
+    Singleton.deleteTemporaryIntoDisplay(t20);
+    Singleton.deleteTemporaryIntoDisplay(t30);
+    Singleton.deleteTemporaryIntoDisplay(t40);
+    Singleton.deleteTemporaryIntoDisplay(t50);
+
     return code;
   }
 
   static getDoubleToString(){
     let code = "";
     let t1 = Singleton.getTemporary();
+    let t2 = Singleton.getTemporary();
+    let t3 = Singleton.getTemporary();
     let tNumber = Singleton.getTemporary();
     let tDecimal = Singleton.getTemporary();
     let tInteger = Singleton.getTemporary();
-    let t2 = Singleton.getTemporary();
-    let t3 = Singleton.getTemporary();
     let tString1 = Singleton.getTemporary();
     let tString2 = Singleton.getTemporary();
     let tAuxDecimal = Singleton.getTemporary();
@@ -328,14 +374,25 @@ class C3DMethods {
     code += `Heap[(int)${t2}] = 46;\n`;
     code += `${t1} = P + 0;\n`;
     code += `Stack[(int)${t1}] = ${tString1};\n`;
-
+    
     code += `return;\n}\n\n`;
+    
+    Singleton.deleteTemporaryIntoDisplay(t1);
+    Singleton.deleteTemporaryIntoDisplay(t2);
+    Singleton.deleteTemporaryIntoDisplay(t3);
+    Singleton.deleteTemporaryIntoDisplay(tNumber);
+    Singleton.deleteTemporaryIntoDisplay(tDecimal);
+    Singleton.deleteTemporaryIntoDisplay(tInteger);
+    Singleton.deleteTemporaryIntoDisplay(tString1);
+    Singleton.deleteTemporaryIntoDisplay(tString2);
+    Singleton.deleteTemporaryIntoDisplay(tAuxDecimal);
+
     return code;
   }
-
+  
   static integerPartIntoDoubleToString(){
     let code = "";
-
+    
     let t1 = Singleton.getTemporary();
     let t2 = Singleton.getTemporary();
     let t3 = Singleton.getTemporary();
@@ -446,6 +503,26 @@ class C3DMethods {
     code += `Stack[(int)${t1}] = ${t7};\n`;
 
     code += `return;\n}\n\n`;
+
+    Singleton.deleteTemporaryIntoDisplay(t1);
+    Singleton.deleteTemporaryIntoDisplay(t2);
+    Singleton.deleteTemporaryIntoDisplay(t3);
+    Singleton.deleteTemporaryIntoDisplay(t4);
+    Singleton.deleteTemporaryIntoDisplay(t5);
+    Singleton.deleteTemporaryIntoDisplay(t6);
+    Singleton.deleteTemporaryIntoDisplay(t7);
+    Singleton.deleteTemporaryIntoDisplay(t8);
+    Singleton.deleteTemporaryIntoDisplay(t9);
+    Singleton.deleteTemporaryIntoDisplay(t10);
+    Singleton.deleteTemporaryIntoDisplay(t11);
+    Singleton.deleteTemporaryIntoDisplay(t12);
+    Singleton.deleteTemporaryIntoDisplay(t13);
+    Singleton.deleteTemporaryIntoDisplay(t14);
+    Singleton.deleteTemporaryIntoDisplay(t15);
+    Singleton.deleteTemporaryIntoDisplay(ti);
+    Singleton.deleteTemporaryIntoDisplay(tj);
+    Singleton.deleteTemporaryIntoDisplay(tmp);
+
     return code;
   }
 

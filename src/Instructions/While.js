@@ -104,18 +104,17 @@ class While extends Instruction {
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La condicion no es booleana, tipo de condiciont ${resultCondition.type.toString()}`,env.enviromentType));
             return result;
         }
-
-        result.trueLabels = [...resultCondition.trueLabels];
-        result.falseLabels = [...resultCondition.falseLabels];
         
         linit = Singleton.getLabel();
+
+        result.exitLabels.push(...resultBlock.exitLabels);
 
         result.code += `//----------- WHILE ------------------;\n`;
         result.code += `${linit}://inicio de while\n`;
         result.code += resultCondition.code;
 
         result.code += `//condicion verdadera de while\n`;
-        for(let item of result.trueLabels){
+        for(let item of resultCondition.trueLabels){
             result.code += `${item}:\n`;
         }
         
@@ -129,7 +128,7 @@ class While extends Instruction {
         result.code += `goto ${linit};//inicio de while para volver a evaluar\n`;
         
         result.code += `//condicion falsa de while\n`;
-        for(let lf of result.falseLabels){
+        for(let lf of resultCondition.falseLabels){
             result.code += `${lf}:\n`;
         }
         
@@ -144,7 +143,6 @@ class While extends Instruction {
     fillTable(env){
         this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.WHILE,null));
         this.environment.size = env.size;
-        // Singleton.cleanPointerStackInit();
         
         this.block.fillTable(this.environment);
         return null;

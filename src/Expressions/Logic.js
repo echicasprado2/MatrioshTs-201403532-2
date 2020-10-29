@@ -81,18 +81,23 @@ class Logic extends Expresion {
         result.code += `${item}:\n`;
       }
       result.falseLabels.push(...result1.falseLabels);
+      result.value = result1.value && result2.value;
       
     }else if(this.operationType == EnumOperationType.OR){
       for(let item of result1.falseLabels){
         result.code += `${item}:\n`;
       }
       result.trueLabels.push(...result1.trueLabels);
+      result.value = result1.value || result2.value;
     }
     
     result.type = result1.type;
     result.code += result2.code;
     result.falseLabels.push(...result2.falseLabels);
     result.trueLabels.push(...result2.trueLabels);
+
+    Singleton.deleteTemporaryIntoDisplay(result1.value);
+    Singleton.deleteTemporaryIntoDisplay(result2.value);
 
     return result;
   }

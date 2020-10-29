@@ -9,12 +9,11 @@ class RESULT{
         this.type = new Type(EnumType.ERROR,null);
         this.code = "";
         this.value = "";
-        this.trueLabels = [];
-        this.falseLabels = [];
-        this.breakLabels = [];
-        this.continueLabels = [];
-        this.exitLabels = [];
-        this.displayTemporary = [];
+        this.trueLabels = [];//booleanos
+        this.falseLabels = [];//booleanos
+        this.breakLabels = [];//usar para if, for, while, do while, switch
+        this.continueLabels = [];//usar para for, while, do while
+        this.exitLabels = [];//subir esto para los returns
     }
 
 }

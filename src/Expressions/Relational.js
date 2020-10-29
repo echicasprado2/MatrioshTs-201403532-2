@@ -303,7 +303,17 @@ class Relational extends Expresion {
     result.code += `goto ${lFalse};\n`;
   
     result.type.enumType = EnumType.BOOLEAN;
-    result.value = tResul;
+    result.value = this.getValueOfResult(tSuma,tSuma2);
+
+    Singleton.deleteTemporaryIntoDisplay(tPos);
+    Singleton.deleteTemporaryIntoDisplay(tVal);
+    Singleton.deleteTemporaryIntoDisplay(tSuma);
+    Singleton.deleteTemporaryIntoDisplay(tPos2);
+    Singleton.deleteTemporaryIntoDisplay(tVal2);
+    Singleton.deleteTemporaryIntoDisplay(tSuma2);
+    Singleton.deleteTemporaryIntoDisplay(result1.value);
+    Singleton.deleteTemporaryIntoDisplay(result1.value);
+
     return result;
   }
     
@@ -317,7 +327,6 @@ class Relational extends Expresion {
 
     let lTrue;
     let lFalse;
-    let t1 = Singleton.getTemporary();
 
     result.trueLabels.push(...result1.trueLabels,...result2.trueLabels);
     result.falseLabels.push(...result1.falseLabels,...result2.falseLabels);
@@ -341,7 +350,11 @@ class Relational extends Expresion {
     result.code += `goto ${lFalse};\n`;
 
     result.type.enumType = EnumType.BOOLEAN;
-    result.value = t1;
+    result.value = this.getValueOfResult(result1.vallue,result2.value);
+
+    Singleton.deleteTemporaryIntoDisplay(result1.value);
+    Singleton.deleteTemporaryIntoDisplay(result2.value);
+
     return result;
   }
 
@@ -389,6 +402,11 @@ class Relational extends Expresion {
     result.code += `goto ${lFalse};\n`;
 
     result.type.enumType = EnumType.BOOLEAN;
+    result.value = this.getValueOfResult(result1.value,result2.value);
+
+    Singleton.deleteTemporaryIntoDisplay(result1.value);
+    Singleton.deleteTemporaryIntoDisplay(result2.value);
+
     return result;
   }
 
@@ -398,6 +416,27 @@ class Relational extends Expresion {
 
   getSize(){
     return 0;
+  }
+
+  getValueOfResult(val1,val2){
+    switch(this.operationType.enumOperationType){
+      case EnumOperationType.MORE_THAN:
+        return this.getNumbervalue(val1 > val2);
+      case EnumOperationType.LESS_THAN:
+        return this.getNumbervalue(val1 < val2);
+      case EnumOperationType.MORE_EQUAL_TO:
+        return this.getNumbervalue(val1 >= val2);
+      case EnumOperationType.LESS_EQUAL_TO:
+        return this.getNumbervalue(val1 <= val2);
+      case EnumOperationType.LIKE_THAN:
+        return this.getNumbervalue(val1 === val2);
+      case EnumOperationType.DIFFERENT_THAN:
+        return this.getNumbervalue(val1 != val2);
+    }
+  }
+
+  getNumbervalue(bool){
+    return (bool == true) ? 1 : 0;
   }
 
 }

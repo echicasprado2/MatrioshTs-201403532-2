@@ -146,7 +146,8 @@ class For extends Instruction {
 
         let linit = Singleton.getLabel();
 
-        // result.code += `P = P + ${env.size};\n`;
+        result.exitLabels.push(...resultBlock.exitLabels);
+
         result.code += `//------------------- FOR ---------------\n`;
         result.code += `//------------------- DECLARACION DE FOR ---------------\n`;
         result.code += resultDeclaration.code;
@@ -181,7 +182,6 @@ class For extends Instruction {
         for(let lf of resultCondition.falseLabels){
             result.code += `${lf}:\n`;
         }
-        // result.code += `P = P - ${env.size};\n`;
 
         return result;
     }
@@ -189,7 +189,6 @@ class For extends Instruction {
     fillTable(env){
         this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.FOR,null));
         this.environment.size = env.size;
-        // Singleton.cleanPointerStackInit();
         
         this.declaration.fillTable(this.environment);
         this.condition.fillTable(this.environment);

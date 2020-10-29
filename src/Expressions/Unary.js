@@ -125,9 +125,13 @@
         
         if(this.operationType == EnumOperationType.NEGATIVE && result1.type.enumType == EnumType.NUMBER){
             let t1 = Singleton.getTemporary();
+            let deleteTemporary = result1.value;
             
             result1.code += `${t1} = 0 - ${result1.value};\n`;
             result1.value = t1;
+            
+            Singleton.deleteTemporaryIntoDisplay(deleteTemporary);
+
             return result1;
 
         }else if(this.operationType == EnumOperationType.NOT && result1.type.enumType == EnumType.BOOLEAN){
@@ -151,21 +155,35 @@
         }else if(this.operationType == EnumOperationType.PLUS_PLUS && result1.type.enumType == EnumType.NUMBER){
             let t1 = Singleton.getTemporary();
             let tpos = Singleton.getTemporary();
+            let deleteTemporary = result1.value;
 
             result1.code += `${t1} = ${result1.value} + 1;//aumento variable en 1 ejemplo: i++\n`;
             result1.code += `${tpos} = P + ${result1.symbol.positionRelativa};//posicion de variable en el entorno\n`;
-            result1.code += `Stack[(int)${tpos}] = ${t1};//guardo el nuevo valor de la variable\n`;
+            result1.code += `Stack[(int)${tpos}] = ${t1};//guardo el valor de la variable en stack\n`;
             result1.value = t1;
+
+            Singleton.deleteTemporaryIntoDisplay(result1.value);
+            Singleton.deleteTemporaryIntoDisplay(deleteTemporary);
+            Singleton.deleteTemporaryIntoDisplay(t1);
+            Singleton.deleteTemporaryIntoDisplay(tpos);
+
             return result1;
 
         }else if(this.operationType == EnumOperationType.MINUS_MINUS && result1.type.enumType == EnumType.NUMBER){
             let t1 = Singleton.getTemporary();
             let tpos = Singleton.getTemporary();
+            let deleteTemporary = result1.value;
 
             result1.code += `${t1} = ${result1.value} - 1;//resto la variable en 1 ejemplo: i--\n`;
             result1.code += `${tpos} = P + ${result1.symbol.positionRelativa};//posicion de variable en el entorno\n`;
-            result1.code += `Stack[(int)${tpos}] = ${t1};//guardo el nuevo valor de la variable\n`;
+            result1.code += `Stack[(int)${tpos}] = ${t1};//guardo el valor de la variable en stack\n`;
             result1.value = t1;
+
+            Singleton.deleteTemporaryIntoDisplay(result1.value);
+            Singleton.deleteTemporaryIntoDisplay(deleteTemporary);
+            Singleton.deleteTemporaryIntoDisplay(t1);
+            Singleton.deleteTemporaryIntoDisplay(tpos);
+
             return result1;
         }
 

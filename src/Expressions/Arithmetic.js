@@ -2,11 +2,11 @@ class Arithmetic extends Expresion {
 
   /**
    * 
-   * @param {*} linea 
-   * @param {*} column 
-   * @param {*} operationType 
-   * @param {*} expresion1 
-   * @param {*} expresion2 
+   * @param {number} linea 
+   * @param {number} column 
+   * @param {TypeOperation} operationType 
+   * @param {Expresion} expresion1 
+   * @param {Expresion} expresion2 
    */
   constructor(linea, column, operationType, expresion1, expresion2) {
     super(linea, column);
@@ -170,39 +170,6 @@ class Arithmetic extends Expresion {
         
         if(result1.type.enumType == EnumType.STRING){
 
-          // if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "INTEGER"){
-          //   let tContador = Singleton.getTemporary();
-          //   let tApuntador = Singleton.getTemporary();
-            
-          //   result2.code += `${tContador} = P + ${env.size};\n`;
-          //   result2.code += `${tApuntador} = ${tContador} + 1;\n`;
-          //   result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
-          //   result2.code += `P = P + ${env.size};\n`;
-          //   result2.code += `${C3DMethods.getCallIntegerToString()};\n`;
-          //   result2.code += `${tApuntador} = P + 0;\n`;
-          //   result2.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
-          //   result2.code += `P = P - ${env.size};\n`;
-            
-          //   result2.type.enumType = EnumType.STRING;
-          //   result2.value = tContador;
-
-          // }else if(result2.type.enumType == EnumType.NUMBER && result2.type.identifier == "DOUBLE"){
-          //   let tContador = Singleton.getTemporary();
-          //   let tApuntador = Singleton.getTemporary();
-
-          //   result2.code += `${tContador} = P + ${env.size};\n`;
-          //   result2.code += `${tApuntador} = ${tContador} + 1;\n`;
-          //   result2.code += `Stack[(int)${tApuntador}] = ${result2.value};\n`;
-          //   result2.code += `P = P + ${env.size};\n`;
-          //   result2.code += `${C3DMethods.getCallDoubleToString()};\n`;
-          //   result2.code += `${tApuntador} = P + 0;\n`;
-          //   result2.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
-          //   result2.code += `P = P -${env.size};\n`;
-
-          //   result2.type.enumType = EnumType.STRING;
-          //   result2.value = tContador;
-          
-          // }
           if(result2.type.enumType == EnumType.NUMBER){
             let tContador = Singleton.getTemporary();
             let tApuntador = Singleton.getTemporary();
@@ -233,6 +200,10 @@ class Arithmetic extends Expresion {
             result2.type.enumType = EnumType.STRING;
             result2.value = tContador;
 
+            Singleton.deleteTemporaryIntoDisplay(tApuntador);
+            Singleton.deleteTemporaryIntoDisplay(tentero);
+            Singleton.deleteTemporaryIntoDisplay(tdecimal);
+
           }else if(result2.type.enumType == EnumType.BOOLEAN){
             let tInicio = Singleton.getTemporary();
             let tPosition = Singleton.getTemporary();
@@ -241,6 +212,7 @@ class Arithmetic extends Expresion {
             for(let item of result2.trueLabels){
               result2.code += `${item}:\n`;
             }
+
             result2.code += `${tInicio} = H;\n`;
             result2.code += `${tPosition} = ${tInicio};\n`;
             result2.code += `Heap[(int)${tPosition}] = 116;\n`;
@@ -260,6 +232,7 @@ class Arithmetic extends Expresion {
             for(let item of result2.falseLabels){
               result2.code += `${item}:\n`;
             }
+
             result2.code += `${tInicio} = H;\n`;
             result2.code += `${tPosition} = ${tInicio};\n`;
             result2.code += `Heap[(int)${tPosition}] = 102;\n`;
@@ -281,43 +254,12 @@ class Arithmetic extends Expresion {
             result2.type.enumType = EnumType.STRING;
             result2.value = tInicio;
 
+            Singleton.deleteTemporaryIntoDisplay(tPosition);
+
           }
           
         }else if(result2.type.enumType == EnumType.STRING){
 
-          // if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "INTEGER"){
-          //   let tContador = Singleton.getTemporary();
-          //   let tApuntador = Singleton.getTemporary();
-            
-          //   result1.code += `${tContador} = P + ${env.size};\n`;
-          //   result1.code += `${tApuntador} = ${tContador} + 1;\n`;
-          //   result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
-          //   result1.code += `P = P + ${env.size};\n`;
-          //   result1.code += `${C3DMethods.getCallIntegerToString()};\n`;
-          //   result1.code += `${tApuntador} = P + 0;\n`;
-          //   result1.code += `${tContador} = Stack[(int)${tApuntador}] ;\n`;
-          //   result1.code += `P = P - ${env.size};\n`;
-
-          //   result1.type.enumType = EnumType.STRING;
-          //   result1.value = tContador;
-            
-          // }else if(result1.type.enumType == EnumType.NUMBER && result1.type.identifier == "DOUBLE"){
-          //   let tContador = Singleton.getTemporary();
-          //   let tApuntador = Singleton.getTemporary();
-
-          //   result1.code += `${tContador} = P + ${env.size};\n`;
-          //   result1.code += `${tApuntador} = ${tContador} + 1;\n`;
-          //   result1.code += `Stack[(int)${tApuntador}] = ${result1.value};\n`;
-          //   result1.code += `P = P + ${env.size};\n`;
-          //   result1.code += `${C3DMethods.getCallDoubleToString()};\n`;
-          //   result1.code += `${tApuntador} = P + 0;\n`;
-          //   result1.code += `${tContador} = Stack[(int)${tApuntador}];\n`;
-          //   result1.code += `P = P -${env.size};\n`;
-            
-          //   result1.type.enumType = EnumType.STRING;
-          //   result1.value = tContador;
-          
-          // }else 
           if(result1.type.enumType == EnumType.NUMBER){
             let tContador = Singleton.getTemporary();
             let tApuntador = Singleton.getTemporary();
@@ -348,6 +290,10 @@ class Arithmetic extends Expresion {
             
             result1.type.enumType = EnumType.STRING;
             result1.value = tContador;
+
+            Singleton.deleteTemporaryIntoDisplay(tApuntador);
+            Singleton.deleteTemporaryIntoDisplay(tentero);
+            Singleton.deleteTemporaryIntoDisplay(tdecimal);
 
           }else if(result1.type.enumType == EnumType.BOOLEAN){
             let tInicio = Singleton.getTemporary();
@@ -398,6 +344,8 @@ class Arithmetic extends Expresion {
             result1.type.enumType = EnumType.STRING;
             result1.value = tInicio;
 
+            Singleton.deleteTemporaryIntoDisplay(tPosition);
+
           }
 
         }
@@ -408,6 +356,7 @@ class Arithmetic extends Expresion {
             result.type.enumType = EnumType.STRING;
             result.type.identifier = "NULL";
             return result;
+
           }else{
             result.type = result2.type;
             result.value = result2.value;
@@ -421,6 +370,7 @@ class Arithmetic extends Expresion {
             result.type.enumType = EnumType.STRING;
             result.type.identifier = "NULL";
             return result;
+
           }else{
             result.type = result1.type;
             result.value = result1.value;
@@ -448,6 +398,10 @@ class Arithmetic extends Expresion {
           result.code += `${t1} = Stack[(int)${t2}];//copio el puntero a heap\n`;
           result.code += `P = P - ${env.size};//regreso al entorno actual\n`;
           result.value = t1;
+
+          Singleton.deleteTemporaryIntoDisplay(result1.value);
+          Singleton.deleteTemporaryIntoDisplay(result2.value);
+          Singleton.deleteTemporaryIntoDisplay(t2);
         }
         
        break;
@@ -495,6 +449,9 @@ class Arithmetic extends Expresion {
 
         result.code += `${t2} = ${result1.value} + ${result2.value};\n`;
         result.value = t2;
+
+        Singleton.deleteTemporaryIntoDisplay(result1.value);
+        Singleton.deleteTemporaryIntoDisplay(result2.value);
         break;
 
       case EnumType.BOOLEAN:
@@ -523,6 +480,9 @@ class Arithmetic extends Expresion {
 
         result.code += `${t1} = ${result1.value} + ${result2.value};//suma de booleanos\n`
         result.value = t1;
+
+        Singleton.deleteTemporaryIntoDisplay(result1.value);
+        Singleton.deleteTemporaryIntoDisplay(result2.value);
         break;
     }
 
@@ -595,6 +555,9 @@ class Arithmetic extends Expresion {
     }
 
     result.value = t1;
+
+    Singleton.deleteTemporaryIntoDisplay(result1.value);
+    Singleton.deleteTemporaryIntoDisplay(result2.value);
 
     return result;
   }
@@ -675,6 +638,10 @@ class Arithmetic extends Expresion {
     result.code += `${lExit}:\n`;
 
     result.value = t1;
+
+    Singleton.deleteTemporaryIntoDisplay(result1.value);
+    Singleton.deleteTemporaryIntoDisplay(result2.value);
+    Singleton.deleteTemporaryIntoDisplay(tContador);
     return result;
   }
 

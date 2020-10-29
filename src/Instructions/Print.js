@@ -126,13 +126,18 @@ class Print extends Instruction {
                     result.code += `P = P + ${env.size};//Muevo puntero de stack al ambito de la funcion\n`;
                     result.code += `${C3DMethods.getCallPrintString()};//llamada de funcion\n`;
                     result.code += `P = P - ${env.size};//regreso puntero de stack al ambito actual\n`;
+
+                    Singleton.deleteTemporaryIntoDisplay(t1);
+                    Singleton.deleteTemporaryIntoDisplay(t2);
+                    Singleton.deleteTemporaryIntoDisplay(resultTemp.value);
+                    
                     break;
                 case EnumType.NUMBER:
                     let tentero = Singleton.getTemporary();
                     let tdecimal = Singleton.getTemporary();
                     let ldecimal = Singleton.getLabel();
                     let lexit = Singleton.getLabel();
-
+                    
                     result.code += `${tentero} = ${resultTemp.value};//copio valor que quiero imprimir\n`;
                     result.code += `${tdecimal} = ${tentero} - (int)${resultTemp.value};//hago una resta para verificar si es decimal\n`;
                     result.code += `${tdecimal} = ${tdecimal} * 100;//multiplico la parte decimal\n`;
@@ -143,20 +148,24 @@ class Print extends Instruction {
                     result.code += `printf("%0.10f",${resultTemp.value});//imprimo decimal\n`;
                     result.code += `goto ${lexit};//salida\n`;
                     result.code += `${lexit}:\n`;
-
+                    
+                    Singleton.deleteTemporaryIntoDisplay(tentero);
+                    Singleton.deleteTemporaryIntoDisplay(tdecimal);
+                    Singleton.deleteTemporaryIntoDisplay(resultTemp.value);
+                    
                     break;
-                case EnumType.BOOLEAN:
+                    case EnumType.BOOLEAN:
                     let lExit = Singleton.getLabel();
                     let lTrue = Singleton.getLabel();
                     let lFalse = Singleton.getLabel();
-
+                    
                     resultTemp.trueLabels.push(lTrue);
                     resultTemp.falseLabels.push(lFalse);
-
+                    
                     result.code += `if(${resultTemp.value} == 1) goto ${lTrue};\n`;
                     result.code += `goto ${lFalse};\n`;
                     
-
+                    
                     for(let item of resultTemp.trueLabels){
                         result.code += `${item}:\n`;
                     }
@@ -176,14 +185,18 @@ class Print extends Instruction {
                     result.code += `printf("%c",(char)115);\n`;
                     result.code += `printf("%c",(char)101);\n`;
                     result.code += `${lExit}:\n`;
-
+                    
+                    Singleton.deleteTemporaryIntoDisplay(resultTemp.value);
                     break;
+                    
                 default:
                     result.code += `printf("%c",(char)110);\n`;
                     result.code += `printf("%c",(char)117);\n`;
                     result.code += `printf("%c",(char)108);\n`;
                     result.code += `printf("%c",(char)108);\n`;
                     result.code += `printf("%c",(char)10);\n`;
+                    
+                    Singleton.deleteTemporaryIntoDisplay(resultTemp.value);
                     break;
             }
 

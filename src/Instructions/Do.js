@@ -106,9 +106,6 @@ class Do extends Instruction {
             return result;
         }
 
-        result.trueLabels = [...resultCondition.trueLabels];
-        result.falseLabels = [...resultCondition.falseLabels];
-
         lblock = Singleton.getLabel();
         lcondition = Singleton.getLabel();
 
@@ -117,8 +114,10 @@ class Do extends Instruction {
         result.code += `${lcondition}://condicion\n`;
         result.code += resultCondition.code;
         
+        result.exitLabels.push(...resultBlock.exitLabels);
+        
         result.code += `//condicion verdadera de do while\n`;
-        for(let lt of result.trueLabels){
+        for(let lt of resultCondition.trueLabels){
             result.code += `${lt}:\n`;
         }
 
@@ -133,7 +132,7 @@ class Do extends Instruction {
         result.code += `goto ${lcondition};//salto de condicion de do while\n`;
 
         result.code += `//condicion falsa de do while\n`;
-        for(let lf of result.falseLabels){
+        for(let lf of resultCondition.falseLabels){
             result.code += `${lf}:\n`;
         }
 

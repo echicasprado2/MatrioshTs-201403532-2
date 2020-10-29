@@ -115,6 +115,7 @@ class Access extends Expresion {
             result.code += `goto ${lfalse};\n`;
         }
 
+        Singleton.deleteTemporaryIntoDisplay(tPosStack);
         return result;
     }
 

@@ -105,6 +105,7 @@ class AST {
 
     ErrorList.showErrors();
     PrintConsole.printLine("fin traduccion codigo 3 direcciones");
+    console.table(Singleton.displayTemporary);
     return cadena;
   }
 
@@ -231,6 +232,7 @@ class AST {
     Singleton.cleanLabels();
     Singleton.cleanPointerStackInit();
     Singleton.cleanPointerHeap();
+    Singleton.cleanDisplayTemporary();
   }
 
 }

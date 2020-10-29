@@ -99,12 +99,15 @@ class If extends Instruction {
 
     getC3D(env){
         let result = new RESULT();
+        let salidasIf = [];
         let resultIf;
 
         result.code += `//---------- INICIO IF--------------\n`;
 
         for(let item of this.ifList){
             resultIf = item.getC3D(env);
+
+            salidasIf.push(resultIf.exitLabels.pop());
 
             result.breakLabels.push(...resultIf.breakLabels);
             result.continueLabels.push(...resultIf.continueLabels);
@@ -126,6 +129,10 @@ class If extends Instruction {
 
             result.code += `//--------------- BLOCK ELSE ------------\n`;
             result.code += resultIf.code;
+        }
+
+        for(let item of salidasIf){
+            result.code += `${item}:\n`;
         }
 
         return result;

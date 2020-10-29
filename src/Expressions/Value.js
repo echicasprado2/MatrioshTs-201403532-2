@@ -105,9 +105,6 @@ class Value extends Expresion {
       result.code += `goto ${falseLabel};\n`;
     
     }else if (this.type.enumType == EnumType.STRING) {
-      tInicio = Singleton.getTemporary();
-      tPosition = Singleton.getTemporary();
-
       let listChar = this.value.split("");
 
       if (listChar.length == 0) {
@@ -116,6 +113,9 @@ class Value extends Expresion {
         result.code = "";
         return result;
       }
+
+      tInicio = Singleton.getTemporary();
+      tPosition = Singleton.getTemporary();
 
       result.value = tInicio;
       result.code += `${tInicio} = H;//Guardo el inicio de la variable en Heap\n`;
@@ -138,13 +138,13 @@ class Value extends Expresion {
       result.code += `Heap[(int)${tPosition}] = -1;//fin de cadena\n`;
       result.code += `${tPosition} = ${tPosition} + 1;\n`;
       result.code += `H = ${tPosition};//apunta a la primera posicion libre de Heap\n`;
-    
+      
+      Singleton.deleteTemporaryIntoDisplay(tPosition);
+      
     }else if(this.type.enumType == EnumType.NULL){
       result.value = -1;
       result.code = '';
     }
-
-
 
     return result;
   }
