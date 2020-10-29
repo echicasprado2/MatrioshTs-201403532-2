@@ -281,7 +281,7 @@ class CallFunction extends Expresion {
            resultParameterDefinition = symbolFunction.value.parameters[i];
            
             if(resultExpresion.type.enumType != resultParameterDefinition.type.enumType){
-               ErrorLiss.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error el tipo de valor no es el mismo que del parametro`,env.enviromentType));
+               ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error el tipo de valor no es el mismo que del parametro`,env.enviromentType));
                continue;
             }
             

@@ -140,6 +140,7 @@ class AST {
   getGlobalVariable(){
     /* TODO declaraciones globales, tengo que hacer uso de stack y heap
     */
+   Singleton.cleanPointerStackInit();
    let cadena = "";
 
     for(var i = 0; i < this.instruccions.length; i++){

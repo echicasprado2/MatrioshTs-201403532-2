@@ -288,6 +288,7 @@ class Declaration extends Instruction {
 
     if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.MAIN){
       resultExpresion.code += `${tPosStack} = ${symbolOfVariable.positionRelativa} + 0;//variable global\n`;
+
     }else{
       resultExpresion.code += `${tPosStack} = P + ${symbolOfVariable.positionRelativa};//variable local\n`;
     }
