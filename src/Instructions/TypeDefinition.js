@@ -18,7 +18,6 @@ class TypeDefinition extends Instruction {
             }else{
                 this.translatedCode += `${this.declarations[i].getTranslated()};\n`
             }
-            
         }
         
         return `${this.translatedCode}};\n\n`;

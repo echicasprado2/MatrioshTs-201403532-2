@@ -260,8 +260,6 @@ class CallFunction extends Expresion {
         let symbolFunction;
         let tpos = Singleton.getTemporary();
         let tnextStack = Singleton.getTemporary();
-        let tpostsave = Singleton.getTemporary();
-        let tvaluet = Singleton.getTemporary();
         let lnext;
 
         symbolFunction = env.searchSymbol(this.identifier);
@@ -276,8 +274,7 @@ class CallFunction extends Expresion {
            return result;
         }
 
-        // result.code += `${tnextStack} = P + ${env.size};//Ambito de la funcion a llamar, paso de parametros\n`;
-        result.code += `${tnextStack} = P + ${env.size + 1};//Ambito de la funcion a llamar, paso de parametros\n`;
+        result.code += `${tnextStack} = P + ${env.size};//Ambito de la funcion a llamar, paso de parametros\n`;
 
         for(let i = 0; i < this.parametros.length; i++){
            resultExpresion = this.parametros[i].getC3D(env);
@@ -319,24 +316,18 @@ class CallFunction extends Expresion {
             
 
         }
-        result.code += `${tpostsave} = P + ${env.size};//posicion de stack del temporal a guardar\n`;
-        result.code += `Stack[(int)${tpostsave}] = ${resultExpresion.value};\n`;
         
-        // result.code += `P = P + ${env.size};//me posiciono en el siguiente ambito\n`;
-        result.code += `P = P + ${env.size + 1};//me posiciono en el siguiente ambito\n`;
+        result.code += `P = P + ${env.size};//me posiciono en el siguiente ambito\n`;
         result.code += `${symbolFunction.id}();//llamada de funcion\n`
         result.code += `${tpos} = P + 0;//recupero valor de retorno\n`;
         result.code += `${tnextStack} = Stack[(int)${tpos}];\n`;
-        // result.code += `P = P - ${env.size};//regreso al ambito local\n`;
-        result.code += `P = P - ${env.size + 1};//regreso al ambito local\n`;
-        //esto es para recursivas
-        if(resultExpresion.code != ''){
-            result.code += `${tpostsave} = P + ${env.size};//posicion de stack del temporal que guarde\n`;
-            result.code += `${tvaluet} = Stack[(int)${tpostsave}];//saco valor del temporal de la pila\n`;
-        }
-        //fin de recursivas
+        result.code += `P = P - ${env.size};//regreso al ambito local\n`;
+        
         result.type = symbolFunction.type;
-        result.value = tvaluet;
+        result.value = tnextStack;
+
+        Singleton.deleteTemporaryIntoDisplay(tpos);
+
         return result;
     }
 
