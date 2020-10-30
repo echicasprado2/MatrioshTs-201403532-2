@@ -252,6 +252,7 @@ class Assignment extends Instruction {
 
     getC3D(env){
         let resultExpresion = null;
+        let resulVariable = null;
         let symbolVariable = null;
         let tmpAccess = new Access(this.line,this.column,this.access);
 
@@ -259,8 +260,11 @@ class Assignment extends Instruction {
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No tiene valor para asignar a variable`,env.enviromentType));
         }
 
-        symbolVariable = tmpAccess.getC3D(env).symbol;
+        resulVariable = tmpAccess.getC3D(env);
         resultExpresion = this.value.getC3D(env);
+        symbolVariable = resulVariable.symbol;
+
+        Singleton.deleteTemporaryIntoDisplay(resulVariable.value);
 
         if(symbolVariable == null || resultExpresion == null || resultExpresion.type.enumType == EnumType.ERROR){
             return new RESULT();

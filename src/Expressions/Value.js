@@ -124,13 +124,9 @@ class Value extends Expresion {
       for (let i = 0; i < listChar.length; i++) {
         if (listChar[i] === "\\") {
           i++;
-          result.code += `Heap[(int)${tPosition}] = ${this.getSpecialChar(
-            listChar[i]
-          )};//char -> \\${listChar[i]}\n`;
+          result.code += `Heap[(int)${tPosition}] = ${this.getSpecialChar(listChar[i])};//char -> \\${listChar[i]}\n`;
         } else {
-          result.code += `Heap[(int)${tPosition}] = ${listChar[i].charCodeAt(
-            0
-          )};//char -> ${listChar[i]}\n`;
+          result.code += `Heap[(int)${tPosition}] = ${listChar[i].charCodeAt(0)};//char -> ${listChar[i]}\n`;
         }
 
         result.code += `${tPosition} = ${tPosition} + 1;\n`;
