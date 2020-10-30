@@ -48,7 +48,64 @@ class Ternary extends Expresion {
     }
 
     getC3D(env){
-        //TODO implement this
+        let result = new RESULT();
+        let resultCondition;
+        let resultTrue;
+        let resultFalse;
+        let lexit;
+        let tvalue;
+
+        resultCondition = this.condition.getC3D(env);
+        resultTrue = this.conditionTrue.getC3D(env);
+        resultFalse = this.conditionFalse.getC3D(env);
+
+        if(resultCondition.type.enumType != EnumType.BOOLEAN){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de la condicion debe de ser boolean`,env.enviromentType));
+            return result;
+        }
+
+        if(resultTrue.type.enumType != resultFalse.type.enumType){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El valor falso y verdadero, tienen que ser del mismo tipo`,env.enviromentType));
+            return result;
+        }
+
+        lexit = Singleton.getLabel();
+        tvalue = Singleton.getTemporary();
+
+        result.code += `//------------  TERNARIO  ---------------\n`;
+        result.code += resultCondition.code;
+        
+        result.code += `//------------ Por si la condicion es verdadera  ---------------\n`;
+        for(let item of resultCondition.trueLabels){
+            result.code += `${item}:\n`;
+        }
+        
+        result.code += resultTrue.code;
+        result.code += `${tvalue} = ${resultTrue.value};\n`;
+        result.code += `goto ${lexit};\n`;
+        
+        result.code += `//------------ Por si la condicion es falsa  ---------------\n`;
+        for(let item of resultCondition.falseLabels){
+            result.code += `${item}:\n`;
+        }
+        
+        result.code += resultFalse.code;
+        result.code += `${tvalue} = ${resultFalse.value};\n`;
+        result.code += `goto ${lexit};\n`;
+        result.code += `${lexit}:\n`;
+        result.code += `//------------ Salgo de ternario  ---------------\n`;
+
+        result.trueLabels.push(...resultTrue.trueLabels,...resultFalse.trueLabels);
+        result.falseLabels.push(...resultTrue.falseLabels,...resultFalse.falseLabels);
+        result.breakLabels.push(...resultTrue.breakLabels,...resultFalse.breakLabels);
+        result.continueLabels.push(...resultTrue.continueLabels,...resultFalse.continueLabels);
+        result.exitLabels.push(...resultTrue.exitLabels,...resultFalse.exitLabels);
+        result.type = resultTrue.type;
+        result.value = tvalue;
+
+        Singleton.deleteTemporaryIntoDisplay(resultTrue.value);
+        Singleton.deleteTemporaryIntoDisplay(resultFalse.value);
+        return result;
     }
 
     fillTable(env){

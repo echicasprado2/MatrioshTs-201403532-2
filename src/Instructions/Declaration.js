@@ -299,6 +299,7 @@ class Declaration extends Instruction {
     env.insert(symbolOfVariable.id,symbolOfVariable);
 
     Singleton.deleteTemporaryIntoDisplay(tPosStack);
+    Singleton.deleteTemporaryIntoDisplay(resultExpresion.value);
 
     return resultExpresion.code;
   }
