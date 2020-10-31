@@ -167,7 +167,6 @@ compile.addEventListener("click",(e) => {
   if(ErrorList.isErrors()) editCode3D.setValue(resultC3D);
   myConsole.setValue(PrintConsole.getPrintConsole());
   showTableErrorsSymbols();
-  showTableTranslatedSymbols();
   showTableCompileSymbols();
   showCompileTree(editorTranslated.getValue());
 });
@@ -293,6 +292,7 @@ function showTableExecuteSymbols() {
   document.getElementById("tableExecute").innerHTML = html;
 }
 
+//TODO work here for show table of symbols compile
 function showTableCompileSymbols() {
   document.getElementById("tableCompile").innerHTML = "";
 
@@ -301,26 +301,36 @@ function showTableCompileSymbols() {
   html += '<thead class="thead-light">';
   html += "<tr>";
   html += '<th scope="col">#</th>';
-  html += '<th scope="col">IDENTIFICADOR</th>';
-  html += '<th scope="col">TIPO</th>';
   html += '<th scope="col">LINEA</th>';
   html += '<th scope="col">COLUMNA</th>';
-  html += '<th scope="col">VALOR</th>';
+  html += '<th scope="col">ID</th>';
+  html += '<th scope="col">TIPO</th>';
+  html += '<th scope="col">TIPO DECLARACION</th>'
+  html += '<th scope="col">TIPO VALOR</th>'
+  html += '<th scope="col">TAMAÑO</th>'
+  html += '<th scope="col">POSICION</th>'
+  html += '<th scope="col">DIMENSION</th>'
+  html += '<th scope="col">UBICACION</th>'
   html += '<th scope="col">ENTORNO</th>';
   html += "</tr>";
   html += " </thead>";
   html += "<tbody>";
 
-  var nodes = TableReport.getNodesExecute();
+  var nodes = TableReport.getNodesCompile();
   for (var i = 0; i < nodes.length; i++) {
     var item = nodes[i];
     html += "<tr>";
     html += `<td>${i + 1}</td>`;
-    html += `<td>${item.name}</td>`;
-    html += `<td>${item.type}</td>`;
     html += `<td>${item.line}</td>`;
     html += `<td>${item.column}</td>`;
-    html += `<td>${item.value}</td>`;
+    html += `<td>${item.name}</td>`;
+    html += `<td>${item.type}</td>`;
+    html += `<td>${item.typeDeclaration}</td>`;
+    html += `<td>${item.typeValue}</td>`;
+    html += `<td>${item.size}</td>`;
+    html += `<td>${item.position}</td>`;
+    html += `<td>${item.dimensions}</td>`;
+    html += `<td>${item.location}</td>`;
     html += `<td>${item.typeEnviroment}</td>`;
     html += "</tr>";
   }

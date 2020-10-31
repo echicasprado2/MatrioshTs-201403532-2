@@ -25,21 +25,22 @@ class Environment {
 
                 this.table.set(name,symbol);
 
-                // TableReport.addExecute(
-                //     new NodeTableSymbols(
-                //         symbol.line,
-                //         symbol.column,
-                //         symbol.id,
-                //         symbol.type,
-                //         symbol.typeDeclaration,
-                //         symbol.typeValue,
-                //         symbol.size,
-                //         symbol.position,
-                //         symbol.dimensions,
-                //         this.enviromentType,
-                //         symbol.value.value
-                //         )
-                //     );
+                let node = new NodeTableSymbols(
+                    symbol.line,
+                    symbol.column,
+                    symbol.id,
+                    symbol.type,
+                    symbol.typeDeclaration,
+                    symbol.typeValue,
+                    symbol.size,
+                    symbol.positionRelativa,
+                    symbol.dimensions,
+                    symbol.typeEnvironment,
+                    symbol.location,
+                    null
+                );
+                TableReport.addCompile(node);
+
             }
         }
         return;
@@ -66,21 +67,22 @@ class Environment {
 
                         e.table.set(name,symbol);
 
-                        // TableReport.addExecute(
-                        //     new NodeTableSymbols(
-                        //         symbol.line,
-                        //         symbol.column,
-                        //         symbol.id,
-                        //         symbol.type,
-                        //         symbol.typeDeclaration,
-                        //         symbol.typeValue,
-                        //         symbol.size,
-                        //         symbol.position,
-                        //         symbol.dimensions,
-                        //         e.enviromentType,
-                        //         symbol.value.value
-                        //         )
-                        //     );
+                        let node = new NodeTableSymbols(
+                            symbol.line,
+                            symbol.column,
+                            symbol.id,
+                            symbol.type,
+                            symbol.typeDeclaration,
+                            symbol.typeValue,
+                            symbol.size,
+                            symbol.positionRelativa,
+                            symbol.dimensions,
+                            symbol.typeEnvironment,
+                            symbol.location,
+                            null
+                        );
+                        TableReport.addCompile(node);
+
                         return;
                     }
 
@@ -97,21 +99,22 @@ class Environment {
 
                     e.table.set(name,symbol);
 
-                    // TableReport.addExecute(
-                    //     new NodeTableSymbols(
-                    //         symbol.line,
-                    //         symbol.column,
-                    //         symbol.id,
-                    //         symbol.type,
-                    //         symbol.typeDeclaration,
-                    //         symbol.typeValue,
-                    //         symbol.size,
-                    //         symbol.position,
-                    //         symbol.dimensions,
-                    //         e.enviromentType,
-                    //         symbol.value.value
-                    //         )
-                    //     );
+                    let node = new NodeTableSymbols(
+                        symbol.line,
+                        symbol.column,
+                        symbol.id,
+                        symbol.type,
+                        symbol.typeDeclaration,
+                        symbol.typeValue,
+                        symbol.size,
+                        symbol.positionRelativa,
+                        symbol.dimensions,
+                        symbol.typeEnvironment,
+                        symbol.location,
+                        null
+                    );
+                    TableReport.addCompile(node);
+
                     return;
                 }
             }
@@ -124,21 +127,22 @@ class Environment {
 
             this.table.set(name,symbol);
 
-            // TableReport.addExecute(
-            //     new NodeTableSymbols(
-            //         symbol.line,
-            //         symbol.column,
-            //         symbol.id,
-            //         symbol.type,
-            //         symbol.typeDeclaration,
-            //         symbol.typeValue,
-            //         symbol.size,
-            //         symbol.position,
-            //         symbol.dimensions,
-            //         this.enviromentType,
-            //         symbol.value.value
-            //         )
-            //     );
+            let node = new NodeTableSymbols(
+                symbol.line,
+                symbol.column,
+                symbol.id,
+                symbol.type,
+                symbol.typeDeclaration,
+                symbol.typeValue,
+                symbol.size,
+                symbol.positionRelativa,
+                symbol.dimensions,
+                symbol.typeEnvironment,
+                symbol.location,
+                null
+            );
+            TableReport.addCompile(node);
+
             return null;
         }
 
@@ -151,21 +155,21 @@ class Environment {
 
         this.table.set(name,symbol);
 
-        // TableReport.addExecute(
-        //     new NodeTableSymbols(
-        //         symbol.line,
-        //         symbol.column,
-        //         symbol.id,
-        //         symbol.type,
-        //         symbol.typeDeclaration,
-        //         symbol.typeValue,
-        //         symbol.size,
-        //         symbol.position,
-        //         symbol.dimensions,
-        //         this.enviromentType,
-        //         symbol.value.value
-        //         )
-        //     );
+        let node = new NodeTableSymbols(
+            symbol.line,
+            symbol.column,
+            symbol.id,
+            symbol.type,
+            symbol.typeDeclaration,
+            symbol.typeValue,
+            symbol.size,
+            symbol.positionRelativa,
+            symbol.dimensions,
+            symbol.typeEnvironment,
+            symbol.location,
+            null
+        );
+        TableReport.addCompile(node);
     }
 
     searchSymbol(name){

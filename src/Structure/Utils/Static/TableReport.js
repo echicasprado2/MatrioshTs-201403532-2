@@ -14,7 +14,7 @@ class NodeTableSymbols {
    * @param {*} typeEnviroment 
    * @param {*} value 
    */
-  constructor(line, column, name, type, typeDeclaration, typeValue, size, position, dimensions, typeEnviroment, value) {
+  constructor(line, column, name, type, typeDeclaration, typeValue, size, position, dimensions, typeEnviroment, location,value) {
     this.line = line;
     this.column = column;
     this.name = name;
@@ -25,6 +25,7 @@ class NodeTableSymbols {
     this.position = position;
     this.dimensions = dimensions;
     this.typeEnviroment = typeEnviroment;
+    this.location = location;
     this.value = value;
   }
 }
@@ -95,7 +96,6 @@ class TableReport {
    * @param {*} node add node
    */
   static addExecute(node) {
-    //TODO update data for symbols save and in this node add attributes
     for (var i = 0; i < TableReport.nodesExecute.length; i++) {
 
         if(TableReport.nodesExecute[i].typeEnviroment.enumEnvironmentType == node.typeEnviroment.enumEnvironmentType){
@@ -141,7 +141,16 @@ class TableReport {
    * @param {*} node add node
    */  
   static addCompile(node){
-    //TODO implement
+    let insert = true;
+
+    for(let item of TableReport.nodesCompile){
+      if(item.name == node.name){
+        insert = false;
+        break;
+      }
+    }
+
+    if(insert) TableReport.nodesCompile.push(node);
   }
 
   /**

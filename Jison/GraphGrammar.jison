@@ -4,10 +4,12 @@
 
 /* Lexico */
 %lex
-%options case-sensitive
+// %options case-sensitive
+%options case-insensitive
 
 // expresiones regulares
-lex_number               [0-9]+("."[0-9]+)?\b
+lex_decimal              [0-9]+"."[0-9]+
+lex_entero               [0-9]+
 lex_string               [\"\'\`](([^\"\'\`\\])*([\\].)*)*[\"\'\`]
 lex_identificador        [A-Za-z_\ñ\Ñ][A-Za-z_0-9\ñ\Ñ]*
 lex_comentariounilinea   "/""/".*(\r|\n|\r\n|<<EOF>>)
@@ -21,88 +23,95 @@ lex_comentariomultilinea [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]
 [\s\t\r\n]+                 /* Omitir */
 
 //aritmeticos
-"++" return '++'
-"--" return '--'
-"**" return '**'
-"+"  return '+'
-"-"  return '-'
-"*"  return '*'
-"/"  return '/'
-"%"  return '%'
+"++" return '++';
+"--" return '--';
+"**" return '**';
+"+"  return '+';
+"-"  return '-';
+"*"  return '*';
+"/"  return '/';
+"%"  return '%';
 
 //valores
-"null"  return 'val_nulo'
-"true"  return 'val_verdadero'
-"false" return 'val_falso'
+"null"  return 'val_nulo';
+"true"  return 'val_verdadero';
+"false" return 'val_falso';
 
 //relacionales
-">=" return '>='
-">"  return '>'
-"<=" return '<='
-"<"  return '<'
+">=" return '>=';
+">"  return '>';
+"<=" return '<=';
+"<"  return '<';
 
 //comparacion
-"=="  return '=='
-"!="  return '!='
-"="   return '='
+"=="  return '==';
+"!="  return '!=';
+"="   return '=';
 
 //logicos
-"&&" return '&&'
-"||" return '||'
-"!" return '!'
+"&&" return '&&';
+"||" return '||';
+"!" return '!';
 
 //simbolos
-";"  return 'punto_y_coma'
-":"  return 'dos_puntos'
-"."  return 'punto'
-"("  return 'par_izq'
-")"  return 'par_der'
-"{"  return 'llave_izq'
-"}"  return 'llave_der'
-"["  return 'cor_izq'
-"]"  return 'cor_der'
-","  return 'coma'
-"?"  return '?'
+";"  return 'punto_y_coma';
+":"  return 'dos_puntos';
+"."  return 'punto';
+"("  return 'par_izq';
+")"  return 'par_der';
+"{"  return 'llave_izq';
+"}"  return 'llave_der';
+"["  return 'cor_izq';
+"]"  return 'cor_der';
+","  return 'coma';
+"?"  return '?';
 
 //PALABRAS RESERVADAS
 "string"      return 'string'
-"number"      return 'number'
-"void"        return 'void'
-"boolean"     return 'boolean'
-"type"        return 'type'
+"number"      return 'number';
+"void"        return 'void';
+"boolean"     return 'boolean';
+"type"        return 'type';
 
-"const"       return 'const'
-"let"         return 'let'
-"push"        return 'push'
-"pop"         return 'pop'
-"length"      return 'length'
+"const"       return 'const';
+"let"         return 'let';
+"length"      return 'length';
+"array"        return 'array';
+// "push"        return 'push';
+// "pop"         return 'pop';
 
-"if"          return 'if'
-"else"        return 'else'
-"switch"      return 'switch'
-"case"        return 'case'
-"default"     return 'default'
-"break"       return 'break'
-"continue"    return 'continue'
-"return"      return 'return'
-"for"         return 'for'
-"of"          return 'of'
-"in"          return 'in'
-"while"       return 'while'
-"do"          return 'do'
+"if"          return 'if';
+"else"        return 'else';
+"switch"      return 'switch';
+"case"        return 'case';
+"default"     return 'default';
+"break"       return 'break';
+"continue"    return 'continue';
+"return"      return 'return';
+"for"         return 'for';
+"of"          return 'of';
+"in"          return 'in';
+"while"       return 'while';
+"do"          return 'do';
+"new"         return 'new';
 
-"console.log" return 'print'
-"graficar_ts" return 'graficar_ts'
-"function"    return 'function'
+"console.log" return 'print';
+"graficar_ts" return 'graficar_ts';
+"charat"      return 'charat';
+"tolowercase" return 'tolowercase';
+"touppercase" return 'touppercase';
+"concat"      return 'concat';
+"function"    return 'function';
 
 //valores expresiones regulares
-{lex_number}        return 'val_number'
-{lex_string}        return 'val_string'
-{lex_identificador} return 'identificador'
-<<EOF>>             return 'EOF'
+{lex_decimal}       return 'val_decimal';
+{lex_entero}        return 'val_entero';
+{lex_string}        return 'val_string';
+{lex_identificador} return 'identificador';
+<<EOF>> return 'EOF';
 
 /* ERROR */
-.   ;
+. { ErrorList.addError(new ErrorNode(yylloc.first_line,yylloc.first_column,new ErrorType(EnumErrorType.LEXICO),`El caracter: "${yytext}" no pertenece al lenguaje`,new EnvironmentType(EnumEnvironmentType.NULL, ""))); }
 
 /lex
 
@@ -127,6 +136,8 @@ lex_comentariomultilinea [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]
 %left ']'
 %left '{'
 %left '}'
+// %left punto
+// %right punto
 %left 'EOF'
 
 %start INIT
@@ -165,9 +176,8 @@ SENTENCE: FUNCTION           { $$ = $1; }
         | error llave_der    { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
         ;
 
-ARRAY_FUNCION: ID_ASSIGNMENT punto pop par_izq par_der PUNTO_Y_COMA    { $$ = new NodeGraphAST("FUNCTION_ARRAY",NumberNode.getNumber()); $$.children.push($1,new NodeGraphAST($3,NumberNode.getNumber())); }
-             | ID_ASSIGNMENT punto length PUNTO_Y_COMA                 { $$ = new NodeGraphAST("FUNCTION_ARRAY",NumberNode.getNumber()); $$.children.push($1,new NodeGraphAST($3,NumberNode.getNumber())); }
-             | ID_ASSIGNMENT punto push par_izq E par_der PUNTO_Y_COMA { $$ = new NodeGraphAST("FUNCTION_ARRAY",NumberNode.getNumber()); $$.children.push($1,new NodeGraphAST($3,NumberNode.getNumber()),$5); }
+ARRAY_FUNCION: ID_ASSIGNMENT punto length PUNTO_Y_COMA                     { $$ = new NodeGraphAST("LEGTH",NumberNode.getNumber()); $$.children.push($1); }
+             | ID_ASSIGNMENT punto concat par_izq L_E par_der PUNTO_Y_COMA { $$ = new NodeGraphAST("CONCAT",NumberNode.getNumber()); $$.children.push($1,$5); }
              ;
 
 CALL_FUNCTION:    identificador par_izq L_E par_der PUNTO_Y_COMA { $$ = new NodeGraphAST("LLAMADA_FUNCION",NumberNode.getNumber()); $$.children.push(new NodeGraphAST($1,NumberNode.getNumber()),$3); }
@@ -243,11 +253,12 @@ PRINT: print par_izq L_E par_der PUNTO_Y_COMA { $$ = new NodeGraphAST("PRITN",Nu
 GRAPH_TS: graficar_ts par_izq par_der PUNTO_Y_COMA { $$ = new NodeGraphAST("GRAFICAR_TS",NumberNode.getNumber()); } 
         ;
         
-DECLARATION: TYPE_DECLARATION  L_ID TYPE_VARIABLE PUNTO_Y_COMA                                  { $$ = new NodeGraphAST("DECLARACION",NumberNode.getNumber()); $$.children.push($1,$2,$3); }
-        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' E PUNTO_Y_COMA                            { $$ = new NodeGraphAST("DECLARACION",NumberNode.getNumber()); $$.children.push($1,$2,$3,new NodeGraphAST("=",NumberNode.getNumber()),$5); }
-        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE L_DIMENSION PUNTO_Y_COMA                      { $$ = new NodeGraphAST("DECLARACION_ARRAY",NumberNode.getNumber()); $$.children.push($1,$2,$3,$4); }
-        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE L_DIMENSION '=' L_ARRAY PUNTO_Y_COMA          { $$ = new NodeGraphAST("DECLARACION_ARRAY",NumberNode.getNumber()); $$.children.push($1,$2,$3,$4,new NodeGraphAST("=",NumberNode.getNumber()),$6); }
-        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' llave_izq L_E_TYPE llave_der PUNTO_Y_COMA { $$ = new NodeGraphAST("DECLARACION_TYPE",NumberNode.getNumber()); $$.children.push($1,$2,$3,new NodeGraphAST("=",NumberNode.getNumber()),$6); }
+DECLARATION: TYPE_DECLARATION  L_ID TYPE_VARIABLE PUNTO_Y_COMA                                             { $$ = new NodeGraphAST("DECLARACION",NumberNode.getNumber()); $$.children.push($1,$2,$3); }
+        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' E PUNTO_Y_COMA                                       { $$ = new NodeGraphAST("DECLARACION",NumberNode.getNumber()); $$.children.push($1,$2,$3,new NodeGraphAST("=",NumberNode.getNumber()),$5); }
+        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' new array par_izq E par_der PUNTO_Y_COMA             { $$ = new NodeGraphAST("DECLARACION_ARRAY",NumberNode.getNumber()); $$.children.push($1,$2,$3,new NodeGraphAST("=",NumberNode.getNumber()),$8); }
+        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE L_DIMENSION '=' new array par_izq E par_der PUNTO_Y_COMA { $$ = new NodeGraphAST("DECLARACION_ARRAY",NumberNode.getNumber()); $$.children.push($1,$2,$3,$4,new NodeGraphAST("=",NumberNode.getNumber(),$9)); }
+        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE L_DIMENSION '=' L_ARRAY PUNTO_Y_COMA                     { $$ = new NodeGraphAST("DECLARACION_ARRAY",NumberNode.getNumber()); $$.children.push($1,$2,$3,$4,new NodeGraphAST("=",NumberNode.getNumber()),$6); }
+        |    TYPE_DECLARATION  L_ID TYPE_VARIABLE '=' llave_izq L_E_TYPE llave_der PUNTO_Y_COMA            { $$ = new NodeGraphAST("DECLARACION_TYPE",NumberNode.getNumber()); $$.children.push($1,$2,$3,new NodeGraphAST("=",NumberNode.getNumber()),$6); }
         ;
 
 TYPES: type identificador '=' llave_izq ATTRIBUTES_TYPE llave_der PUNTO_Y_COMA { $$ = new NodeGraphAST("TYPE",NumberNode.getNumber()); $$.children.push(new NodeGraphAST($2,NumberNode.getNumber()),$5); }
@@ -272,7 +283,7 @@ L_ARRAY: L_ARRAY coma cor_izq L_E cor_der { $4.tag = `[${$4.tag}]`; $$ = new Nod
         ;
 
 TYPE_VARIABLE:   dos_puntos TYPE { $$ = $2; }
-                | /* epsilon */  { $$ = new NodeGraphAST("NULL",NumberNode.getNumber()); }
+                // | /* epsilon */  { $$ = new NodeGraphAST("NULL",NumberNode.getNumber()); }
                 ;
 
 TYPE: void          { $$ = new NodeGraphAST($1,NumberNode.getNumber()); }
@@ -331,7 +342,7 @@ CASE:     case E dos_puntos SENTENCES  { $$ = new NodeGraphAST("CASE",NumberNode
         | default dos_puntos           { $$ = new NodeGraphAST("DEFAULT",NumberNode.getNumber()); }
         ;
 
-SENTENCE_FOR: for par_izq TYPE_DECLARATION L_ID '=' E punto_y_coma E punto_y_coma E par_der BLOCK { $$ = new NodeGraphAST("FOR",NumberNode.getNumber()); $$.children.push($3,$4,$6,$8,$10,$12); }
+SENTENCE_FOR: for par_izq TYPE_DECLARATION L_ID dos_puntos TYPE '=' E punto_y_coma E punto_y_coma E par_der BLOCK { $$ = new NodeGraphAST("FOR",NumberNode.getNumber()); $$.children.push($3,$4,$6,new NodeGraphAST("=",NumberNode.getNumber()),$8,$10,$12,$14); }
         | for par_izq ID_ASSIGNMENT '=' E punto_y_coma E punto_y_coma E par_der BLOCK             { $$ = new NodeGraphAST("FOR",NumberNode.getNumber()); $$.children.push($3,$5,$7,$9,$11); }
         | for par_izq identificador punto_y_coma E punto_y_coma E par_der BLOCK                   { $$ = new NodeGraphAST("FOR",NumberNode.getNumber()); $$.children.push(new NodeGraphAST($3,NumberNode.getNumber()),$5,$7,$9); }
         | for par_izq TYPE_DECLARATION L_ID in E par_der BLOCK                                    { $$ = new NodeGraphAST("FOR IN",NumberNode.getNumber()); $$.children.push($3,$4,$6,$8); }
@@ -386,10 +397,21 @@ E   : E '+'   E                           { $$ = new NodeGraphAST($2,NumberNode.
     | identificador par_izq L_E par_der              { $$ = new NodeGraphAST("LLAMADA_FUNCION",NumberNode.getNumber()); $$.children.push(new NodeGraphAST($1,NumberNode.getNumber()),$3); }
     
     | ACCESS POST_FIXED                   { $$ = new NodeGraphAST($2,NumberNode.getNumber()); $$.children.push($1); }
-    | ACCESS punto pop par_izq par_der    { $$ = new NodeGraphAST("FUNCTION_ARRAY",NumberNode.getNumber()); $$.children.push($1,new NodeGraphAST($3,NumberNode.getNumber())); }
-    | ACCESS punto length                 { $$ = new NodeGraphAST("FUNCTION_ARRAY",NumberNode.getNumber()); $$.children.push($1,new NodeGraphAST($3,NumberNode.getNumber())); }
-    | ACCESS punto push par_izq E par_der { $$ = new NodeGraphAST("FUNCTION_ARRAY",NumberNode.getNumber()); $$.children.push($1,new NodeGraphAST($3,NumberNode.getNumber()),$5); }
-    | ACCESS                              { $$ = $1; }
+    
+    | val_string punto length                      { $$ = new NodeGraphAST("LEGTH",NumberNode.getNumber()); if($1 == ""){ $$.children.push(new NodeGraphAST(" ",NumberNode.getNumber())); }else{ $$.children.push(new NodeGraphAST(`${$1}`,NumberNode.getNumber()));} }
+    | val_string punto tolowercase par_izq par_der { $$ = new NodeGraphAST("TOLOWERCASE",NumberNode.getNumber()); if($1 == ""){ $$.children.push(new NodeGraphAST(" ",NumberNode.getNumber())); }else{ $$.children.push(new NodeGraphAST(`${$1}`,NumberNode.getNumber()));} }
+    | val_string punto touppercase par_izq par_der { $$ = new NodeGraphAST("TOUPPERCASE",NumberNode.getNumber()); if($1 == ""){ $$.children.push(new NodeGraphAST(" ",NumberNode.getNumber())); }else{ $$.children.push(new NodeGraphAST(`${$1}`,NumberNode.getNumber()));} }
+    | val_string punto charat par_izq E par_der    { $$ = new NodeGraphAST("CHARAT",NumberNode.getNumber()); if($1 == ""){ $$.children.push(new NodeGraphAST(" ",NumberNode.getNumber())); }else{ $$.children.push(new NodeGraphAST(`${$1}`,NumberNode.getNumber()));} }
+    | val_string punto concat par_izq L_E par_der  { $$ = new NodeGraphAST("CONCAT",NumberNode.getNumber()); if($1 == ""){ $$.children.push(new NodeGraphAST(" ",NumberNode.getNumber())); }else{ $$.children.push(new NodeGraphAST(`${$1}`,NumberNode.getNumber()));} }
+
+    | ACCESS punto length                      { $$ = new NodeGraphAST("LEGTH",NumberNode.getNumber()); $$.children.push($1); }
+    | ACCESS punto tolowercase par_izq par_der { $$ = new NodeGraphAST("TOLOWERCASE",NumberNode.getNumber()); $$.children.push($1); }
+    | ACCESS punto touppercase par_izq par_der { $$ = new NodeGraphAST("TOUPPERCASE",NumberNode.getNumber()); $$.children.push($1); }
+    | ACCESS punto charat par_izq E par_der    { $$ = new NodeGraphAST("CHARAT",NumberNode.getNumber()); $$.children.push($1); }
+    | ACCESS punto concat par_izq L_E par_der  { $$ = new NodeGraphAST("CONCAT",NumberNode.getNumber()); $$.children.push($1); }
+
+
+    | ACCESS { $$ = $1; }
     ;
 
 ACCESS: ACCESS punto identificador                       { $$ = new NodeGraphAST("ACCESO",NumberNode.getNumber()); $$.children.push($1,new NodeGraphAST($3,NumberNode.getNumber()));}
