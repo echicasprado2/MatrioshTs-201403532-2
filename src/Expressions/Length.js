@@ -25,6 +25,7 @@ class Length extends Expresion {
     }
 
     getC3D(env){
+        //TODO tengo que considerar el tama;o de un arreglo tambien
         let result = new RESULT();
         let resultValue;
         let tcounter;

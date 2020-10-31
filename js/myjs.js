@@ -148,6 +148,7 @@ compile.addEventListener("click",(e) => {
   var editorTranslated = getTranslate();
   var myConsole = getConsole();
   var editorC3D = getEditorC3D();
+  var resultC3D;
 
   cleanReportsCompile();
   myConsole.setValue("");
@@ -161,13 +162,13 @@ compile.addEventListener("click",(e) => {
   }
   
   let result = new AST(Gramatica.parse(editorTranslated.getValue()));
-  editCode3D.setValue(result.getC3D());
-  myConsole.setValue(PrintConsole.getPrintConsole());
+  resultC3D = result.getC3D();
   
+  if(ErrorList.isErrors()) editCode3D.setValue(resultC3D);
+  myConsole.setValue(PrintConsole.getPrintConsole());
   showTableErrorsSymbols();
   showTableTranslatedSymbols();
   showTableCompileSymbols();
-  showTranslatedTree(editor.getValue());
   showCompileTree(editorTranslated.getValue());
 });
 
@@ -188,7 +189,7 @@ function showTranslatedTree(file) {
   //genera el arbol y da error
   var element = document.querySelector("showTranslatedTree");
   var insertSvg = function (svgCode) {
-    element.innerHTML = svgCode;
+  element.innerHTML = svgCode;
   };
   
   var graph = mermaid.mermaidAPI.render("showTranslatedTree", code, insertSvg);
@@ -218,12 +219,12 @@ function showCompileTree(file){
   }
 
   // genera el arbol y da error
-  var element = document.querySelector("showExecuteTree");
+  var element = document.querySelector("showCompileTree");
   var insertSvg = function (svgCode) {
     element.innerHTML = svgCode;
   };
 
-  var graph = mermaid.render("showExecuteTree", code, insertSvg);
+  var graph = mermaid.render("showCompileTree", code, insertSvg);
 }
 
 function showTableTranslatedSymbols() {

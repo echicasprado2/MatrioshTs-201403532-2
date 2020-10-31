@@ -15,7 +15,6 @@ class NodeTableSymbols {
    * @param {*} value 
    */
   constructor(line, column, name, type, typeDeclaration, typeValue, size, position, dimensions, typeEnviroment, value) {
-    //TODO update all use new NodeTableSymbols
     this.line = line;
     this.column = column;
     this.name = name;

@@ -452,7 +452,7 @@ L_ID:     L_ID coma identificador { $$ = $1; $$.push($3); }
         ; 
 
 TYPE_VARIABLE:   dos_puntos TYPE { $$ = $2; }
-                | /* epsilon */  { $$ = new Type(EnumType.NULL,""); }
+                // | /* epsilon */  { $$ = new Type(EnumType.NULL,""); }
                 ;
 
 L_DIMENSION: L_DIMENSION cor_izq cor_der { $$ = $1 + 1; }

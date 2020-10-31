@@ -151,7 +151,7 @@ class DeclarationTypes extends Instruction {
   }
 
   getC3D(env){
-        
+    return '';
   }
 
   fillTable(env){

@@ -105,8 +105,10 @@ class AST {
     cadena += `int main(){\n${globalVariable}${mainInstructions}printf("\\n%d\\n",(int)H);\nprintf("%d\\n",(int)P);\nreturn 0;\n}`;
 
     ErrorList.showErrors();
-    PrintConsole.printLine("fin traduccion codigo 3 direcciones");
+    if(ErrorList.isErrors()) PrintConsole.printLine("fin traduccion codigo 3 direcciones");
+    
     console.table(Singleton.displayTemporary);
+    
     return cadena;
   }
 
