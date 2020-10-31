@@ -86,8 +86,9 @@ class AST {
   getC3D(){
     this.cleanVariableC3D();
     this.getSizeMain();
-    let cadena = "";
+    this.getGlobalTypeDefinition();
 
+    let cadena = "";
     let metodosNativos = C3DMethods.getMethods();
     let globalFunctionDefinition = this.getGlobalFunctionDefinition();
     let globalVariable = this.getGlobalVariable();
