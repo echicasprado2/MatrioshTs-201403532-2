@@ -41,6 +41,13 @@ class Concat extends Expresion {
         let code = "";
         let concat = "";
 
+        resultAccess = this.access.getC3D(env);
+
+        if(resultAccess.type.enumType != EnumType.STRING){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC)`Esta funcion solo permite expresiones tipo String`,env.enviromentType));
+            return result;
+        }
+
         let t1 = Singleton.getTemporary();
         let t2 = Singleton.getTemporary();
         let t3 = Singleton.getTemporary();
@@ -56,9 +63,6 @@ class Concat extends Expresion {
         let l2 = Singleton.getLabel();
         let l3 = Singleton.getLabel();
         let l4 = Singleton.getLabel();
-
-
-        resultAccess = this.access.getC3D(env);
 
         concat += resultAccess.code;
 
@@ -83,6 +87,21 @@ class Concat extends Expresion {
             }
             resulValue = this.values[i].getC3D(env);
             
+            if(resulValue.type.enumType != EnumType.STRING){
+                ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC)`Esta funcion solo permite expresiones tipo String`,env.enviromentType));
+                Singleton.deleteTemporaryIntoDisplay(resultAccess.value);
+                Singleton.deleteTemporaryIntoDisplay(t1);
+                Singleton.deleteTemporaryIntoDisplay(t2);
+                Singleton.deleteTemporaryIntoDisplay(t3);
+                Singleton.deleteTemporaryIntoDisplay(t4);
+                Singleton.deleteTemporaryIntoDisplay(t6);
+                Singleton.deleteTemporaryIntoDisplay(t7);
+                Singleton.deleteTemporaryIntoDisplay(t8);
+                Singleton.deleteTemporaryIntoDisplay(t9);
+                Singleton.deleteTemporaryIntoDisplay(t10);
+                return result;
+            }
+
             concat += resulValue.code;
 
             code += `${l2}:\n`;
