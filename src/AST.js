@@ -110,15 +110,6 @@ class AST {
   }
 
   getGlobalFunctionDefinition(){
-    /* TODO aqui tengo que hacer varias pasadas, este debe de funcionar para definir funciones
-      entre estas tengo que hacer una para llenar la tabla de simbolos,
-      entre los simbolos va un array de ambitos para saber hasta donde esta,
-      tambien tengo que agregar 2 metodos a las instrucciones el
-      * getsize -> para saber cuantas variables tiene declaradas
-      * primera pasada -> para guardar las variables en la tabla de simbolos, este no guarda valores en las variables
-      * getC3D -> que va a generar el codigo con toda la informacion previa, este debe de guardar los valores de las variables 
-    */ 
-
     let cadena = '';
 
     for(let item of this.instruccions){
@@ -133,13 +124,14 @@ class AST {
   }
 
   getGlobalTypeDefinition(){
-    /*  TODO tengo que mantener la definicion del type, para validar las declaraciones de estos.
-     */
+    for(let item of this.instruccions){
+      if(item instanceof TypeDefinition){
+        item.fillTable(this.environmentCompile);
+      }
+    }
   }
 
   getGlobalVariable(){
-    /* TODO declaraciones globales, tengo que hacer uso de stack y heap
-    */
    Singleton.cleanPointerStackInit();
    let cadena = "";
 

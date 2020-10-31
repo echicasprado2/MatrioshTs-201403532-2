@@ -51,7 +51,6 @@ class TypeDefinition extends Instruction {
         if(exists === null){
             var s = new Symbol(this.line,this.column,this.identify,new Type(EnumType.TYPE,this.identify),new DeclarationType(EnumDeclarationType.NULL),this);
             e.insert(this.identify,s);
-            //TableReport.addExecute(new NodeTableSymbols(this.line,this.column,this.identify,new Type(EnumType.TYPE,this.identify),e.enviromentType,null));
         }else{
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El type: "${this.identify}" ya se encuentra definido`,e.enviromentType));
         }
@@ -60,10 +59,38 @@ class TypeDefinition extends Instruction {
     }
 
     getC3D(env){
-
+        return '';
     }
 
     fillTable(env){
+        let exists = env.searchSymbol(this.identify);
+        
+        if(exists === null){
+            let symbolType;
+
+            symbolType = new Symbol(
+                this.line,
+                this.column,
+                this.identify,
+                new Type(EnumType.TYPE,this.identify),
+                new DeclarationType(EnumDeclarationType.NULL),
+                new Type(EnumType.TYPE,this.identify),
+                env.enviromentType,
+                env.getArrayEnvironments(),
+                0,
+                -1,
+                1,
+                null,
+                null,
+                this
+            );
+
+            env.insertNewSymbol(this.identify,symbolType);
+            return null;
+        }else{
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El type: "${this.identify}" ya se encuentra definido`,env.enviromentType));
+        }
+
         return null;
     }
 

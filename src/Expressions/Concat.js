@@ -44,7 +44,7 @@ class Concat extends Expresion {
         resultAccess = this.access.getC3D(env);
 
         if(resultAccess.type.enumType != EnumType.STRING){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC)`Esta funcion solo permite expresiones tipo String`,env.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Esta funcion solo permite expresiones tipo String`,env.enviromentType));
             return result;
         }
 
@@ -88,7 +88,7 @@ class Concat extends Expresion {
             resulValue = this.values[i].getC3D(env);
             
             if(resulValue.type.enumType != EnumType.STRING){
-                ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC)`Esta funcion solo permite expresiones tipo String`,env.enviromentType));
+                ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Esta funcion solo permite expresiones tipo String`,env.enviromentType));
                 Singleton.deleteTemporaryIntoDisplay(resultAccess.value);
                 Singleton.deleteTemporaryIntoDisplay(t1);
                 Singleton.deleteTemporaryIntoDisplay(t2);
