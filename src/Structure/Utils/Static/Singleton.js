@@ -90,4 +90,11 @@ class Singleton{
         return Singleton.displayTemporary;
     }
 
+    /**
+     * @returns number of display temporary
+     */
+    static getNumberDisplayTemporary(){
+        return Singleton.displayTemporary.length;
+    }
+
 }

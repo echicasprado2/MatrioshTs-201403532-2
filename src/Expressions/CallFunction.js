@@ -274,8 +274,19 @@ class CallFunction extends Expresion {
            return result;
         }
 
-        result.code += `${tnextStack} = P + ${env.size};//Ambito de la funcion a llamar, paso de parametros\n`;
+        Singleton.deleteTemporaryIntoDisplay(tpos);
+        Singleton.deleteTemporaryIntoDisplay(tnextStack);
+        console.table(Singleton.displayTemporary);
 
+        
+        result.code += `//---------------- guardo valor de temporales en stack -----------------\n`;
+        for(let i = 0;i < Singleton.getNumberDisplayTemporary();i++){
+            result.code += `${tpos} = P + ${env.size + i};//temporal a guardar en stack\n`; 
+            result.code += `Stack[(int)${tpos}] = ${Singleton.displayTemporary[i]};\n`;
+        }
+        
+        result.code += `${tnextStack} = P + ${env.size + Singleton.getNumberDisplayTemporary()};//Ambito de la funcion a llamar, paso de parametros\n`;
+        
         for(let i = 0; i < this.parametros.length; i++){
            resultExpresion = this.parametros[i].getC3D(env);
            resultParameterDefinition = symbolFunction.value.parameters[i];
@@ -312,21 +323,27 @@ class CallFunction extends Expresion {
                 result.code += `//guardo valor de parametro en stack\n`;
                 result.code += `${tpos} = ${tnextStack} + ${resultParameter.positionRelativa};\n`;
                 result.code += `Stack[(int)${tpos}] = ${resultExpresion.value};\n`;
+                Singleton.deleteTemporaryIntoDisplay(resultExpresion.value);
             }
             
 
         }
         
-        result.code += `P = P + ${env.size};//me posiciono en el siguiente ambito\n`;
+        result.code += `P = P + ${env.size + Singleton.getNumberDisplayTemporary()};//me posiciono en el siguiente ambito\n`;
         result.code += `${symbolFunction.id}();//llamada de funcion\n`
         result.code += `${tpos} = P + 0;//recupero valor de retorno\n`;
         result.code += `${tnextStack} = Stack[(int)${tpos}];\n`;
-        result.code += `P = P - ${env.size};//regreso al ambito local\n`;
+        result.code += `P = P - ${env.size + Singleton.getNumberDisplayTemporary()};//regreso al ambito local\n`;
+        result.code += `//---------------- recupero valor de temporales en stack -------------------\n`;
+        
+        for(let i = 0; i < Singleton.getNumberDisplayTemporary();i++){
+            result.code += `${tpos} = P + ${env.size + i};\n`;
+            result.code += `${Singleton.displayTemporary[i]} = Stack[(int)${tpos}];\n`;
+        }
         
         result.type = symbolFunction.type;
         result.value = tnextStack;
 
-        Singleton.deleteTemporaryIntoDisplay(tpos);
 
         return result;
     }
