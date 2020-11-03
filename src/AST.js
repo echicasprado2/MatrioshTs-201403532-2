@@ -84,6 +84,8 @@ class AST {
 
 
   getC3D(){
+    TableReport.cleanCompile();
+    PrintConsole.cleanConsole();
     this.cleanVariableC3D();
     this.getSizeMain();
     this.getGlobalTypeDefinition();
