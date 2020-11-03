@@ -71,7 +71,7 @@ class Parameter extends Instruction{
     }
 
     getC3D(env){
-        return '';
+        return new RESULT();
     }
 
     fillTable(env){

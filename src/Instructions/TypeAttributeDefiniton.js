@@ -42,12 +42,12 @@ class TypeAttributeDefinition extends Instruction {
     }
 
     execute(e) {
-        // TODO tomar en cuenta
-        /** este funciona igual que los parametros para las funciones */
+        return null;
     }
 
     getC3D(env){
-
+        //TODO
+        return new RESULT();
     }
 
     fillTable(env){
