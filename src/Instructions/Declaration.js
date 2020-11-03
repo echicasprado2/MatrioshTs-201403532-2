@@ -131,10 +131,6 @@ class Declaration extends Instruction {
       if(result == null){
         e.insertNewSymbol(this.ids[i],new Symbol(this.line,this.column,this.ids[i],new Type(EnumType.VARIABLE,null),this.typeDeclaration,this.type,null,new Value(new Type(EnumType.NULL,null),"",0)));
       }else{
-        /* TODO here part i valid to type and identifier
-          because result is a symbol and i save only value of symbol and not a symbol
-          this because when a find a type with identifier this return a symbol, not value
-        */
 
         if(result.type.enumType == EnumType.TYPE){
 
