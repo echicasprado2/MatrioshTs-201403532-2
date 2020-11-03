@@ -218,8 +218,9 @@ class DeclarationArray extends Instruction {
     }
 
     getC3D(env){
+        result = new RESULT();
         // TODO
-        return '';
+        return result;
     }
 
     fillTable(env){

@@ -97,7 +97,7 @@ var reader = new FileReader();
   reader.readAsText(fileUpload[0]);
 });
 
-//TODO use this for translate code with functions nested to functions 
+
 var translate = document.getElementById("traducir");
 translate.addEventListener("click", (e) => {
   var editor = getEditor();
@@ -120,7 +120,7 @@ translate.addEventListener("click", (e) => {
   showTranslatedTree(editor.getValue());
 });
 
-//TODO use this for execute code 
+
 var execute = document.getElementById("ejecutar");
 execute.addEventListener("click", (e) => {
   var editor = getTranslate();
@@ -141,7 +141,7 @@ execute.addEventListener("click", (e) => {
   showExecuteTree(editor.getValue());
 });
 
-//TODO use this for compile to code to intermediate code
+
 var compile = document.getElementById("compilar");
 compile.addEventListener("click",(e) => {
   var editor = getEditor();
@@ -292,7 +292,7 @@ function showTableExecuteSymbols() {
   document.getElementById("tableExecute").innerHTML = html;
 }
 
-//TODO work here for show table of symbols compile
+
 function showTableCompileSymbols() {
   document.getElementById("tableCompile").innerHTML = "";
 
@@ -340,6 +340,8 @@ function showTableCompileSymbols() {
   document.getElementById("tableExecute").innerHTML = html;
 }
 
+//TODO show table for optimize
+function showTableOptimize(){}
 
 function showTableErrorsSymbols() {
   document.getElementById("tableErrors").innerHTML = "";

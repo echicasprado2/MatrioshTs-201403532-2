@@ -108,7 +108,8 @@ class ArrayFunction extends Expresion {
   }
 
   getC3D(env){
-    //TODO implement this
+    
+    return new RESULT();
   }
 
   fillTable(env){
