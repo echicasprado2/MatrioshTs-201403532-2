@@ -14,6 +14,7 @@ class Function extends Instruction {
     this.parameters = Parameters || [];
     this.instructions = []; //array de instrucciones
     this.type = type;
+    this.dimencions = 0;
 
     this.translatedCode = "";
     this.nestedFunctions = [];
@@ -76,7 +77,8 @@ class Function extends Instruction {
 
     if(this.type.enumType == EnumType.ARRAY){
       var getTypeArray = this.type.identifier.split("_");
-      var numberDimensions = Number(getTypeArray[1]);
+      this.dimencions = Number(getTypeArray[1]);
+      var numberDimensions = this.dimencions;
 
       this.translatedCode += getTypeArray[0].toLowerCase();
 
@@ -456,6 +458,7 @@ class Function extends Instruction {
     let arrayEnvironments;
     let location;
     let block;
+    let dimensionParam;
     let exists = env.searchSymbol(this.identifier);
 
     if(exists != null){
@@ -471,6 +474,10 @@ class Function extends Instruction {
     block = new Block(this.instructions);
     
     for(let param of this.parameters){
+
+      dimensionParam = 0;
+      if(param.isArray) dimensionParam = param.dimencions;
+
       symbolParam = new Symbol(
         param.line,
         param.column,
@@ -482,8 +489,7 @@ class Function extends Instruction {
         arrayEnvironments,
         1,
         Singleton.getPosStack(),
-        //TODO manejar retorno de arreglos
-        1,
+        dimensionParam,
         null,
         location,
         null
@@ -505,7 +511,7 @@ class Function extends Instruction {
       env.getArrayEnvironments(),
       this.getSize(),
       -1,
-      1, //Este lo tengo que cambiar por la dimension
+      this.dimencions,
       null,
       null,
       this

@@ -242,7 +242,7 @@ class Declaration extends Instruction {
       enviroments,
       1,
       Singleton.getPosStack(),
-      1,
+      0,
       null,
       location,
       null

@@ -117,6 +117,7 @@ class Return extends Instruction {
                 result.code += `Stack[(int)${tposReturn}] = ${resultExpresion.value};\n`;
                 result.code += `goto ${lexit};//salida de retorno\n`;
                 result.value = resultExpresion.value;
+                Singleton.deleteTemporaryIntoDisplay(resultExpresion.value);
             }
 
             Singleton.deleteTemporaryIntoDisplay(tposReturn);
