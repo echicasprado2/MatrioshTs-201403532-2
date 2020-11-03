@@ -172,8 +172,8 @@ SENTENCE: FUNCTION           { $$ = $1; }
         | CONITNUE           { $$ = $1; }
         | CALL_FUNCTION      { $$ = $1; }
         | ARRAY_FUNCION      { $$ = $1; }
-        | error punto_y_coma { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
-        | error llave_der    { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
+        // | error punto_y_coma { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
+        // | error llave_der    { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
         ;
 
 ARRAY_FUNCION: ID_ASSIGNMENT punto length PUNTO_Y_COMA                     { $$ = new NodeGraphAST("LEGTH",NumberNode.getNumber()); $$.children.push($1); }
@@ -233,8 +233,8 @@ FUNCTION_SENTENCE: PRINT            { $$ = $1; }
                 | CALL_FUNCTION     { $$ = $1; }
                 | FUNCTION          { $$ = $1; }
                 | ARRAY_FUNCION     { $$ = $1; }
-                | error punto_y_coma { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
-                | error llave_der    { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
+                // | error punto_y_coma { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
+                // | error llave_der    { $$ = new NodeGraphAST("ERROR",NumberNode.getNumber()); }
                 ;
 
 L_PARAMETROS: L_PARAMETROS coma PARAMETRO  { $$ = new NodeGraphAST("L_PARAMETROS",NumberNode.getNumber()); $$.children.push($1,$3); }
@@ -384,7 +384,8 @@ E   : E '+'   E                           { $$ = new NodeGraphAST($2,NumberNode.
     | E '>'   E                           { $$ = new NodeGraphAST($2,NumberNode.getNumber()); $$.children.push($1,$3); }
     | E '<='  E                           { $$ = new NodeGraphAST($2,NumberNode.getNumber()); $$.children.push($1,$3); }
     | E '<'   E                           { $$ = new NodeGraphAST($2,NumberNode.getNumber()); $$.children.push($1,$3); }
-    | val_number                          { $$ = new NodeGraphAST($1,NumberNode.getNumber()); }
+    | val_decimal                         { $$ = new NodeGraphAST($1,NumberNode.getNumber()); }
+    | val_entero                          { $$ = new NodeGraphAST($1,NumberNode.getNumber()); }
     | val_string                          { if($1 == ""){$$ = new NodeGraphAST(" ",NumberNode.getNumber());}else{$$ = new NodeGraphAST(`${$1}`,NumberNode.getNumber());} }
     | val_verdadero                       { $$ = new NodeGraphAST($1,NumberNode.getNumber()); }
     | val_falso                           { $$ = new NodeGraphAST($1,NumberNode.getNumber()); }

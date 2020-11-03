@@ -240,19 +240,6 @@ class CallFunction extends Expresion {
     }
 
     getC3D(env){
-        /* TODO
-        + buscar el symbolo de la funcion, si no existe es error
-        + validar que el numero de parametros de envio y de la funcion son el mismo, si es diferente es error
-        + validar el tipo de valores con el tipo de parametro
-        - primero tengo que ver que temporales aun no se usan para guarlos en stack,
-        - luego tengo que calcular el nuevo tamaño de mi entorno actual,
-        + luego tengo que pasar los parametros que trae
-        + tengo que cambiar el puntero de stack
-        + llamar a la funcion
-        + regresar el puntero stack
-        - tengo que sacar los temporales no usados del stack
-        + luego el block de codigo tiene que continuar normal
-        */
         let result = new RESULT();
         let resultExpresion;
         let resultParameterDefinition;
@@ -276,8 +263,6 @@ class CallFunction extends Expresion {
 
         Singleton.deleteTemporaryIntoDisplay(tpos);
         Singleton.deleteTemporaryIntoDisplay(tnextStack);
-        console.table(Singleton.displayTemporary);
-
         
         result.code += `//---------------- guardo valor de temporales en stack -----------------\n`;
         for(let i = 0;i < Singleton.getNumberDisplayTemporary();i++){
@@ -334,8 +319,8 @@ class CallFunction extends Expresion {
         result.code += `${tpos} = P + 0;//recupero valor de retorno\n`;
         result.code += `${tnextStack} = Stack[(int)${tpos}];\n`;
         result.code += `P = P - ${env.size + Singleton.getNumberDisplayTemporary()};//regreso al ambito local\n`;
+
         result.code += `//---------------- recupero valor de temporales en stack -------------------\n`;
-        
         for(let i = 0; i < Singleton.getNumberDisplayTemporary();i++){
             result.code += `${tpos} = P + ${env.size + i};\n`;
             result.code += `${Singleton.displayTemporary[i]} = Stack[(int)${tpos}];\n`;
@@ -343,7 +328,6 @@ class CallFunction extends Expresion {
         
         result.type = symbolFunction.type;
         result.value = tnextStack;
-
 
         return result;
     }
