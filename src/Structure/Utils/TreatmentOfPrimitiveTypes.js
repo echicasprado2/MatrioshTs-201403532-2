@@ -18,6 +18,9 @@ class TreatmentOfPrimitiveTypes {
         }else if(exp1.type.enumType === EnumType.TYPE || exp2.type.enumType === EnumType.TYPE){
             return EnumType.TYPE;
         
+        }else if(exp1.type.enumType === EnumType.NULL && exp2.type.enumType == EnumType.NULL){
+            return EnumType.NULL;
+
         }else{
             return EnumType.ERROR;
         }

@@ -218,18 +218,140 @@ class DeclarationArray extends Instruction {
     }
 
     getC3D(env){
-        result = new RESULT();
-        // TODO
+        let resultArrayExpresion;
+        let resultExpresion;
+        let resultSize;
+        let symbolOfVariable;
+        let result = new RESULT();
+
+        if(this.values == undefined && this.size == 0){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Declaracion incorrecta, se necesita un valor o tamaño del arreglo`,env.enviromentType));
+            return result;
+        }
+
+        if(this.values != undefined){
+            for(let item of this.values){
+                resultExpresion = item.getC3D(env);//TODO este deja de funcionar al traer arreglos de arreglos
+                if(resultExpresion == null || resultExpresion.type.enumType == EnumType.ERROR) return result;
+                resultArrayExpresion.push(resultExpresion);
+            }
+
+            for(let name of this.ids){
+                symbolOfVariable = env.searchSymbol(name);
+                if(symbolOfVariable != null)
+                    result.code = this.getC3DArrayDeclarationWithValue(env,symbolOfVariable,resultArrayExpresion);
+            }
+
+        }else{
+            //TODO tengo que traer el size del arreglo, inicializar sus posiciones con -1
+        }
+        
         return result;
     }
 
     fillTable(env){
+        if(this.typeDeclaration.enumType == EnumDeclarationType.CONST){
+            if(this.value == null){
+                for(let item of this.ids){
+                    ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La constant: "${item}" no tiene asignacion de un valor, debe tener valor`,env.enviromentType));
+                }
+                return null;
+            }
+        }
+
+        for(let item of this.ids){
+            this.saveVariableIntoEnvironment(env,item);
+        }
+
         return null;
     }
 
     getSize(){
-        return 0;
+        return this.ids.length;
     }
 
+    saveVariableIntoEnvironment(env,id){
+        let newSymbol;
+        let environments = env.getArrayEnvironments();
+        let location = new Location(EnumLocation.HEAP);
+
+        newSymbol = new Symbol(
+            this.line,
+            this.column,
+            id.toLowerCase(),
+            this.type,
+            this.typeDeclaration,
+            new Type(EnumType.VALOR,null),
+            env.enviromentType,
+            environments,
+            1,//TODO seria bueno tener un metodo que me diera el tama;o del array, el problema es que si no viene un numero, ese valor no lo conozco en compilacion
+            Singleton.getPosStack(),
+            this.dimensions,
+            null,
+            location,
+            null
+        );
+        
+        env.insertNewSymbol(id,newSymbol);
+        return null;
+    }
+
+    
+    getC3DArrayDeclarationWithValue(env,symbolOfVariable,resultArrayExpresion){
+        let code = '';
+        let tposStack;
+        let tposHeap;
+        let erroOfType = false;
+
+        if(symbolOfVariable == null) return '';
+
+        for(let item of resultArrayExpresion){
+            if(symbolOfVariable.type.enumType != item.type.enumType){
+                erroOfType = true;
+                ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de valor es diferente al tipo de variable ${item.type.toString()} != ${symbolOfVariable.type.toString()}`,env.enviromentType));
+            }
+        }
+
+        if(erroOfType) return '';
+
+        tposStack = Singleton.getTemporary();
+        tposHeap = Singleton.getTemporary();
+
+        for(let item of resultArrayExpresion){
+            if(item.type.enumType == EnumType.BOOLEAN){
+                let t1 = Singleton.getTemporary();
+                let lexit = Singleton.getLabel();
+
+                item.value = t1;
+
+                code += `//declaracion de valor booleano de array\n`;
+                for(let lt of item.trueLabels){
+                    code += `${lt}:\n`;
+                }
+
+                code += `${t1} = 1;\n`;
+                code += `goto ${lexit};\n`;
+
+                for(let lf of item.falseLabels){
+                    code += `${lf}:\n`;
+                }
+
+                code += `${t1} = 0;\n`;
+                code += `goto ${lexit};\n`;
+                code += `${lexit}:\n`;
+            }
+
+            if(env.enviromentType.enumEnvironmentType == enumEnvironmentType.MAIN){
+                code += `${tposStack} = ${symbolOfVariable.positionRelativa} + 0;//variable global\n`;
+            }else{
+                code += `${tposStack} = P + ${symbolOfVariable.positionRelativa};//variable local\n`;
+            }
+
+            code += `${tposHeap} = H;//posicion vacia de heap\n`;
+
+
+        }
+
+    }
 
 }

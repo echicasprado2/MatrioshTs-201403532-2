@@ -66,7 +66,7 @@ function getEditorC3D() {
   return tmp;
 }
 
-function getEditoroptimization() {
+function getEditorOptimize() {
   var codeMirrorTextArea = $(".CodeMirror");
   var tmp = codeMirrorTextArea[3].CodeMirror;
   return tmp;
@@ -155,7 +155,7 @@ compile.addEventListener("click",(e) => {
   
   if(editor.getValue() != ""){
     ErrorList.cleanErrorList();
-    var resultTranslated = new AST(Gramatica.parse(editor.getValue())); // obtengo el ast al correr el analizador
+    var resultTranslated = new AST(Gramatica.parse(editor.getValue()));
     resultTranslated.translatedSymbolsTable();
     editorTranslated.setValue(resultTranslated.getTranslated());
 
@@ -174,7 +174,24 @@ compile.addEventListener("click",(e) => {
 //TODO use this for optimizate intermediate code
 var optimizate = document.getElementById("optimizar");
 optimizate.addEventListener("click",(e) => {
-  alert("click in optimizate");
+  var editorC3D = getEditorC3D();
+  var editorOptimize = getEditorOptimize();
+  var myConsole = getConsole();
+
+  cleanReportsOptimization();
+  myConsole.setValue("");
+
+  if(editorC3D.getValue() == ''){
+    PrintConsole.printLine('No se tiene entrada de codigo 3 direcciones!');
+    myConsole.setValue(PrintConsole.getPrintConsole());
+    return;
+  }
+
+  let astC3D = new ASTC3D(C3DGrammar.parse(editorC3D.getValue()));
+  let resultC3D = astC3D.getOptimize();
+  editorOptimize.setValue(resultC3D);
+  
+  showTableOptimize();
 });
 
 function showTranslatedTree(file) {
@@ -185,7 +202,6 @@ function showTranslatedTree(file) {
     var code = ast.stringFinalTreeTranslated(ast.totalString(ast));
   }
 
-  //genera el arbol y da error
   var element = document.querySelector("showTranslatedTree");
   var insertSvg = function (svgCode) {
   element.innerHTML = svgCode;
@@ -202,7 +218,6 @@ function showExecuteTree(file) {
     var code = ast.stringFinalTreeExecute(ast.totalString(ast));
   }
 
-  // genera el arbol y da error
   var element = document.querySelector("showExecuteTree");
   var insertSvg = function (svgCode) {
     element.innerHTML = svgCode;
@@ -217,7 +232,6 @@ function showCompileTree(file){
     var code = ast.stringFinalTreeCompile(ast.totalString(ast));
   }
 
-  // genera el arbol y da error
   var element = document.querySelector("showCompileTree");
   var insertSvg = function (svgCode) {
     element.innerHTML = svgCode;

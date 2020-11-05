@@ -240,6 +240,12 @@ class Relational extends Expresion {
         return this.likeAndDifferentNumber(env,result1,result2);
       case EnumType.STRING:
         return this.likeAndDifferentString(env,result1,result2);
+      case EnumType.NULL:
+        result1.type.enumType = EnumType.NUMBER;
+        result1.type.identifier = 'INTEGER';
+        result2.type.enumType = EnumType.NUMBER;
+        result2.type.identifier = 'INTEGER';
+        return this.likeAndDifferentNumber(env,result1,result2);
       default:
         ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de valor ${enumOperationType.toString()}, no se puede operar`,env.enviromentType));
         return result;
@@ -250,7 +256,8 @@ class Relational extends Expresion {
   likeAndDifferentString(env,result1,result2){
     let result = new RESULT();
 
-    if(result1.type.enumType != EnumType.STRING || result2.type.enumType != EnumType.STRING){
+    if((result1.type.enumType != EnumType.STRING && result1.type.enumType != EnumType.NULL) || 
+      (result2.type.enumType != EnumType.STRING && result2.type.enumType != EnumType.NULL)){
       ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puede opera estos tipos de valores ${result1.type.toString()}, ${result2.type.toString()}`,env.enviromentType));
       return new RESULT();
     }

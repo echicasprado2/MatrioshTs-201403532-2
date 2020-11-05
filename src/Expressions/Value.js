@@ -42,6 +42,8 @@ class Value extends Expresion {
       } else {
         this.translatedCode = `"${this.value.toString()}"`;
       }
+    } else if(this.type.enumType == EnumType.NULL){
+      this.translatedCode = 'null';
     } else {
       this.translatedCode = this.value.toString();
     }

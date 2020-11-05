@@ -1,4 +1,4 @@
-class If extends NodeC3D{
+class IfC3D extends NodeC3D{
 
     constructor(line,column){
         super(line,column);
