@@ -114,6 +114,8 @@ class BlockIf extends Instruction {
         result.code += resultBlock.code;
         result.code += `goto ${lexit};\n`;
         
+        Singleton.deleteTemporaryIntoDisplay(resultCondition.value);
+
         return result;
     }
     

@@ -257,8 +257,10 @@ class Declaration extends Instruction {
       ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El tipo de valor es diferente al tipo de variable ${symbolOfVariable.type.toString()} != ${resultExpresion.type.toString()}`,env.enviromentType));
       return '';
     }
-
+    
     if(resultExpresion.type.enumType == EnumType.BOOLEAN){
+      Singleton.deleteTemporaryIntoDisplay(resultExpresion.value);
+
       let t1 = Singleton.getTemporary();
       let lexit = Singleton.getLabel();
 
@@ -278,6 +280,8 @@ class Declaration extends Instruction {
       resultExpresion.code += `${t1} = 0;\n`;
       resultExpresion.code += `goto ${lexit};\n`;
       resultExpresion.code += `${lexit}://salida de guardar valor booleano\n`;
+      resultExpresion.value = t1;
+
     }
 
     tPosStack = Singleton.getTemporary()

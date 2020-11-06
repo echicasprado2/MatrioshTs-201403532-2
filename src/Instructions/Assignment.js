@@ -287,6 +287,7 @@ class Assignment extends Instruction {
         result.code = resultExpresion.code;
 
         if(resultExpresion.type.enumType == EnumType.BOOLEAN){
+            Singleton.deleteTemporaryIntoDisplay(result.value);
             let t1 = Singleton.getTemporary();
             let lexit = Singleton.getLabel();
             

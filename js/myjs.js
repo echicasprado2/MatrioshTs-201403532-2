@@ -177,11 +177,13 @@ optimizate.addEventListener("click",(e) => {
   var editorC3D = getEditorC3D();
   var editorOptimize = getEditorOptimize();
   var myConsole = getConsole();
+  let code = editorC3D.getValue();
 
   cleanReportsOptimization();
   myConsole.setValue("");
 
-  if(editorC3D.getValue() == ''){
+
+  if(code == ''){
     PrintConsole.printLine('No se tiene entrada de codigo 3 direcciones!');
     myConsole.setValue(PrintConsole.getPrintConsole());
     return;
@@ -190,6 +192,8 @@ optimizate.addEventListener("click",(e) => {
   let astC3D = new ASTC3D(C3DGrammar.parse(editorC3D.getValue()));
   let resultC3D = astC3D.getOptimize();
   editorOptimize.setValue(resultC3D);
+  PrintConsole.printLine('Fin optimizacion');
+  myConsole.setValue(PrintConsole.getPrintConsole());
   
   showTableOptimize();
 });

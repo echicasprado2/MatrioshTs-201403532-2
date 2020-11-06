@@ -262,64 +262,93 @@ class Relational extends Expresion {
       return new RESULT();
     }
 
-    let tPos = Singleton.getTemporary();
-    let tVal = Singleton.getTemporary();
-    let tSuma = Singleton.getTemporary();
-    let lReturn = Singleton.getLabel();
-    let lExit = Singleton.getLabel();
-      
+    let tPos1 = Singleton.getTemporary();
     let tPos2 = Singleton.getTemporary();
-    let tVal2 = Singleton.getTemporary();
-    let tSuma2 = Singleton.getTemporary();
-    let lReturn2 = Singleton.getLabel();
-    let lExit2 = Singleton.getLabel();
-    
-    let tResul = Singleton.getTemporary();
-    let lTrue = Singleton.getLabel();
-    let lFalse = Singleton.getLabel();
-      
-    result.trueLabels.push(lTrue);
-    result.falseLabels.push(lFalse);
-  
+    let tval1 = Singleton.getTemporary();
+    let tval2 = Singleton.getTemporary();
+    let linit = Singleton.getLabel();
+    let ltrue = Singleton.getLabel();
+    let lsigtrue = Singleton.getLabel();
+    let lsigfalse = Singleton.getLabel();
+    let lfalse = Singleton.getLabel();
+    let lfinval1 = Singleton.getLabel();
+    let lfinval2 = Singleton.getLabel();
+    let lnull2 = Singleton.getLabel();
+    let tresult = Singleton.getTemporary();
+
     result.code = result1.code + result2.code;
-    result.code += `${tSuma} = 0;\n`;
-    result.code += `${tPos} = ${result1.value};\n`;
-    result.code += `if(${tPos}  <0) goto ${lExit};\n`;
-    result.code += `${tVal} = 0;\n`;
-    result.code += `${lReturn}:\n`;
-    result.code += `${tVal} = Heap[(int)${tPos}];\n`;
-    result.code += `${tPos} = ${tPos} + 1;\n`;  
-    result.code += `if(${tVal} == -1) goto ${lExit};\n`;
-    result.code += `${tSuma} = ${tSuma} + ${tVal};\n`;
-    result.code += `goto ${lReturn};\n`;
-    result.code += `${lExit}:\n`;
-
-    result.code += `${tSuma2} = 0;\n`;
-    result.code += `${tPos2} = ${result2.value};\n`;
-    result.code += `if(${tPos2} < 0) goto ${lExit2};\n`;
-    result.code += `${tVal2} = 0;\n`;
-    result.code += `${lReturn2}:\n`;
-    result.code += `${tVal2} = Heap[(int)${tPos2}];\n`;
-    result.code += `${tPos2} = ${tPos2} + 1;\n`;
-    result.code += `if(${tVal2} == -1) goto ${lExit2};\n`;
-    result.code += `${tSuma2} = ${tSuma2} + ${tVal2};\n`;
-    result.code += `goto ${lReturn2};\n`;
-    result.code += `${lExit2}:\n`;
+    result.code += `${tPos1} =  ${result1.value};//inicio primera cadena\n`;
+    result.code += `${tPos2} =  ${result2.value};//inicio segunda cadena\n`;
+    result.code += `if(${tPos1} ==  -1) goto ${lnull2};\n`;
+    result.code += `goto ${linit};\n`;
+    result.code += `${linit}:\n`;
+    result.code += `${tval1} = Heap[(int)${tPos1}];//valor de cadena 1\n`;
+    result.code += `${tval2} = Heap[(int)${tPos2}];//valor de cadena 2\n`;
+    
+    if(this.operationType.enumOperationType == EnumOperationType.LIKE_THAN){
+      result.code += `if(${tval1} == -1) goto ${lfinval2};\n`;
+      result.code += `if(${tval1} !=  ${tval2}) goto ${lsigfalse};\n`; //*
+      result.code += `${tPos1} = ${tPos1} + 1;\n`;
+      result.code += `${tPos2} = ${tPos2} + 1;\n`;
+      result.code += `goto ${linit};\n`;
+      result.code += `${lfinval2}:\n`;
+      result.code += `if(${tval2} == -1) goto ${lsigtrue};\n`; // *
+      result.code += `goto ${lsigfalse};\n`;                   // *
       
-    result.code += `if(${tSuma} ${this.operationType.toString()} ${tSuma2}) goto ${lTrue};\n`;
-    result.code += `goto ${lFalse};\n`;
+      result.code += `${lnull2}:\n`;
+      result.code += `if(${tPos2} == -1) goto ${lsigtrue};\n`; //*
+      result.code += `goto ${lsigfalse};\n`;                   //*
   
-    result.type.enumType = EnumType.BOOLEAN;
-    result.value = this.getValueOfResult(tSuma,tSuma2);
+      result.code += `${lsigtrue}:\n`;  
+      result.code += `${tresult} = 1;\n`;
+      result.code += `goto ${ltrue};\n`;
+  
+      result.code += `${lsigfalse}:\n`;
+      result.code += `${tresult} = 0;\n`;  
+      result.code += `goto ${lfalse};\n`;
 
-    Singleton.deleteTemporaryIntoDisplay(tPos);
-    Singleton.deleteTemporaryIntoDisplay(tVal);
-    Singleton.deleteTemporaryIntoDisplay(tSuma);
+    }else{
+      result.code += `if(${tval1} == -1) goto ${lfinval2};\n`;
+      result.code += `if(${tval2} == -1) goto ${lfinval1};\n`;
+      result.code += `if(${tval1} ==  ${tval2}) goto ${lsigfalse};\n`; //*
+      result.code += `${tPos1} = ${tPos1} + 1;\n`;
+      result.code += `${tPos2} = ${tPos2} + 1;\n`;
+      result.code += `goto ${linit};\n`;
+
+      result.code += `${lfinval1}:\n`;
+      result.code += `if(${tval1} == -1) goto ${lsigtrue};\n`; // *
+      result.code += `goto ${lsigtrue};\n`;                   // *
+
+      result.code += `${lfinval2}:\n`;
+      result.code += `if(${tval2} == -1) goto ${lsigtrue};\n`; // *
+      result.code += `goto ${lsigtrue};\n`;                   // *
+      
+      result.code += `${lnull2}:\n`;
+      result.code += `if(${tPos2} == -1) goto ${lsigfalse};\n`; //*
+      result.code += `goto ${lsigtrue};\n`;                   //*
+  
+      result.code += `${lsigtrue}:\n`;  
+      result.code += `${tresult} = 1;\n`;
+      result.code += `goto ${ltrue};\n`;
+  
+      result.code += `${lsigfalse}:\n`;
+      result.code += `${tresult} = 0;\n`;  
+      result.code += `goto ${lfalse};\n`;
+    }
+
+
+    result.trueLabels.push(ltrue);
+    result.falseLabels.push(lfalse);
+    result.type.enumType = EnumType.BOOLEAN;
+    result.value = tresult;
+
+    Singleton.deleteTemporaryIntoDisplay(tPos1);
     Singleton.deleteTemporaryIntoDisplay(tPos2);
-    Singleton.deleteTemporaryIntoDisplay(tVal2);
-    Singleton.deleteTemporaryIntoDisplay(tSuma2);
+    Singleton.deleteTemporaryIntoDisplay(tval1);
+    Singleton.deleteTemporaryIntoDisplay(tval2);
     Singleton.deleteTemporaryIntoDisplay(result1.value);
-    Singleton.deleteTemporaryIntoDisplay(result1.value);
+    Singleton.deleteTemporaryIntoDisplay(result2.value);
+
 
     return result;
   }

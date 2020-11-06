@@ -13,7 +13,6 @@ class AST {
    * obtengo el codigo traduccido de mi analisis
    */
   getTranslated() {
-    // ErrorList.cleanErrorList();
     PrintConsole.cleanConsole();
 
     for (var i = 0; i < this.instruccions.length; i++) {

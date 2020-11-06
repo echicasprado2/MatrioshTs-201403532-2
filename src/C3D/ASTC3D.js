@@ -5,6 +5,7 @@ class ASTC3D{
     }
 
     getOptimize(){
-
+        PrintConsole.cleanConsole();
+        return '';
     }
 }
