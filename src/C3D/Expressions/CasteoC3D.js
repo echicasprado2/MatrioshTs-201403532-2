@@ -1,9 +1,9 @@
-class IfC3D extends InstructionC3D{
+class CasteoC3D extends ExpresionC3D{
 
-    constructor(line,column,condition,nameTag){
+    constructor(line,column,type,expresionC3D){
         super(line,column);
-        this.condition = condition;
-        this.nameTag = nameTag;
+        this.type = type;
+        this.expresionC3D = expresionC3D;
     }
 
     optimizeByPeephole(listNodes,currentIndex){

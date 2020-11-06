@@ -1,7 +1,8 @@
-class GoTo extends NodeC3D{
+class GoToC3D extends InstructionC3D{
 
-    constructor(line,column){
+    constructor(line,column,nameTag){
         super(line,column);
+        this.nameTag = nameTag;
     }
 
     optimizeByPeephole(listNodes,currentIndex){

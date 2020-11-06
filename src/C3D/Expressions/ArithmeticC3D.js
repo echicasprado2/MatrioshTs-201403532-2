@@ -1,9 +1,10 @@
-class IfC3D extends InstructionC3D{
+class ArithmeticC3D extends ExpresionC3D{
 
-    constructor(line,column,condition,nameTag){
+    constructor(line,column,operationType,exp1,exp2){
         super(line,column);
-        this.condition = condition;
-        this.nameTag = nameTag;
+        this.operationType = operationType;
+        this.exp1 = exp1;
+        this.exp2 = exp2;
     }
 
     optimizeByPeephole(listNodes,currentIndex){

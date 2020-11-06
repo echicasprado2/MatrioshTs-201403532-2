@@ -1,9 +1,8 @@
-class IfC3D extends InstructionC3D{
+class TemporaryC3D extends ExpresionC3D{
 
-    constructor(line,column,condition,nameTag){
+    constructor(line,column,nameTemporary){
         super(line,column);
-        this.condition = condition;
-        this.nameTag = nameTag;
+        this.nameTemporary = nameTemporary;
     }
 
     optimizeByPeephole(listNodes,currentIndex){

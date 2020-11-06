@@ -88,7 +88,7 @@ L[0-9]+             return 'etiqueta';
 %nonassoc '<' '<='
 %left '+' '-'
 %left '*' '/' '%'
-%right UMENOS
+// %right UMENOS
 %right '('
 %left ')'
 %left '['
@@ -104,52 +104,49 @@ L[0-9]+             return 'etiqueta';
 %%
 
 /* GRAMATICA */
-INIT: SENTENCES EOF
-    | EOF
+INIT: SENTENCES EOF { return $1; }
+    | EOF           { return []; }
     ;
 
-SENTENCES: SENTENCES SENTENCE
-        | SENTENCE
+SENTENCES: SENTENCES SENTENCE { $$ = $1; $$.push($2); }
+        | SENTENCE            { $$ = []; $$.push($1); }
         ;
 
-SENTENCE: IMPORT
-        | DECLARATION
-        | FUNCION
-        | PRINT
-        | RETURN
-        | CALLFUNCION
-        | ASSIGNMENT
-        | IF
-        | GOTO
-        | TAG
+SENTENCE: IMPORT               { $$ = $1; }
+        | DECLARATION          { $$ = $1; }
+        | FUNCION              { $$ = $1; }
+        | PRINT                { $$ = $1; } 
+        | RETURN               { $$ = $1; }
+        | CALLFUNCION          { $$ = $1; }
+        | ASSIGNMENT           { $$ = $1; }
+        | ASSIGNMENT_STRUCTURE { $$ = $1; }
+        | IF                   { $$ = $1; }
+        | GOTO                 { $$ = $1; }
+        | TAG                  { $$ = $1; }
         ;
 
-CALLFUNCION: id par_izq par_der punto_y_coma
+CALLFUNCION: id par_izq par_der punto_y_coma { $$ = new CallFunctionC3D(this._$.first_line,this._$.first_column,$1); }
             ;
 
-RETURN: return E punto_y_coma
-      | return punto_y_coma
+RETURN: return E punto_y_coma { $$ = new ReturnC3D(this._$.first_line,this._$.first_column,$2); }
+      | return punto_y_coma   { $$ = new ReturnC3D(this._$.first_line,this._$.first_column,null); }
       ;
 
-TYPE: void
-    | float
-    | int
-    | char
+TYPE: void  { $$ = new TypeC3D(EnumTypeC3D.VOID); }   
+    | float { $$ = new TypeC3D(EnumTypeC3D.FLOAT); } 
+    | int   { $$ = new TypeC3D(EnumTypeC3D.INT); } 
+    | char  { $$ = new TypeC3D(EnumTypeC3D.CHAR); }
     ;
 
-PRINT: print par_izq val_string coma E par_der punto_y_coma
+PRINT: print par_izq val_string coma E par_der punto_y_coma { $$ = new PrintC3D(this._$.first_line,this._$.first_column,$3,$5); }
      ;
 
-// E_PRINT: E
-//         | CASTEO
-//         ;
-
-IMPORT: include '<' library '>' 
+IMPORT: include '<' library '>' { $$ = new ImportC3D(this._$.first_line,this._$.first_column,$3); }
       ;
 
-DECLARATION: TYPE L_ID cor_izq val_entero cor_der punto_y_coma { console.log($2); } 
-           | TYPE L_ID '=' val_entero punto_y_coma             { console.log($2); }
-           | TYPE L_ID punto_y_coma                            { console.log($2); }
+DECLARATION: TYPE L_ID cor_izq val_entero cor_der punto_y_coma { $$ = new DeclarationStructureC3D(this._$.first_line,this._$.first_column,$1,$2,$4); } 
+           | TYPE L_ID '=' val_entero punto_y_coma             { $$ = new DeclarationC3D(this._$.first_line,this._$.first_column,$1,$2,$4); }
+           | TYPE L_ID punto_y_coma                            { $$ = new DeclarationC3D(this._$.first_line,this._$.first_column,$1,$2,null); }
            ;
 
 L_ID: L_ID coma ID { $$ = $1; $$.push($3); }
@@ -163,63 +160,67 @@ ID:   temporal  { $$ = $1; }
     | H_Heap    { $$ = $1; }
     ;
 
-BLOCK: llave_izq SENTENCES llave_der
-    |  llave_izq llave_der
+BLOCK: llave_izq SENTENCES llave_der { $$ = new BlockC3D(this._$.first_line,this._$.first_column,$2); }
+    |  llave_izq llave_der           { $$ = new BlockC3D(this._$.first_line,this._$.first_column,[]); }
     ;
 
-FUNCION: TYPE id par_izq par_der BLOCK
+FUNCION: TYPE id par_izq par_der BLOCK { $$ = new FunctionC3D(this._$.first_line,this._$.first_column,$1,$2,$5); }
        ;
 
-ASSIGNMENT:   heap cor_izq CASTEO cor_der '=' E punto_y_coma
-            | stack cor_izq CASTEO cor_der '=' E punto_y_coma
-            | temporal '=' E punto_y_coma
-            | P_Stack '=' E punto_y_coma
-            | H_Heap '=' E punto_y_coma
+ASSIGNMENT:  temporal '=' E punto_y_coma { $$ = new AssignmentC3D(this._$.first_line,this._$.first_column,$1,$3); }
+            | P_Stack '=' E punto_y_coma { $$ = new AssignmentC3D(this._$.first_line,this._$.first_column,$1,$3); }
+            | H_Heap '=' E punto_y_coma  { $$ = new AssignmentC3D(this._$.first_line,this._$.first_column,$1,$3); }
             ;
 
-CASTEO: par_izq TYPE par_der temporal
-      | par_izq TYPE par_der P_Stack
-      | par_izq TYPE par_der H_Heap
-      | par_izq TYPE par_der val_entero
-      | par_izq TYPE par_der val_decimal
-      | par_izq TYPE par_der par_izq E par_der
+ASSIGNMENT_STRUCTURE: heap cor_izq CASTEO cor_der '=' E punto_y_coma  { $$ = new AssignmentStructureC3D(this._$.first_line,this._$.first_column,$1,$3,$6); }
+                    | stack cor_izq CASTEO cor_der '=' E punto_y_coma { $$ = new AssignmentStructureC3D(this._$.first_line,this._$.first_column,$1,$3,$6); }
+                    ;
+
+CASTEO: par_izq TYPE par_der temporal          { $$ = new CasteoC3D(this._$.first_line,this._$.first_column,$2,$4);}
+      | par_izq TYPE par_der P_Stack           { $$ = new CasteoC3D(this._$.first_line,this._$.first_column,$2,$4);} 
+      | par_izq TYPE par_der H_Heap            { $$ = new CasteoC3D(this._$.first_line,this._$.first_column,$2,$4);} 
+      | par_izq TYPE par_der val_entero        { $$ = new CasteoC3D(this._$.first_line,this._$.first_column,$2,$4);} 
+      | par_izq TYPE par_der val_decimal       { $$ = new CasteoC3D(this._$.first_line,this._$.first_column,$2,$4);} 
+      | par_izq TYPE par_der par_izq E par_der { $4.haveParentesis = true; $$ = new CasteoC3D(this._$.first_line,this._$.first_column,$2,$4);} 
       ;
 
-IF: if par_izq E par_der goto etiqueta punto_y_coma
+IF: if par_izq E par_der goto etiqueta punto_y_coma { $$ = new IfC3D(this._$.first_line,this._$.first_column,$3,$6); }
     ;
 
-GOTO: goto etiqueta punto_y_coma
+GOTO: goto etiqueta punto_y_coma { $$ = new GoToC3D(this._$.first_line,this._$.first_column,$2); }
     ;
 
-TAG: etiqueta dos_puntos
+TAG: etiqueta dos_puntos { $$ = new TagC3D(this._$.first_line,this._$.first_column,$1); }
     ;
 
-E   : E '+' E
-    | E '-' E
-    | E '*' E
-    | E '/' E
-    | E '%' E
-    | '-' E %prec UMENOS
-    | E '!=' E
-    | E '==' E
-    | E '>=' E
-    | E '>'  E
-    | E '<=' E
-    | E '<'  E
+E   : E '+'  E { $$ = new ArithmeticC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.PLUS),$1,$3); }
+    | E '-'  E { $$ = new ArithmeticC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.MINUS),$1,$3); }
+    | E '*'  E { $$ = new ArithmeticC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.MULTIPLICATION),$1,$3); }
+    | E '/'  E { $$ = new ArithmeticC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.DIVISION),$1,$3); }
+    | E '%'  E { $$ = new ArithmeticC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.MODULE),$1,$3); }
 
-    | val_decimal
-    | val_entero
-    | val_string
-    | par_izq E par_der
+    | E '!=' E { $$ = new RelationalC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.DIFFERENT_THAN),$1,$3); }
+    | E '==' E { $$ = new RelationalC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.LIKE_THAN),$1,$3); }
+    | E '>=' E { $$ = new RelationalC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.MORE_EQUAL_TO),$1,$3); }
+    | E '>'  E { $$ = new RelationalC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.MORE_THAN),$1,$3); }
+    | E '<=' E { $$ = new RelationalC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.LESS_EQUAL_TO),$1,$3); }
+    | E '<'  E { $$ = new RelationalC3D(this._$.first_line,this._$.first_column,new OperationTypeC3D(EnumOperationTypeC3D.LESS_THAN),$1,$3); }
 
-    | heap cor_izq CASTEO cor_der
-    | stack cor_izq CASTEO cor_der
+    | val_decimal    { $$ = new ValueC3D(this._$.first_line,this._$.first_column,new ValueTypeC3D(EnumValueTypeC3D.DOUBLE),$1); }
+    | val_entero     { $$ = new ValueC3D(this._$.first_line,this._$.first_column,new ValueTypeC3D(EnumValueTypeC3D.INTEGER),$1); }
+    | val_string     { $$ = new ValueC3D(this._$.first_line,this._$.first_column,new ValueTypeC3D(EnumValueTypeC3D.STRING),$1); }
+    | '-' val_entero { $$ = new ValueC3D(this._$.first_line,this._$.first_column,new ValueTypeC3D(EnumValueTypeC3D.INTEGER),$1.concat($2)); }
 
-    | temporal
+    | par_izq E par_der { $$ = $1; $$.haveParentesis = true; }
 
-    | P_Stack
-    | H_Heap
+    | heap cor_izq CASTEO cor_der  { $$ = new StructureC3D(this._$.first_line,this._$.first_column,$1,$2); }
+    | stack cor_izq CASTEO cor_der { $$ = new StructureC3D(this._$.first_line,this._$.first_column,$1,$2); }
 
-    | CASTEO
+    | temporal { $$ = new TemporaryC3D(this._$.first_line,this._$.first_column,$1); }
+
+    | P_Stack { $$ = new PointerC3D(this._$.first_line,this._$.first_column,$1); }
+    | H_Heap  { $$ = new PointerC3D(this._$.first_line,this._$.first_column,$1); }
+
+    | CASTEO { $$ = $1; }
 
     ;

@@ -1,9 +1,8 @@
-class IfC3D extends InstructionC3D{
+class ImportC3D extends InstructionC3D{
 
-    constructor(line,column,condition,nameTag){
+    constructor(line,column,nameLibrary){
         super(line,column);
-        this.condition = condition;
-        this.nameTag = nameTag;
+        this.nameLibrary = nameLibrary;
     }
 
     optimizeByPeephole(listNodes,currentIndex){
