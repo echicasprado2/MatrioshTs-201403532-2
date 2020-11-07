@@ -36,38 +36,45 @@ class Length extends Expresion {
 
         resultValue = this.access.getC3D(env);
 
-        if(resultValue.type.enumType != EnumType.STRING){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Propiedad solo para expresiones de tipo String`,env.enviromentType));
+        if(resultValue.symbol.typeValue.EnumType == EnumType.VALOR){
+            if(resultValue.type.enumType != EnumType.STRING){
+                ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Propiedad solo para expresiones de tipo String`,env.enviromentType));
+                return result;
+            }
+
+            result.code = resultValue.code;
+
+            tcounter = Singleton.getTemporary();
+            tpointer = Singleton.getTemporary();
+            tchar = Singleton.getTemporary();
+            linit = Singleton.getLabel();
+            lexit = Singleton.getLabel();
+
+            result.code += `${tcounter} = 0;//para contar el size del string\n`;
+            result.code += `${tchar} = 0;//evaluar el fin de cadena\n`;
+            result.code += `${tpointer} = ${resultValue.value};//puntero de string\n`;
+            result.code += `${linit}:\n`;
+            result.code += `${tchar} = Heap[(int)${tpointer}];\n`;
+            result.code += `if(${tchar} == -1) goto ${lexit};\n`;
+            result.code += `${tpointer} = ${tpointer} + 1;\n`;
+            result.code += `${tcounter} = ${tcounter} + 1;\n`;
+            result.code += `goto ${linit};\n`;
+            result.code += `${lexit}:\n`;
+
+            Singleton.deleteTemporaryIntoDisplay(resultValue.value);
+            Singleton.deleteTemporaryIntoDisplay(tpointer);
+            Singleton.deleteTemporaryIntoDisplay(tchar);
+
             return result;
+
+        }else if(resultValue.symbol.typeValue == EnumType.ARRAY){
+            tcounter = Singleton.getTemporary();
+            result.code += `${tcounter} = ${resultValue.symbol.size};//size de arreglo\n`;
         }
-
-
-        result.code = resultValue.code;
-
-        tcounter = Singleton.getTemporary();
-        tpointer = Singleton.getTemporary();
-        tchar = Singleton.getTemporary();
-        linit = Singleton.getLabel();
-        lexit = Singleton.getLabel();
-
-        result.code += `${tcounter} = 0;//para contar el size del string\n`;
-        result.code += `${tchar} = 0;//evaluar el fin de cadena\n`;
-        result.code += `${tpointer} = ${resultValue.value};//puntero de string\n`;
-        result.code += `${linit}:\n`;
-        result.code += `${tchar} = Heap[(int)${tpointer}];\n`;
-        result.code += `if(${tchar} == -1) goto ${lexit};\n`;
-        result.code += `${tpointer} = ${tpointer} + 1;\n`;
-        result.code += `${tcounter} = ${tcounter} + 1;\n`;
-        result.code += `goto ${linit};\n`;
-        result.code += `${lexit}:\n`;
 
         result.value = tcounter;
         result.type.enumType = EnumType.NUMBER;
         result.type.identifier = 'INTEGER';
-
-        Singleton.deleteTemporaryIntoDisplay(resultValue.value);
-        Singleton.deleteTemporaryIntoDisplay(tpointer);
-        Singleton.deleteTemporaryIntoDisplay(tchar);
 
         return result;
     }
