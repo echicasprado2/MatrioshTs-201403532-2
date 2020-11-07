@@ -36,7 +36,7 @@ class Length extends Expresion {
 
         resultValue = this.access.getC3D(env);
 
-        if(resultValue.symbol.typeValue.EnumType == EnumType.VALOR){
+        if(resultValue.symbol.typeValue.enumType == EnumType.VALOR){
             if(resultValue.type.enumType != EnumType.STRING){
                 ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Propiedad solo para expresiones de tipo String`,env.enviromentType));
                 return result;
@@ -67,7 +67,7 @@ class Length extends Expresion {
 
             return result;
 
-        }else if(resultValue.symbol.typeValue == EnumType.ARRAY){
+        }else if(resultValue.symbol.typeValue.enumType == EnumType.ARRAY){
             tcounter = Singleton.getTemporary();
             result.code += `${tcounter} = ${resultValue.symbol.size};//size de arreglo\n`;
         }
