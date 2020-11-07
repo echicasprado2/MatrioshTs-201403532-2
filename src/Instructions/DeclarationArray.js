@@ -34,7 +34,10 @@ class DeclarationArray extends Instruction {
         this.translatedCode += " = ";
 
         if(this.values != null){
-            this.translatedCode += this.makeArray(this.values.value[0]);
+
+            if(this.values instanceof Value) this.translatedCode += this.makeArray(this.values.value[0]);
+            else if(this.values instanceof Access) this.translatedCode += this.values.getTranslated();
+
         }else if(this.values == null && this.size instanceof Expresion){
             this.translatedCode += `new Array(${this.size.getTranslated()})`;
         }
@@ -218,9 +221,7 @@ class DeclarationArray extends Instruction {
     }
 
     getC3D(env){
-        let resultArrayExpresion;
-        let resultExpresion;
-        let resultSize;
+        let resultArrayExpresion = [];
         let symbolOfVariable;
         let result = new RESULT();
 
@@ -230,20 +231,26 @@ class DeclarationArray extends Instruction {
         }
 
         if(this.values != undefined){
-            for(let item of this.values){
-                resultExpresion = item.getC3D(env);//TODO este deja de funcionar al traer arreglos de arreglos
-                if(resultExpresion == null || resultExpresion.type.enumType == EnumType.ERROR) return result;
-                resultArrayExpresion.push(resultExpresion);
+            
+            if(this.values instanceof Value){ 
+                resultArrayExpresion = this.getDataOfValues(env,this.values.value[0]);
+                for(let name of this.ids){
+                    symbolOfVariable = env.searchSymbol(name);
+                    if(symbolOfVariable != null)
+                        result.code = this.getC3DArrayDeclarationWithValue(env,symbolOfVariable,resultArrayExpresion);
+                }
+                
+            }else if(this.values instanceof Access){ 
+                resultArrayExpresion = this.values.getC3D(env);
+                
+                for(let name of this.ids){
+                    symbolOfVariable = env.searchSymbol(name);
+                    if(symbolOfVariable != null)
+                        result.code = this.getC3DArrayDeclarationWithAccessOtherArray(env,symbolOfVariable,resultArrayExpresion);
+                }
             }
-
-            for(let name of this.ids){
-                symbolOfVariable = env.searchSymbol(name);
-                if(symbolOfVariable != null)
-                    result.code = this.getC3DArrayDeclarationWithValue(env,symbolOfVariable,resultArrayExpresion);
-            }
-
         }else{
-            //TODO tengo que traer el size del arreglo, inicializar sus posiciones con -1
+            this.size = this.size.value;
         }
         
         return result;
@@ -265,15 +272,25 @@ class DeclarationArray extends Instruction {
 
         return null;
     }
-
-    getSize(){
-        return this.ids.length;
-    }
-
+    
     saveVariableIntoEnvironment(env,id){
         let newSymbol;
         let environments = env.getArrayEnvironments();
         let location = new Location(EnumLocation.HEAP);
+
+
+        if(this.values == undefined){
+             this.size = this.size.value;
+        
+        }else {
+            if(this.values instanceof Value){
+                this.size = this.getSizeArray();
+
+            }else if(this.values instanceof Access){
+                let tmp = env.searchSymbol(this.values.value[0].identifier);
+                if(tmp != null) this.size = tmp.size;
+            }
+        } 
 
         newSymbol = new Symbol(
             this.line,
@@ -284,7 +301,7 @@ class DeclarationArray extends Instruction {
             new Type(EnumType.VALOR,null),
             env.enviromentType,
             environments,
-            1,//TODO seria bueno tener un metodo que me diera el tama;o del array, el problema es que si no viene un numero, ese valor no lo conozco en compilacion
+            this.size,//TODO seria bueno tener un metodo que me diera el tama;o del array, el problema es que si no viene un numero, ese valor no lo conozco en compilacion
             Singleton.getPosStack(),
             this.dimensions,
             null,
@@ -296,11 +313,11 @@ class DeclarationArray extends Instruction {
         return null;
     }
 
-    
     getC3DArrayDeclarationWithValue(env,symbolOfVariable,resultArrayExpresion){
         let code = '';
         let tposStack;
         let tposHeap;
+        let tinitHeap;
         let erroOfType = false;
 
         if(symbolOfVariable == null) return '';
@@ -314,44 +331,123 @@ class DeclarationArray extends Instruction {
 
         if(erroOfType) return '';
 
+        for(let item of resultArrayExpresion){
+            code += item.code;
+        }
+
         tposStack = Singleton.getTemporary();
         tposHeap = Singleton.getTemporary();
+        tinitHeap = Singleton.getTemporary();
+
+        code += `${tinitHeap} = H;//inicio del arreglo en heap\n`;
+        code += `${tposHeap} = ${tinitHeap};//puntero en heap, para guardar valores\n`;
+        code += `Heap[(int)${tposHeap}] = ${this.size};//Guardo el size del arreglo\n`;
 
         for(let item of resultArrayExpresion){
+
             if(item.type.enumType == EnumType.BOOLEAN){
+                Singleton.deleteTemporaryIntoDisplay(item.value);
+
                 let t1 = Singleton.getTemporary();
                 let lexit = Singleton.getLabel();
 
-                item.value = t1;
-
+                
                 code += `//declaracion de valor booleano de array\n`;
                 for(let lt of item.trueLabels){
                     code += `${lt}:\n`;
                 }
-
+                
                 code += `${t1} = 1;\n`;
                 code += `goto ${lexit};\n`;
 
                 for(let lf of item.falseLabels){
                     code += `${lf}:\n`;
                 }
-
+                
                 code += `${t1} = 0;\n`;
                 code += `goto ${lexit};\n`;
                 code += `${lexit}:\n`;
+
+                item.value = t1;
             }
+            
+            code += `${tposHeap} = ${tposHeap} + 1;//Guardar valor de arreglo\n`;
+            code += `Heap[(int)${tposHeap}] = ${item.value};//Guardo valor de arreglo en heap\n`;
 
-            if(env.enviromentType.enumEnvironmentType == enumEnvironmentType.MAIN){
-                code += `${tposStack} = ${symbolOfVariable.positionRelativa} + 0;//variable global\n`;
-            }else{
-                code += `${tposStack} = P + ${symbolOfVariable.positionRelativa};//variable local\n`;
-            }
+            Singleton.deleteTemporaryIntoDisplay(item.value);
+        }
+        code += `${tposHeap} = ${tposHeap} + 1;\n`;
+        code += `H = ${tposHeap};//posicion vacia de heap\n`;
 
-            code += `${tposHeap} = H;//posicion vacia de heap\n`;
+        if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.MAIN){
+            code += `${tposStack} = ${symbolOfVariable.positionRelativa} + 0;//variable global\n`;
 
+        }else{
+            code += `${tposStack} = P + ${symbolOfVariable.positionRelativa};//variable local\n`;
+        }
+
+        code += `Stack[(int)${tposStack}] = ${tinitHeap};//guardo inicio de arreglo en heap\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(tposStack);
+        Singleton.deleteTemporaryIntoDisplay(tposHeap);
+        Singleton.deleteTemporaryIntoDisplay(tinitHeap);
+
+        return code;
+    }
+
+    getC3DArrayDeclarationWithAccessOtherArray(env,symbolOfVariable,resultExpresion){
+        let code = '//--------------------- copiar referencia de un arreglo ----------------------\n';
+        let tposStack;
+
+        if(symbolOfVariable.type.enumType != resultExpresion.type.enumType){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Los tipos de valor y variable son diferentes`,env.enviromentType));
+            return '';
+        }
+        
+        if(symbolOfVariable.dimensions != resultExpresion.symbol.dimensions){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Arrglos de diferentes dimenciones`,env.enviromentType));
+            return '';
+        }
+
+        tposStack = Singleton.getTemporary();
+
+        code += resultExpresion.code;
+        
+        if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.MAIN){
+            code += `${tposStack} = ${symbolOfVariable.positionRelativa} + 0;//variable global\n`;
+
+        }else{
+            code += `${tposStack} = P + ${symbolOfVariable};//variable local\n`;
 
         }
 
+        code += `Stack[(int)${tposStack}] = ${resultExpresion.value};//guardo referencia al arreglo en heap\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(resultExpresion.value);
+        return code;
+    }
+
+    getSize(){
+        return this.ids.length;
+    }
+
+    getSizeArray(){
+        return this.values.value[0].length;
+    }
+
+    getDataOfValues(env,array){
+        let result = [];
+
+        for(let item of array){
+            if(item instanceof Array){
+                result.push(...this.getDataOfValues(env,item));
+
+            }else if(item instanceof Expresion){
+                result.push(item.getC3D(env));
+
+            }
+        }
+        return result;
     }
 
 }

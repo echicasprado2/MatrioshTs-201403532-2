@@ -268,8 +268,7 @@ class Declaration extends Instruction {
       for(const item of resultExpresion.trueLabels){
         resultExpresion.code += `${item}:\n`;
       }
-
-      resultExpresion.value = t1;
+      
       resultExpresion.code += `${t1} = 1;\n`;
       resultExpresion.code += `goto ${lexit};\n`;
 
@@ -280,6 +279,7 @@ class Declaration extends Instruction {
       resultExpresion.code += `${t1} = 0;\n`;
       resultExpresion.code += `goto ${lexit};\n`;
       resultExpresion.code += `${lexit}://salida de guardar valor booleano\n`;
+
       resultExpresion.value = t1;
 
     }
