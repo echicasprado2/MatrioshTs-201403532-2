@@ -332,6 +332,32 @@ class DeclarationArray extends Instruction {
         if(erroOfType) return '';
 
         for(let item of resultArrayExpresion){
+
+            if(item.type.enumType == EnumType.BOOLEAN){
+                Singleton.deleteTemporaryIntoDisplay(item.value);
+
+                let t1 = Singleton.getTemporary();
+                let lexit = Singleton.getLabel();
+
+                
+                item.code += `//declaracion de valor booleano de array\n`;
+                for(let lt of item.trueLabels){
+                    item.code += `${lt}:\n`;
+                }
+                
+                item.code += `${t1} = 1;\n`;
+                item.code += `goto ${lexit};\n`;
+
+                for(let lf of item.falseLabels){
+                    item.code += `${lf}:\n`;
+                }
+                
+                item.code += `${t1} = 0;\n`;
+                item.code += `goto ${lexit};\n`;
+                item.code += `${lexit}:\n`;
+
+                item.value = t1;
+            }
             code += item.code;
         }
 
@@ -343,39 +369,13 @@ class DeclarationArray extends Instruction {
         code += `${tposHeap} = ${tinitHeap};//puntero en heap, para guardar valores\n`;
         code += `Heap[(int)${tposHeap}] = ${this.size};//Guardo el size del arreglo\n`;
 
-        for(let item of resultArrayExpresion){
-
-            if(item.type.enumType == EnumType.BOOLEAN){
-                Singleton.deleteTemporaryIntoDisplay(item.value);
-
-                let t1 = Singleton.getTemporary();
-                let lexit = Singleton.getLabel();
-
-                
-                code += `//declaracion de valor booleano de array\n`;
-                for(let lt of item.trueLabels){
-                    code += `${lt}:\n`;
-                }
-                
-                code += `${t1} = 1;\n`;
-                code += `goto ${lexit};\n`;
-
-                for(let lf of item.falseLabels){
-                    code += `${lf}:\n`;
-                }
-                
-                code += `${t1} = 0;\n`;
-                code += `goto ${lexit};\n`;
-                code += `${lexit}:\n`;
-
-                item.value = t1;
-            }
-            
+        for(let item of resultArrayExpresion){            
             code += `${tposHeap} = ${tposHeap} + 1;//Guardar valor de arreglo\n`;
             code += `Heap[(int)${tposHeap}] = ${item.value};//Guardo valor de arreglo en heap\n`;
 
             Singleton.deleteTemporaryIntoDisplay(item.value);
         }
+        
         code += `${tposHeap} = ${tposHeap} + 1;\n`;
         code += `H = ${tposHeap};//posicion vacia de heap\n`;
 
