@@ -6,10 +6,12 @@ class ImportC3D extends InstructionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+        result.code = `#include <${this.nameLibrary}>\n`;
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

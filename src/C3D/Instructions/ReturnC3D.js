@@ -6,10 +6,21 @@ class ReturnC3D extends InstructionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+        let resultExpresion;
+
+        result.code = 'return';
+
+        if(this.expresion != null){
+            resultExpresion = this.expresion.optimizeByPeephole(listNodes,currentIndex);
+            result.code += ` ${resultExpresion.value}`;
+        }
+
+        result.code += ';\n';
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

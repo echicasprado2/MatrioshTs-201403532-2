@@ -30,7 +30,7 @@ var editOptimization = CodeMirror.fromTextArea(
   document.getElementById("textarea-editor-optimization"),
   {
     mode: "javascript",
-    theme: "lucario",
+    theme: "dracula",
     lineNumbers: true,
   }
 );

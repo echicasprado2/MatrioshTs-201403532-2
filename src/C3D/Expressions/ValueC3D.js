@@ -7,10 +7,17 @@ class ValueC3D extends ExpresionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+
+        result.value = this.value;
+
+        if(this.valueType.enumValueTypeC3D == EnumValueTypeC3D.STRING) result.type.enumResultTypeC3D == EnumResultTypeC3D.STRING;
+        else result.type.enumResultTypeC3D = EnumResultTypeC3D.NUMBER;
+
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

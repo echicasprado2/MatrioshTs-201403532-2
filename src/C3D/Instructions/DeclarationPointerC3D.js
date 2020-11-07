@@ -1,4 +1,4 @@
-class DeclarationStructureC3D extends InstructionC3D{
+class DeclarationPointerC3D extends InstructionC3D{
 
     constructor(line,column,type,name,value){
         super(line,column);
@@ -10,7 +10,7 @@ class DeclarationStructureC3D extends InstructionC3D{
     optimizeByPeephole(listNodes,currentIndex){
         let result = new RESULTC3D();
         
-        result.code = `${this.type.toString()} ${this.name[0]} [${this.value}];\n`;
+        result.code = `${this.type.toString()} ${this.name[0]} = ${this.value};\n`;
         return result;
     }
 

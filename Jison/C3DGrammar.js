@@ -129,7 +129,7 @@ case 25:
  this.$ = new DeclarationStructureC3D(this._$.first_line,this._$.first_column,$$[$0-5],$$[$0-4],$$[$0-2]); 
 break;
 case 26:
- this.$ = new DeclarationC3D(this._$.first_line,this._$.first_column,$$[$0-4],$$[$0-3],$$[$0-1]); 
+ this.$ = new DeclarationPointerC3D(this._$.first_line,this._$.first_column,$$[$0-4],$$[$0-3],$$[$0-1]); 
 break;
 case 27:
  this.$ = new DeclarationC3D(this._$.first_line,this._$.first_column,$$[$0-2],$$[$0-1],null); 

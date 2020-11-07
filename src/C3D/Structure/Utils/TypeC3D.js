@@ -2,7 +2,7 @@
  * @enum of type value in 3-way code
  */
 var EnumTypeC3D;
-(function (EnumValueTypeC3D){
+(function (EnumTypeC3D){
     EnumTypeC3D["CHAR"] = "CHAR";
     EnumTypeC3D["FLOAT"] = "FLOAT";
     EnumTypeC3D["INT"] = "INT";

@@ -6,10 +6,18 @@ class BlockC3D extends InstructionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+        let temp;
+
+        for(let item of this.sentences){
+            temp = item.optimizeByPeephole(listNodes,currentIndex);
+            result.code += temp.code;
+        }
+
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

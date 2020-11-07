@@ -8,10 +8,29 @@ class DeclarationC3D extends InstructionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+
+        if(SingletonC3D.isEmptyDisplayTemporary()){
+            for(let item of this.name){
+                SingletonC3D.addTemporary(item);
+            }
+
+        }else{
+            result.code = `${this.type.toString()} `;
+
+            for(let i = 0; i < this.name.length; i++){
+                if(!SingletonC3D.existsTemporary(this.name[i])){
+                    result.code += (i == 0) ? `${this.name[i]}` : `, ${this.name[i]}`;
+                }
+            }
+            
+            result.code += ';\n';
+        }
+
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

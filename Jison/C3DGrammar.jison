@@ -145,7 +145,7 @@ IMPORT: include '<' library '>' { $$ = new ImportC3D(this._$.first_line,this._$.
       ;
 
 DECLARATION: TYPE L_ID cor_izq val_entero cor_der punto_y_coma { $$ = new DeclarationStructureC3D(this._$.first_line,this._$.first_column,$1,$2,$4); } 
-           | TYPE L_ID '=' val_entero punto_y_coma             { $$ = new DeclarationC3D(this._$.first_line,this._$.first_column,$1,$2,$4); }
+           | TYPE L_ID '=' val_entero punto_y_coma             { $$ = new DeclarationPointerC3D(this._$.first_line,this._$.first_column,$1,$2,$4); }
            | TYPE L_ID punto_y_coma                            { $$ = new DeclarationC3D(this._$.first_line,this._$.first_column,$1,$2,null); }
            ;
 
