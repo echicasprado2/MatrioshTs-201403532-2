@@ -76,7 +76,6 @@ class AccessArray extends Expresion {
 
   getIndexValue(e,arrayValue){
     var resultIndex; 
-    // var arrayDimension = arrayValue;
     var arrayDimension = arrayValue;
 
     for(var i = 0; i < this.value.length; i++){
@@ -100,7 +99,12 @@ class AccessArray extends Expresion {
   }
 
   getC3D(env){
+    let result = new RESULT();
+    let resultId;
+    let resultExpresion;
+    
     //TODO implement this
+    return result;
   }
 
   fillTable(env){

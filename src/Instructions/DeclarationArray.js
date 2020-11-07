@@ -301,7 +301,7 @@ class DeclarationArray extends Instruction {
             new Type(EnumType.ARRAY,null),
             env.enviromentType,
             environments,
-            this.size,//TODO seria bueno tener un metodo que me diera el tama;o del array, el problema es que si no viene un numero, ese valor no lo conozco en compilacion
+            this.size,
             Singleton.getPosStack(),
             this.dimensions,
             null,
