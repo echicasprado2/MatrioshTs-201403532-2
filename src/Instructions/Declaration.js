@@ -318,10 +318,13 @@ class Declaration extends Instruction {
         return new Value(new Type(EnumType.STRING,null),'');
 
       case EnumType.ARRAY:
-        return new Value(new Type(EnumType.NULL,null),null);
+        return new Value(new Type(EnumType.ARRAY,null),null);
 
       case EnumType.TYPE:
         return new Value(new Type(EnumType.TYPE,this.type.identifier),null);
+      
+      case EnumType.NULL:
+        return new Value(new Type(EnumType.NULL,this.type.identifier),null);
     }
   }
 
