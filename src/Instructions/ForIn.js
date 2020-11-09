@@ -8,11 +8,24 @@ class ForIn extends Instruction {
         this.block = block;
 
         this.translatedCode = "";
+
+        this.environment = null;
     }
 
     getTranslated(){
-        this.translatedCode += `for(${this.declaration.getTranslated().replace("\n","").replace(";","")} in ${this.expression.getTranslated()})`;
-        this.translatedCode += `${this.block.getTranslated()}\n\n`;
+        this.translatedCode += `for(${this.declaration.getTranslated().replace("\n","").replace(";","")} in `;
+
+        if(this.expression instanceof Array){
+            this.translatedCode += '[';
+            for(let i = 0; i < this.expression.length;i++){
+                this.translatedCode += (i == 0) ? this.expression[i].getTranslated() : `,${this.expression[i].getTranslated()}`
+            }
+            this.translatedCode += ']';
+        }else{
+            this.translatedCode += this.expression.getTranslated();
+        }
+
+        this.translatedCode += `)${this.block.getTranslated()}\n\n`;
         return this.translatedCode;
     }
 
@@ -30,7 +43,15 @@ class ForIn extends Instruction {
       
         var env = new Environment(e,new EnvironmentType(EnumEnvironmentType.FOR,""));
         this.declaration.translatedSymbolsTable(env);
-        this.expression.translatedSymbolsTable(env);
+
+        if(this.expression instanceof Array){
+            for(let item of this.expression){
+                item.translatedSymbolsTable(env);
+            }
+        }else{
+            this.expression.translatedSymbolsTable(env);
+        }
+
         this.block.translatedSymbolsTable(env);
     }
 
@@ -110,15 +131,103 @@ class ForIn extends Instruction {
     }
 
     getC3D(env){
-        //TODO 
+        let result = new RESULT();
+        let resultDeclaration;
+        let resultArray;
+        let resultBlock;
+        let resultAccessPlusPlus;
+        let resultAccess;
+        let access = new Access(this.line,this.column,[new Id(this.line,this.column,this.declaration.ids[0])]);
+        let accessPlusPlus = new Unary(this.line,this.column,new OperationType(EnumOperationType.PLUS_PLUS),new Access(this.line,this.column,[new Id(this.line,this.column,this.declaration.ids[0])]),false);
+
+        if(this.declaration instanceof Declaration && this.declaration.ids.length > 1){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se puee declarar mas de una variable`,this.environment.enviromentType));
+            return result;
+        }
+
+        resultDeclaration = this.declaration.getC3D(this.environment);
+        resultArray = this.expression.getC3D(this.environment);
+        resultBlock = this.block.getC3D(this.environment);
+        resultAccessPlusPlus = accessPlusPlus.getC3D(this.environment);
+        resultAccess = access.getC3D(this.environment);
+
+        if(resultArray.type.enumType == EnumType.ERROR){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumEnvironmentType.SEMANTIC),'Error con arreglo',this.environment.enviromentType));
+            return result;
+        }
+
+        let linit = Singleton.getLabel();
+        let ltrue = Singleton.getLabel();
+        let lfalse = Singleton.getLabel();
+        let tlength = Singleton.getTemporary();
+
+        result.exitLabels.push(...resultBlock.exitLabels);
+
+        result.code += `//-------------- FOR IN ----------------\n`;
+        result.code += `//--------------- DECLARACION DE FOR ------------\n`;
+        result.code += resultDeclaration.code;
+        result.code += '//---------------- INICIO DE ARREGLO EN HEAP ----------\n';
+        result.code += resultArray.code;
+        result.code += `${tlength} = Heap[(int)${resultArray.value}];\n`;
+        result.code += `//-------------- INICIO DE FOR IN ---------------\n`;
+        result.code += resultAccess.code;
+        result.code += `if(${resultAccess.value} < ${tlength}) goto ${ltrue};\n`;
+        result.code += `${linit}:\n`;
+        result.code += `//------------ CONDICION DE FOR IN ---------------\n`;
+        result.code += `if(${resultAccessPlusPlus.value} < ${tlength}) goto ${ltrue};\n`;
+        result.code += `goto ${lfalse};\n`;
+        result.code += `//---------------- CONDICION VERDADERA --------------------\n`;
+        result.code += `${ltrue}:\n`;
+        result.code += `//---------------- BLOCK FOR IN ---------------------\n`;
+        result.code += resultBlock.code;
+        result.code += `//------------------- ETIQUETA CONTINUE DE FOR IN ---------------\n`;
+        
+        for(let lc of resultBlock.continueLabels){
+            result.code += `${lc}:\n`;
+        }
+        
+        result.code += `//------------------- EXPRESION DE FOR ---------------\n`;
+        result.code += resultAccessPlusPlus.code;
+        result.code += `//------------------- SALTO A INICIO DE FOR ---------------\n`;
+        result.code += `goto ${linit};\n`;
+
+        result.code += `//------------------- ETIQUETA DE BREAK DE FOR ---------------\n`;
+        for(let lb of resultBlock.breakLabels){
+            result.code += `${lb}:\n`;
+        }
+
+        result.code += `//------------------- CONDICION FALSA DE FOR ---------------\n`;
+        result.code += `${lfalse}:\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(resultAccess.value);
+        Singleton.deleteTemporaryIntoDisplay(resultArray.value);
+        Singleton.deleteTemporaryIntoDisplay(resultAccessPlusPlus.value);
+        Singleton.deleteTemporaryIntoDisplay(tlength);
+
+        return result;
     }
 
     fillTable(env){
+        this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.FOR_IN,null));
+        this.environment.size = env.size;
+        
+        this.declaration.type.enumType = EnumType.NUMBER;
+        
+        this.declaration.fillTable(this.environment);
+        this.block.fillTable(this.environment);
         return null;
     }
 
     getSize(){
-        return 0;
+        return this.getSizeCondition() + this.getSizeBlock();
+    }
+
+    getSizeCondition(){
+        return this.declaration.getSize();
+    }
+
+    getSizeBlock(){
+        return this.block.getSize();
     }
 
 }

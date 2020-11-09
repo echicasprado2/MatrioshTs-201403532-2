@@ -148,7 +148,6 @@ class Print extends Instruction {
                     result.code += `printf("%0.10f",${resultTemp.value});//imprimo decimal\n`;
                     result.code += `goto ${lexit};//salida\n`;
                     result.code += `${lexit}:\n`;
-                    result.code += `printf("%c",10);//Salto de linea\n`;
                     
                     Singleton.deleteTemporaryIntoDisplay(tentero);
                     Singleton.deleteTemporaryIntoDisplay(tdecimal);
@@ -186,7 +185,6 @@ class Print extends Instruction {
                     result.code += `printf("%c",(char)115);\n`;
                     result.code += `printf("%c",(char)101);\n`;
                     result.code += `${lExit}:\n`;
-                    result.code += `printf("%c",10);//Salto de linea\n`;
                     
                     Singleton.deleteTemporaryIntoDisplay(resultTemp.value);
                     break;
@@ -197,13 +195,13 @@ class Print extends Instruction {
                     result.code += `printf("%c",(char)108);\n`;
                     result.code += `printf("%c",(char)108);\n`;
                     result.code += `printf("%c",(char)10);\n`;
-                    result.code += `printf("%c",10);//Salto de linea\n`;
                     
                     Singleton.deleteTemporaryIntoDisplay(resultTemp.value);
                     break;
-            }
-
+            }        
         }
+        result.code += `printf("%c",10);//Salto de linea\n`;
+        
         return result;
     }
 

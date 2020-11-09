@@ -100,11 +100,83 @@ class AccessArray extends Expresion {
 
   getC3D(env){
     let result = new RESULT();
-    let resultId;
-    let resultExpresion;
+    let symbolVariable = env.searchSymbol(this.identifier);
+    let tPosStack = Singleton.getTemporary();
+    let tval = Singleton.getTemporary();
+
+    if(symbolVariable == null){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No existe la variable`,env.enviromentType));
+      return new RESULT;
+    }
+
+    result.symbol = symbolVariable;
+    result.type = symbolVariable.type;
+    result.value = tval;
+
+    if(symbolVariable.typeEnvironment.enumEnvironmentType == EnumEnvironmentType.MAIN){
+      result.code += `${tPosStack} = ${symbolVariable.positionRelativa};//posicion de la variable global en stack\n`;
+
+    }else{
+      result.code += `${tPosStack} = P + ${symbolVariable.positionRelativa};//posicion de variable local\n`;
+
+    }
+
+    result.code += `${tval} = Stack[(int)${tPosStack}];//posicion de inicio de arreglo en heap\n`;
+
+    Singleton.deleteTemporaryIntoDisplay(tPosStack);
+
+    return this.getC3DWithIndex(env,symbolVariable,0,this.value,result);
+  }
+
+  /**
+   * 
+   * @param {Environment} env 
+   * @param {Symbol} symbolVariable 
+   * @param {Number} index 
+   * @param {Array} arrayIndex 
+   * @param {RESULT} RESULT previous
+   */
+  getC3DWithIndex(env,symbolVariable,index,arrayIndex,resultPrevious){
+    let valueIndex = arrayIndex[index].getC3D(env);
+
+    if(valueIndex.type.enumType != EnumType.NUMBER){
+      ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Error indice no es un numero`,env.enviromentType));
+      return new RESULT();
+    }
+
+    let tindex = Singleton.getTemporary();
+    let tPosVal = Singleton.getTemporary();
+    let tResultVal = Singleton.getTemporary();
+
+    resultPrevious.code += valueIndex.code;
+    resultPrevious.code += `${tindex} = ${valueIndex.value} + 1;\n`;
+    resultPrevious.code += `${tPosVal} = ${resultPrevious.value} + ${tindex};\n`;
+    resultPrevious.code += `${tResultVal} = Heap[(int)${tPosVal}];\n`;
     
-    //TODO implement this
-    return result;
+    Singleton.deleteTemporaryIntoDisplay(resultPrevious.value);
+    Singleton.deleteTemporaryIntoDisplay(tindex);
+    Singleton.deleteTemporaryIntoDisplay(tPosVal);
+
+    resultPrevious.value = tResultVal;
+
+    if(index < (arrayIndex.length - 1)){
+      return this.getC3DWithIndex(env,symbolVariable,index,arrayIndex,resultPrevious);
+    }else{
+
+      if(resultPrevious.type.enumType == EnumType.BOOLEAN){
+        let ltrue = Singleton.getLabel();
+        let lfalse = Singleton.getLabel();
+
+        resultPrevious.trueLabels.push(ltrue);
+        resultPrevious.falseLabels.push(lfalse);
+        resultPrevious.code += `if(${tResultVal} == 1) goto ${ltrue};\n`;
+        resultPrevious.code += `goto ${lfalse};\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(tResultVal);
+      }
+
+      return resultPrevious;
+    }
   }
 
   fillTable(env){

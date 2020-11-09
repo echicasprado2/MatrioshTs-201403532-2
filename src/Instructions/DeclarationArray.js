@@ -405,7 +405,7 @@ class DeclarationArray extends Instruction {
         }
         
         if(symbolOfVariable.dimensions != resultExpresion.symbol.dimensions){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Arrglos de diferentes dimenciones`,env.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`Arreglos de diferentes dimenciones`,env.enviromentType));
             return '';
         }
 
@@ -418,7 +418,6 @@ class DeclarationArray extends Instruction {
 
         }else{
             code += `${tposStack} = P + ${symbolOfVariable};//variable local\n`;
-
         }
 
         code += `Stack[(int)${tposStack}] = ${resultExpresion.value};//guardo referencia al arreglo en heap\n`;

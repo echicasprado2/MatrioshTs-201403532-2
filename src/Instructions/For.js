@@ -12,7 +12,7 @@ class For extends Instruction {
     constructor(linea,column,declaration,condition,expression,block){
         super(linea,column);
 
-        this.declaration = declaration; // this declaration is Declaration or Assignment or Id
+        this.declaration = declaration;
         this.condition = condition;
         this.expression = expression;
         this.block = block;
@@ -121,7 +121,8 @@ class For extends Instruction {
         let resultBlock;
 
         if(this.declaration instanceof Declaration && this.declaration.ids.length > 1){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se se puede declarar mas de una variable`,this.environmentCondition.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se se puede declarar mas de una variable`,this.environment.enviromentType));
+            return result;
         }
 
         resultDeclaration = this.declaration.getC3D(this.environment);
@@ -130,17 +131,17 @@ class For extends Instruction {
         resultBlock = this.block.getC3D(this.environment);
 
         if(resultCondition.type.enumType == EnumType.ERROR){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'Error con la declaracion',this.environmentCondition.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'Error con la declaracion',this.environment.enviromentType));
             return result;
         }
         
         if(resultExpresion.type.enumType == EnumType.ERROR){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'Error con la expresion',this.environmentCondition.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'Error con la expresion',this.environment.enviromentType));
             return result;
         }
 
         if(resultCondition.type.enumType != EnumType.BOOLEAN){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'La condicion no es booleana',this.environmentCondition.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'La condicion no es booleana',this.environment.enviromentType));
             return result;
         }
 

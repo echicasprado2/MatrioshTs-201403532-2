@@ -23,7 +23,6 @@ class C3DMethods {
     code += `${t2} = ${t2} + 1;\n`;
     code += `goto ${l1};\n`;
     code += `${l2}://Etiqueta de fin de imprimir cadena\n`;
-    code += `printf("%c",10);//Salto de linea\n`;
     code += `return;\n}\n\n`;
 
     Singleton.deleteTemporaryIntoDisplay(t1);

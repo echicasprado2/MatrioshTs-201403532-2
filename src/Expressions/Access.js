@@ -75,18 +75,20 @@ class Access extends Expresion {
     }
 
     getC3D(env){
-        let result = new RESULT();
         let resultAccess;
 
         if(this.value.length == 1){
             resultAccess = this.value[0].getC3D(env);
+
             if(resultAccess == null || resultAccess.type.enumType == EnumType.ERROR){
-                return result;
+                return new RESULT();
             }else{
-                result = this.getC3DVariablePrimitive(env,resultAccess);
+                if(resultAccess instanceof RESULT) return resultAccess;
+                else if(resultAccess instanceof Symbol && resultAccess.typeValue.enumType == EnumType.ARRAY) return this.getAccessArray(env,resultAccess);
+                else return this.getC3DVariablePrimitive(env,resultAccess);
             }
         }
-        return result;
+        return new RESULT();
     }
 
     getC3DVariablePrimitive(env,symbol){
@@ -113,11 +115,39 @@ class Access extends Expresion {
             result.falseLabels = [lfalse];
             result.code += `if(${tValStack} == 1) goto ${ltrue};\n`;
             result.code += `goto ${lfalse};\n`;
+            
+            Singleton.deleteTemporaryIntoDisplay(tValStack);
         }
 
         Singleton.deleteTemporaryIntoDisplay(tPosStack);
         return result;
     }
+
+    getAccessArray(env,symbol){
+        let result = new RESULT();
+        let tPosStack = Singleton.getTemporary();
+        let tPosHeap = Singleton.getTemporary();
+
+        result.symbol = symbol;
+        result.type = symbol.type;
+        result.value = tPosHeap;
+
+        result.code += `//--------------- acceso a inicio de arreglo en heap ---------------\n`;
+
+        if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.MAIN){
+            result.code += `${tPosStack} = ${symbol.positionRelativa} + 0;//variable global\n`;
+
+        }else{
+            result.code += `${tPosStack} = P + ${symbol.positionRelativa};//variable local\n`;
+        }
+
+        result.code += `${tPosHeap} = Stack[(int)${tPosStack}];\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(tPosStack);
+
+        return result;
+    }
+
 
     fillTable(env){
         return null;
