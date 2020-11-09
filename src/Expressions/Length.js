@@ -67,6 +67,8 @@ class Length extends Expresion {
         }else if(resultValue.symbol.typeValue.enumType == EnumType.ARRAY){
             tcounter = Singleton.getTemporary();
             result.code += `${tcounter} = ${resultValue.symbol.size};//size de arreglo\n`;
+            
+            Singleton.deleteTemporaryIntoDisplay(resultValue.value);
         }
 
         result.value = tcounter;
