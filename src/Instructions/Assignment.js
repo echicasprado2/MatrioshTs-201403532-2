@@ -258,6 +258,7 @@ class Assignment extends Instruction {
 
         if(this.value == null){
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No tiene valor para asignar a variable`,env.enviromentType));
+            return new RESULT();
         }
 
         resulVariable = tmpAccess.getC3D(env);

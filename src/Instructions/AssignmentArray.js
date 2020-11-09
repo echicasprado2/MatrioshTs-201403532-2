@@ -73,11 +73,6 @@ class AssignmentArray extends Instruction {
             return null;
         }
 
-        // if(resultSymbol.typeDeclaration.enumType == EnumDeclarationType.CONST){
-        //     ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La variable de tipo CONST, no se puede cambiar el valor`,e.enviromentType));
-        //     return null;
-        // }
-
         if(resultSymbol.dimensions < listAccessValue.length){
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El indice supera las dimenciones del array`,e.enviromentType));
             return null;
@@ -145,8 +140,92 @@ class AssignmentArray extends Instruction {
     }
 
     getC3D(env){
-        // TODO 
+        let symbolVariable;
+        let resultNewValue;
+
+        if(this.value == null){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'No tiene valor para asignar al arreglo',env.enviromentType));
+            return new RESULT();
+        }
+
+        symbolVariable = env.searchSymbol(this.listAccess[0].identifier);
+        resultNewValue = this.value.getC3D(env);
+
+        if(symbolVariable == null || resultNewValue == null || resultNewValue.type.enumType == EnumType.ERROR){
+            return new RESULT();
+        }
+
+        if(symbolVariable.type.enumType != resultNewValue.type.enumType){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'El tipo del valor no coincide con el tipo de variable',env.enviromentType));
+            return new RESULT();
+        }
+
+        let tPosStack = Singleton.getTemporary();
+        let tPosHeap = Singleton.getTemporary();
+
+        if(symbolVariable.typeEnvironment.enumEnvironmentType == EnumEnvironmentType.MAIN){
+            resultNewValue.code += `${tPosStack} = ${symbolVariable.positionRelativa};//posicion de la variable global en stack\n`;
+        }else{
+            resultNewValue.code += `${tPosStack} = P + ${symbolVariable.positionRelativa};//posicion de variable local\n`;
+        }
+        resultNewValue.code += `${tPosHeap} = Stack[(int)${tPosStack}];//posicion de inicio de arreglo en heap\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(tPosStack);
+        Singleton.deleteTemporaryIntoDisplay(tPosHeap);
+
+        return this.getC3DOfAssignmentArray(env,symbolVariable,this.listAccess[0].value,0,resultNewValue,tPosHeap);
     }
+
+    /**
+     *  
+     * @param {Environment} env 
+     * @param {Symbol} symbol 
+     * @param {[Expresion]} arrayIndex 
+     * @param {Number} index use for get value in array
+     * @param {RESULT} newValue 
+     * @param {Temporary} tPosHeap
+     */
+    getC3DOfAssignmentArray(env,symbol,arrayIndex,index,resultNewValue,tPosHeap){
+        let valueIndex = arrayIndex[index].getC3D(env);
+
+        if(valueIndex.type.enumType != EnumType.NUMBER){
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),'Error indice no es un numero',env.enviromentType));
+            return new RESULT();
+        }
+
+        let tindex = Singleton.getTemporary();
+        let tPosVal = Singleton.getTemporary();
+
+        if(resultNewValue.type.enumType == EnumType.BOOLEAN){
+            Singleton.deleteTemporaryIntoDisplay(resultNewValue.value);
+            let lexit = Singleton.getLabel();
+
+            for(let item of resultNewValue.trueLabels){
+                resultNewValue.code += `${item}:\n`;
+            }
+            resultNewValue.code += `${resultNewValue.value} = 1;\n`;
+            resultNewValue.code += `goto ${lexit};\n`;
+
+            for(let item of resultNewValue.falseLabels){
+                resultNewValue.code += `${item}:\n`;
+            }
+            resultNewValue.code += `${resultNewValue.value} = 0;\n`;
+            resultNewValue.code += `goto ${lexit};\n`;
+            resultNewValue.code += `${lexit}:\n`;
+        }
+
+        resultNewValue.code += valueIndex.code;
+        resultNewValue.code += `${tindex} = ${valueIndex.value} + 1;\n`;
+        resultNewValue.code += `${tPosVal} = ${tPosHeap} + ${tindex};\n`;
+        resultNewValue.code += `Heap[(int)${tPosVal}] = ${resultNewValue.value};\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(tindex);
+        Singleton.deleteTemporaryIntoDisplay(tPosVal);
+        Singleton.deleteTemporaryIntoDisplay(resultNewValue.value);
+
+        return resultNewValue;
+    }
+
 
     fillTable(env){
         return null;
