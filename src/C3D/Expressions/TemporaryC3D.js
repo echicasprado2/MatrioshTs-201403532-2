@@ -8,6 +8,9 @@ class TemporaryC3D extends ExpresionC3D{
     optimizeByPeephole(listNodes,currentIndex){
         let result = new RESULTC3D();
         result.code = this.nameTemporary;
+        result.value = this.nameTemporary;
+        result.type.enumTypeC3D = EnumResultTypeC3D.TEMPORARY;
+        result.valueType.enumResultTypeC3D = EnumResultTypeC3D.TEMPORARY;
 
         SingletonC3D.deleteTemporary(this.nameTemporary);
 

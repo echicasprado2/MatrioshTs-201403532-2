@@ -34,7 +34,6 @@ class TableReport {
   static nodesTranslated = [];
   static nodesExecute = [];
   static nodesCompile = [];
-  static nodesOptimizate = [];
 
   static cleanTranslated() {
     TableReport.nodesTranslated = [];
@@ -46,10 +45,6 @@ class TableReport {
 
   static cleanCompile(){
     TableReport.nodesCompile = [];
-  }
-
-  static cleanOptimizate(){
-    TableReport.nodesOptimizate = [];
   }
   
   /**
@@ -71,13 +66,6 @@ class TableReport {
    */
   static getNodesCompile(){
     return TableReport.nodesCompile;
-  }
-
-  /**
-   * @returns array with node of optimizate
-   */
-  static getNodesOptimizate(){
-    return TableReport.nodesOptimizate;
   }
 
   /**
@@ -155,16 +143,7 @@ class TableReport {
 
   /**
    * 
-   * @param {*} node add node
-   */  
-  static addOptimizate(node){
-    //TODO implement
-  }
-
-
-  /**
-   * 
-   * @param {*} map map with data
+   * @param {Map} map map with data
    * @returns string with data of map
    */
   static getMapData(map){

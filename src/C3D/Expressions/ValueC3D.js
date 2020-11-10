@@ -1,8 +1,8 @@
 class ValueC3D extends ExpresionC3D{
 
-    constructor(line,column,valueType,value){
+    constructor(line,column,type,value){
         super(line,column);
-        this.valueType = valueType;
+        this.type = type;
         this.value = value;
     }
 
@@ -11,8 +11,9 @@ class ValueC3D extends ExpresionC3D{
 
         result.value = this.value;
         result.code = this.value;
+        result.valueType.enumResultTypeC3D = EnumResultTypeC3D.VALUE;
 
-        if(this.valueType.enumValueTypeC3D == EnumValueTypeC3D.STRING) result.type.enumResultTypeC3D == EnumResultTypeC3D.STRING;
+        if(this.type.enumValueTypeC3D == EnumValueTypeC3D.STRING) result.type.enumResultTypeC3D == EnumResultTypeC3D.STRING;
         else result.type.enumResultTypeC3D = EnumResultTypeC3D.NUMBER;
 
         return result;

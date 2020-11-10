@@ -358,8 +358,41 @@ function showTableCompileSymbols() {
   document.getElementById("tableExecute").innerHTML = html;
 }
 
-//TODO show table for optimize
-function showTableOptimize(){}
+function showTableOptimize(){
+  document.getElementById("tableOptimization").innerHTML = '';
+
+  var html = '<h2>Tabla de optimizaciones</h2>\n';
+  html += '<table class="table table-dark" id="tableExecute">';
+  html += '<thead class="thead-light">';
+  html += "<tr>";
+  html += '<th scope="col">#</th>';
+  html += '<th scope="col">LINEA</th>';
+  html += '<th scope="col">REGLA</th>';
+  html += '<th scope="col">TIPO OPTIMIZACION</th>';
+  html += '<th scope="col">CODIGO PREVIO</th>'
+  html += '<th scope="col">CODIGO NUEVO</th>'
+  html += "</tr>";
+  html += "</thead>";
+  html += "<tbody>";
+
+  let item;
+  let nodes = TableReportC3D.getNodesOptimization();
+  for(let i = 0; i < nodes.length; i ++){
+    item = nodes[i];
+    html += "<tr>";
+    html += `<td>${i + 1}</td>`;
+    html += `<td>${item.line}</td>`;
+    html += `<td>${item.rule.toString()}</td>`;
+    html += `<td>${item.optimizationType.toString()}</td>`;
+    html += `<td>${item.previousCode}</td>`;
+    html += `<td>${item.newCode}</td>`;
+    html += "</tr>";
+  }
+
+  html += '</tbody>';
+  html += '</table>';
+  document.getElementById('tableOptimization').innerHTML = html;
+}
 
 function showTableErrorsSymbols() {
   document.getElementById("tableErrors").innerHTML = "";

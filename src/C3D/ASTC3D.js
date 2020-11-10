@@ -6,6 +6,7 @@ class ASTC3D{
 
     getOptimize(){
         SingletonC3D.cleanDisplayTemporary();
+        TableReportC3D.cleanOptimization();
         PrintConsole.cleanConsole();
         let codeHeader = '';
         let codeBody = '';

@@ -6,7 +6,8 @@ var EnumResultTypeC3D;
     EnumResultTypeC3D["EMPTY"] = "EMPTY";
     EnumResultTypeC3D["NUMBER"] = "NUMBER";
     EnumResultTypeC3D["STRING"] = "STRING";
-    EnumResultTypeC3D["TEMPORARY"] = "TEMPORARY";
+    EnumResultTypeC3D["VALUE"] = "VALUE";
+    EnumResultTypeC3D["POINTER"] = "POINTER";
 
 })(EnumResultTypeC3D || (EnumResultTypeC3D = {}));
 

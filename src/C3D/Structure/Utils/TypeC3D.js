@@ -7,6 +7,8 @@ var EnumTypeC3D;
     EnumTypeC3D["FLOAT"] = "FLOAT";
     EnumTypeC3D["INT"] = "INT";
     EnumTypeC3D["VOID"] = "VOID";
+    EnumTypeC3D["TEMPORARY"] = "TEMPORARY"
+    EnumTypeC3D["POINTER"] = "POINTER"
 })(EnumTypeC3D || (EnumTypeC3D = {}));
 
 /**
