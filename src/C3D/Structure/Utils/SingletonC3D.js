@@ -6,7 +6,7 @@ class SingletonC3D {
     }
 
     static deleteTemporary(node){
-        let index = Singleton.displayTemporary.indexOf(node);
+        let index = SingletonC3D.displayTemporary.indexOf(node);
         if(index >= 0) SingletonC3D.displayTemporary.splice(index,1);
     }
 

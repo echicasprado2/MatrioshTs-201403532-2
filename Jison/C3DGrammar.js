@@ -216,7 +216,7 @@ case 67:
  this.$ = $$[$0-2]; this.$.haveParentesis = true; 
 break;
 case 68: case 69:
- this.$ = new StructureC3D(this._$.first_line,this._$.first_column,$$[$0-3],$$[$0-2]); 
+ this.$ = new StructureC3D(this._$.first_line,this._$.first_column,$$[$0-3],$$[$0-1]); 
 break;
 case 70:
  this.$ = new TemporaryC3D(this._$.first_line,this._$.first_column,$$[$0]); 

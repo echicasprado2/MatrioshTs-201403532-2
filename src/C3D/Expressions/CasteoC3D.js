@@ -7,10 +7,15 @@ class CasteoC3D extends ExpresionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+        result.code = `(${this.type.toString()})${this.expresionC3D}`;
+
+        SingletonC3D.deleteTemporary(this.expresionC3D);
+
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

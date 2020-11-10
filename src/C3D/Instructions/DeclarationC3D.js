@@ -16,15 +16,16 @@ class DeclarationC3D extends InstructionC3D{
             }
 
         }else{
-            result.code = `${this.type.toString()} `;
+            let typeString = this.type.toString();
+            let temp = '';
 
             for(let i = 0; i < this.name.length; i++){
                 if(!SingletonC3D.existsTemporary(this.name[i])){
-                    result.code += (i == 0) ? `${this.name[i]}` : `, ${this.name[i]}`;
+                    temp += (i == 0) ? `${this.name[i]}` : `, ${this.name[i]}`;
                 }
             }
             
-            result.code += ';\n';
+            result.code = (temp == '')? '\n' : `${typeString} ${temp};\n`;
         }
 
         return result;

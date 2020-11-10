@@ -7,10 +7,17 @@ class AssignmentC3D extends InstructionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+        let resultExpresion = this.expresion.optimizeByPeephole(listNodes,currentIndex);
+
+        result.code = `${this.nameVariable} = ${resultExpresion.code};\n`;
+
+        SingletonC3D.deleteTemporary(this.nameVariable);
+
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

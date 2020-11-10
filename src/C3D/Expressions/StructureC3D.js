@@ -7,10 +7,13 @@ class StructureC3D extends ExpresionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+        let resultIndex = this.indexCasteo.optimizeByPeephole(listNodes,currentIndex);
+        result.code = `${this.nameStructure}[${resultIndex.code}]`;
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

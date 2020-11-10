@@ -213,8 +213,8 @@ E   : E '+'  E { $$ = new ArithmeticC3D(this._$.first_line,this._$.first_column,
 
     | par_izq E par_der { $$ = $1; $$.haveParentesis = true; }
 
-    | heap cor_izq CASTEO cor_der  { $$ = new StructureC3D(this._$.first_line,this._$.first_column,$1,$2); }
-    | stack cor_izq CASTEO cor_der { $$ = new StructureC3D(this._$.first_line,this._$.first_column,$1,$2); }
+    | heap cor_izq CASTEO cor_der  { $$ = new StructureC3D(this._$.first_line,this._$.first_column,$1,$3); }
+    | stack cor_izq CASTEO cor_der { $$ = new StructureC3D(this._$.first_line,this._$.first_column,$1,$3); }
 
     | temporal { $$ = new TemporaryC3D(this._$.first_line,this._$.first_column,$1); }
 
