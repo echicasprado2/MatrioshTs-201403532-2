@@ -7,7 +7,7 @@ class CallFunctionC3D extends ExpresionC3D{
 
     optimizeByPeephole(listNodes,currentIndex){
         let result = new RESULTC3D();
-        result.code = `${this.name}();\n`;
+        result.code = (this.haveParentesis)?`(${this.name}());\n`:`${this.name}();\n`;
         return result;
     }
 

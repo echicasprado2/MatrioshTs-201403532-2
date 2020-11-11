@@ -13,7 +13,7 @@ class RelationalC3D extends ExpresionC3D{
         let resultExp2 = this.exp2.optimizeByPeephole(listNodes,currentIndex);
 
         result.valueType.enumResultTypeC3D = EnumResultTypeC3D.RELATION;
-        result.code = `${resultExp1.code} ${this.operationType.toString()} ${resultExp2.code}`;
+        result.code = (this.haveParentesis)?`(${resultExp1.code} ${this.operationType.toString()} ${resultExp2.code})`:`${resultExp1.code} ${this.operationType.toString()} ${resultExp2.code}`;
         return result;
     }
 

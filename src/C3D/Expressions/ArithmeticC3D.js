@@ -8,25 +8,41 @@ class ArithmeticC3D extends ExpresionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
+        let result;
         let resultExpresion1 = this.exp1.optimizeByPeephole(listNodes,currentIndex);
         let resultExpresion2 = this.exp2.optimizeByPeephole(listNodes,currentIndex);
 
         switch(this.operationType.enumOperationTypeC3D){
             case EnumOperationTypeC3D.PLUS:
-                return this.getPlus(resultExpresion1,resultExpresion2);
+                result = this.getPlus(resultExpresion1,resultExpresion2);
+                break;
 
             case EnumOperationTypeC3D.MINUS:
-                return this.getMinus(resultExpresion1,resultExpresion2);
+                result = this.getMinus(resultExpresion1,resultExpresion2);
+                break;
 
             case EnumOperationTypeC3D.MULTIPLICATION:
-                return this.getMultiplication(resultExpresion1,resultExpresion2);
+                result = this.getMultiplication(resultExpresion1,resultExpresion2);
+                break;
 
             case EnumOperationTypeC3D.DIVISION:
-                return this.getDivision(resultExpresion1,resultExpresion2);
+                result = this.getDivision(resultExpresion1,resultExpresion2);
+                break;
+
+            case EnumOperationTypeC3D.MODULE:
+                result = this.getModule(resultExpresion1,resultExpresion2);
+                break;
             
             default:
-                return new RESULTC3D();
+                result = new RESULTC3D();
+                break;
         }
+        
+        if(this.haveParentesis){
+            result.code = `(${result.code})`;
+        }
+
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
@@ -459,6 +475,12 @@ class ArithmeticC3D extends ExpresionC3D{
             return result;
         }
 
+    }
+
+    getModule(resultExp1,resultExp2){
+        let result = new RESULTC3D();
+        result.code = `${resultExp1.code} % ${resultExp2.code}`
+        return result;
     }
 
 }

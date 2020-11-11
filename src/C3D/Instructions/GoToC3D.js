@@ -30,7 +30,8 @@ class GoToC3D extends InstructionC3D{
         let optimizationType = new OptimizationType(EnumOptimizationType.MIRILLA);
         let listNodesTemp;
 
-        // for(let i = 0;i < listNodes.length;i++){
+        if(!this.validTagShowLast(listNodes,currentIndex)) return;
+
         while(true){
             node = listNodes[index];
                 
@@ -43,13 +44,16 @@ class GoToC3D extends InstructionC3D{
                 return;
             }else{
                 listNodesTemp = this.getNewListNodes(listNodes,index);
-                nodeDead = node.optimizeByPeephole(listNodesTemp,0);
-                deadCode += (nodeDead.code == '')?'':`${nodeDead.code}<br>`;
-                listNodes.splice(index,1);
+                if(listNodesTemp.length > 0){
+                    nodeDead = node.optimizeByPeephole(listNodesTemp,0);
+                    deadCode += (nodeDead.code == '')?'':`${nodeDead.code}<br>`;
+                    listNodes.splice(index,1);
+                }else{
+                    return;
+                }
             }
         }
-        // }
-        
+
     }
 
     getNewListNodes(listNodes,initIndex){
@@ -58,6 +62,18 @@ class GoToC3D extends InstructionC3D{
             temp.push(listNodes[i]);
         }
         return temp;
+    }
+
+    validTagShowLast(listNodes,currentIndex){
+        let index = 0;
+        let node = null;
+
+        for(let i = 1;i < listNodes.length; i++){
+            index = currentIndex + i;
+            node = listNodes[index];
+            if(node instanceof TagC3D && node.nameTag == this.nameTag) return true;
+        }
+        return false;
     }
 
 }

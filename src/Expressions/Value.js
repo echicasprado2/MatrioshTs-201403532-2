@@ -127,7 +127,8 @@ class Value extends Expresion {
         if (listChar[i] === "\\") {
           i++;
           result.code += `Heap[(int)${tPosition}] = ${this.getSpecialChar(listChar[i])};//char -> \\${listChar[i]}\n`;
-        } else {
+
+        }else {
           result.code += `Heap[(int)${tPosition}] = ${listChar[i].charCodeAt(0)};//char -> ${listChar[i]}\n`;
         }
 

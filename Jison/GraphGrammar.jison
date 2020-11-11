@@ -4,8 +4,8 @@
 
 /* Lexico */
 %lex
-%options case-sensitive
-// %options case-insensitive
+// %options case-sensitive
+%options case-insensitive
 
 // expresiones regulares
 lex_decimal              [0-9]+"."[0-9]+

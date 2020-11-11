@@ -164,11 +164,15 @@ compile.addEventListener("click",(e) => {
   let result = new AST(Gramatica.parse(editorTranslated.getValue()));
   resultC3D = result.getC3D();
   
-  if(ErrorList.isErrors()) editCode3D.setValue(resultC3D);
   myConsole.setValue(PrintConsole.getPrintConsole());
   showTableErrorsSymbols();
   showTableCompileSymbols();
-  showCompileTree(editorTranslated.getValue());
+
+  if(ErrorList.isErrors()){
+    editCode3D.setValue(resultC3D);
+    showCompileTree(editorTranslated.getValue());
+  } 
+  
 });
 
 var optimizate = document.getElementById("optimizar");

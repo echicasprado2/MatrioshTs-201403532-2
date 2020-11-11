@@ -10,12 +10,12 @@ class AssignmentC3D extends InstructionC3D{
         let result = new RESULTC3D();
         let resultExpresion = this.expresion.optimizeByPeephole(listNodes,currentIndex);
 
-        if(resultExpresion.code == '' && resultExpresion.type.enumTypeC3D != EnumTypeC3D.TEMPORARY){
+        if(resultExpresion.code == '' && resultExpresion.type.enumTypeC3D != EnumTypeC3D.TEMPORARY && !TableReportC3D.isEmplyTableReportOptimization()){
             let node = TableReportC3D.getLastNode();
             node.previousCode = `${this.nameVariable} = ${node.previousCode};`;
 
         }else if(resultExpresion.type.enumTypeC3D == EnumTypeC3D.TEMPORARY){
-            if(this.nameVariable == resultExpresion.code){
+            if(this.nameVariable == resultExpresion.code && !TableReportC3D.isEmplyTableReportOptimization()){
                 let node = TableReportC3D.getLastNode();
 
                 switch(node.rule.enumOptimizationRule){

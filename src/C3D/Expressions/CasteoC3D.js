@@ -8,7 +8,9 @@ class CasteoC3D extends ExpresionC3D{
 
     optimizeByPeephole(listNodes,currentIndex){
         let result = new RESULTC3D();
-        result.code = `(${this.type.toString()})${this.expresionC3D}`;
+        let resultExpresion = this.expresionC3D.optimizeByPeephole(listNodes,currentIndex);
+        result.value = (this.haveParentesis)? `((${this.type.toString()})${resultExpresion.code})`:`(${this.type.toString()})${resultExpresion.code}`;
+        result.code = (this.haveParentesis)? `((${this.type.toString()})${resultExpresion.code})`:`(${this.type.toString()})${resultExpresion.code}`;
 
         SingletonC3D.deleteTemporary(this.expresionC3D);
 

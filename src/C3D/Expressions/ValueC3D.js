@@ -10,7 +10,7 @@ class ValueC3D extends ExpresionC3D{
         let result = new RESULTC3D();
 
         result.value = this.value;
-        result.code = this.value;
+        result.code = (this.haveParentesis)? `(${this.value})`: this.value;
         result.valueType.enumResultTypeC3D = EnumResultTypeC3D.VALUE;
 
         if(this.type.enumValueTypeC3D == EnumValueTypeC3D.STRING) result.type.enumResultTypeC3D == EnumResultTypeC3D.STRING;
