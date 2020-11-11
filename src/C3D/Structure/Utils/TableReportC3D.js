@@ -36,6 +36,10 @@ class TableReportC3D{
         return TableReportC3D.nodesOptimization;
     }
 
+    static getLastNode(){
+        return TableReportC3D.nodesOptimization[TableReportC3D.nodesOptimization.length - 1];
+    }
+
     static isEmplyTableReportOptimization(){
         return (TableReportC3D.nodesOptimization.length == 0) ? true : false;
     }
