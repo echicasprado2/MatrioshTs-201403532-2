@@ -44,12 +44,12 @@ class AssignmentC3D extends InstructionC3D{
                         break;
                 }
 
+            }else{
+                result.code = `${this.nameVariable} = ${resultExpresion.code};\n`;
             }
-
         }else{
             result.code = `${this.nameVariable} = ${resultExpresion.code};\n`;
         }
-
 
         SingletonC3D.deleteTemporary(this.nameVariable);
 

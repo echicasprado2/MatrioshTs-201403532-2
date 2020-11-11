@@ -459,7 +459,7 @@ class Function extends Instruction {
     let location;
     let block;
     let dimensionParam;
-    let exists = env.searchSymbol(this.identifier);
+    let exists = env.searchSymbol(`@@${this.identifier}`);
 
     if(exists != null){
       ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La funcion: ${this.identifier}, ya se encuentra definida`,env.enviromentType));
@@ -517,7 +517,7 @@ class Function extends Instruction {
       this
     );
 
-    env.insertNewSymbol(this.identifier,symbolFunction);
+    env.insertNewSymbol(`@@${this.identifier}`,symbolFunction);
     return null;
   }
 

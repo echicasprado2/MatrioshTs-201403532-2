@@ -199,19 +199,22 @@ class AssignmentArray extends Instruction {
         if(resultNewValue.type.enumType == EnumType.BOOLEAN){
             Singleton.deleteTemporaryIntoDisplay(resultNewValue.value);
             let lexit = Singleton.getLabel();
+            let tval = Singleton.getTemporary();
 
             for(let item of resultNewValue.trueLabels){
                 resultNewValue.code += `${item}:\n`;
             }
-            resultNewValue.code += `${resultNewValue.value} = 1;\n`;
+            resultNewValue.code += `${tval} = 1;\n`;
             resultNewValue.code += `goto ${lexit};\n`;
 
             for(let item of resultNewValue.falseLabels){
                 resultNewValue.code += `${item}:\n`;
             }
-            resultNewValue.code += `${resultNewValue.value} = 0;\n`;
+            resultNewValue.code += `${tval} = 0;\n`;
             resultNewValue.code += `goto ${lexit};\n`;
             resultNewValue.code += `${lexit}:\n`;
+
+            resultNewValue.value = tval;
         }
 
         resultNewValue.code += valueIndex.code;

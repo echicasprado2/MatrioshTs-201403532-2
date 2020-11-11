@@ -171,7 +171,6 @@ compile.addEventListener("click",(e) => {
   showCompileTree(editorTranslated.getValue());
 });
 
-//TODO use this for optimizate intermediate code
 var optimizate = document.getElementById("optimizar");
 optimizate.addEventListener("click",(e) => {
   var editorC3D = getEditorC3D();

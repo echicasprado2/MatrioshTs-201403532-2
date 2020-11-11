@@ -121,6 +121,8 @@ class Return extends Instruction {
             }
 
             Singleton.deleteTemporaryIntoDisplay(tposReturn);
+        }else{
+            result.code += `goto ${lexit};//salida de retorno\n`;
         }
         
         result.exitLabels.push(lexit);

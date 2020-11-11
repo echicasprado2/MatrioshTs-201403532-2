@@ -9,10 +9,17 @@ class BlockC3D extends InstructionC3D{
         let result = new RESULTC3D();
         let temp;
 
-        for(let item of this.sentences){
-            temp = item.optimizeByPeephole(listNodes,currentIndex);
+        //TODO this use for block optimization rule 5
+
+        for(let i = 0; i < this.sentences.length;i++){
+            temp = this.sentences[i].optimizeByPeephole(listNodes,i);
             result.code += temp.code;
         }
+
+        // for(let item of this.sentences){
+        //     temp = item.optimizeByPeephole(listNodes,currentIndex);
+        //     result.code += temp.code;
+        // }
 
         return result;
     }

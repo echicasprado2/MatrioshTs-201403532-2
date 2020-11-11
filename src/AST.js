@@ -88,11 +88,13 @@ class AST {
     this.cleanVariableC3D();
     this.getSizeMain();
     this.getGlobalTypeDefinition();
+    this.fillGlobalDeclarationTable();
+    this.fillFunctionTable();
 
     let cadena = "";
     let metodosNativos = C3DMethods.getMethods();
-    let globalFunctionDefinition = this.getGlobalFunctionDefinition();
     let globalVariable = this.getGlobalVariable();
+    let globalFunctionDefinition = this.getGlobalFunctionDefinition();
     let mainInstructions = this.getMainInstructions();
     let header = this.getHeaderC3D();
     
@@ -113,12 +115,24 @@ class AST {
     return cadena;
   }
 
-  getGlobalFunctionDefinition(){
-    let cadena = '';
-
+  fillFunctionTable(){
     for(let item of this.instruccions){
       if(item instanceof Function) item.fillTable(this.environmentCompile);
     }
+  }
+
+  fillGlobalDeclarationTable(){
+    for(var i = 0; i < this.instruccions.length; i++){
+      if((this.instruccions[i] instanceof Declaration) || 
+       (this.instruccions[i] instanceof DeclarationTypes) ||
+       (this.instruccions[i] instanceof DeclarationArray)){
+        this.instruccions[i].fillTable(this.environmentCompile);
+      }
+    }
+  }
+
+  getGlobalFunctionDefinition(){
+    let cadena = '';
 
     for(let item of this.instruccions){
       if(item instanceof Function) cadena += item.getC3D(this.environmentCompile).code;
@@ -138,14 +152,6 @@ class AST {
   getGlobalVariable(){
    Singleton.cleanPointerStackInit();
    let cadena = "";
-
-    for(var i = 0; i < this.instruccions.length; i++){
-      if((this.instruccions[i] instanceof Declaration) || 
-       (this.instruccions[i] instanceof DeclarationTypes) ||
-       (this.instruccions[i] instanceof DeclarationArray)){
-        this.instruccions[i].fillTable(this.environmentCompile);
-      }
-    }
 
     for(var i = 0; i < this.instruccions.length; i++){
       if((this.instruccions[i] instanceof Declaration) || 
@@ -203,13 +209,13 @@ class AST {
   getHeaderC3D(){
     let cadena = "";
     cadena += "#include <stdio.h> //Importar para el uso de Printf\n"
-    cadena += "float Heap[16384]; //Estructura para heap\n"
-    cadena += "float Stack[16394]; //Estructura para stack\n"
-    cadena += "float P = 0; //Puntero P\n"
-    cadena += "float H = 0; //Puntero H\n"
+    cadena += "double Heap[32768]; //Estructura para heap\n"
+    cadena += "double Stack[32768]; //Estructura para stack\n"
+    cadena += "double P = 0; //Puntero P\n"
+    cadena += "double H = 0; //Puntero H\n"
 
     if(Singleton.getNumberTemporary() > 0){
-      cadena += "float ";
+      cadena += "double ";
       
       for(let i = 0; i < Singleton.getNumberTemporary();i++){
         cadena += i == 0 ? `t${i}` : `, t${i}`; 

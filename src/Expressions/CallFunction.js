@@ -249,7 +249,7 @@ class CallFunction extends Expresion {
         let tnextStack = Singleton.getTemporary();
         let lnext;
 
-        symbolFunction = env.searchSymbol(this.identifier);
+        symbolFunction = env.searchSymbol(`@@${this.identifier}`);
 
         if(symbolFunction == null || symbolFunction.typeValue.enumType != EnumType.FUNCTION){
            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`No se encontro la funcion`,env.enviromentType));

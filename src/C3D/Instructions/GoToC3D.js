@@ -7,11 +7,57 @@ class GoToC3D extends InstructionC3D{
 
     optimizeByPeephole(listNodes,currentIndex){
         let result = new RESULTC3D();
+
+        //TODO use for optimization rule 1
+
         result.code = `goto ${this.nameTag};\n`
+        this.deleteDeadCode(listNodes,currentIndex);
         return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
         return this.optimizeByPeephole(listNodes,currentIndex);
     }
+
+    deleteDeadCode(listNodes,currentIndex){
+        const index = currentIndex + 1;
+        let node;
+        let nodeDead;
+        let nodeTag;
+        let deadCode = '';
+        let newCode = `goto ${this.nameTag};<br>`;
+        let rule = new OptimizationRule(EnumOptimizationRule.RULE_1);
+        let optimizationType = new OptimizationType(EnumOptimizationType.MIRILLA);
+        let listNodesTemp;
+
+        // for(let i = 0;i < listNodes.length;i++){
+        while(true){
+            node = listNodes[index];
+                
+            if(node instanceof TagC3D && node.nameTag == this.nameTag){
+                //TODO add node report
+                nodeTag = node.optimizeByPeephole(listNodes,currentIndex);
+                newCode = `${newCode}${nodeTag.code}`;
+                   
+                TableReportC3D.addNodeOptimization(new NodeReportOptimizateC3D(this.line,deadCode,newCode,rule,optimizationType));
+                return;
+            }else{
+                listNodesTemp = this.getNewListNodes(listNodes,index);
+                nodeDead = node.optimizeByPeephole(listNodesTemp,0);
+                deadCode += (nodeDead.code == '')?'':`${nodeDead.code}<br>`;
+                listNodes.splice(index,1);
+            }
+        }
+        // }
+        
+    }
+
+    getNewListNodes(listNodes,initIndex){
+        let temp = [];
+        for(let i = initIndex; i < listNodes.length;i++){
+            temp.push(listNodes[i]);
+        }
+        return temp;
+    }
+
 }

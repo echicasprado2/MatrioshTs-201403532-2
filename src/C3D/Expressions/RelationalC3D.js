@@ -8,10 +8,16 @@ class RelationalC3D extends ExpresionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        //TODO implements
+        let result = new RESULTC3D();
+        let resultExp1 = this.exp1.optimizeByPeephole(listNodes,currentIndex);
+        let resultExp2 = this.exp2.optimizeByPeephole(listNodes,currentIndex);
+
+        result.valueType.enumResultTypeC3D = EnumResultTypeC3D.RELATION;
+        result.code = `${resultExp1.code} ${this.operationType.toString()} ${resultExp2.code}`;
+        return result;
     }
 
     optimizeByBlock(listNodes,currentIndex){
-        //TODO implements
+        return this.optimizeByPeephole(listNodes,currentIndex);
     }
 }

@@ -222,7 +222,7 @@ class Environment {
             }
         }
 
-        symbolFunction = this.searchSymbol(environmentFunction.enviromentType.name);
+        symbolFunction = this.searchSymbol(`@@${environmentFunction.enviromentType.name}`);
         return symbolFunction.type;
     }
 
