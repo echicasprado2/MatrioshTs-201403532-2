@@ -2,7 +2,11 @@ class CallFunction extends Expresion {
 
     constructor(linea,column,identifier,parametros,isFinal){
         super(linea,column,null,null);
-        this.identifier = identifier;
+
+        let valid = identifier.split("_");
+        if(valid.length > 1) this.identifier = identifier;
+        else this.identifier = `OLC2S2C3D_${identifier}`;
+        
         this.parametros = parametros;
         this.isFinal = isFinal;//solo para poner punto y coma en traduccion
         this.translatedCode = "";

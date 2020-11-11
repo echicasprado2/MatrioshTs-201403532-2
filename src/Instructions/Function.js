@@ -10,7 +10,11 @@ class Function extends Instruction {
    */
   constructor(line, column, identifier, Parameters, type) {
     super(line, column);
-    this.identifier = identifier;
+
+    let valid = identifier.split("_");
+    if(valid.length > 1) this.identifier = identifier;
+    else this.identifier = `OLC2S2C3D_${identifier}`;
+
     this.parameters = Parameters || [];
     this.instructions = []; //array de instrucciones
     this.type = type;
@@ -371,6 +375,23 @@ class Function extends Instruction {
     } else if (node instanceof Unary){
       this.changeNameOfCallFunctionsIntoSentences(node.expresion);
 
+    }else if(node instanceof CharAt){
+      this.changeNameOfCallFunctionsIntoSentences(node.access);
+      this.changeNameOfCallFunctionsIntoSentences(node.value);
+      
+    }else if(node instanceof Concat){
+      this.changeNameOfCallFunctionsIntoSentences(node.access);
+      this.changeNameOfCallFunctionsIntoSentences(node.value);
+      
+    }else if(node instanceof Length){
+      this.changeNameOfCallFunctionsIntoSentences(node.access);
+      
+    }else if(node instanceof ToLowerCase){
+      this.changeNameOfCallFunctionsIntoSentences(node.access);
+      
+    }else if(node instanceof ToUpperCase){
+      this.changeNameOfCallFunctionsIntoSentences(node.access);
+      
     } else if (node instanceof CallFunction) {
       for (var j = 0; j < this.copyIdentifierOfNestedFuncions.length; j++) {
         if (node.identifier === this.copyIdentifierOfNestedFuncions[j]) {
