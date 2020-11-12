@@ -258,7 +258,7 @@ class DeclarationArray extends Instruction {
 
     fillTable(env){
         if(this.typeDeclaration.enumType == EnumDeclarationType.CONST){
-            if(this.value == null){
+            if(this.values == null){
                 for(let item of this.ids){
                     ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`La constant: "${item}" no tiene asignacion de un valor, debe tener valor`,env.enviromentType));
                 }

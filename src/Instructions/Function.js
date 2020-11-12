@@ -480,6 +480,7 @@ class Function extends Instruction {
     let location;
     let block;
     let dimensionParam;
+    let valueType;
     let exists = env.searchSymbol(`@@${this.identifier}`);
 
     if(exists != null){
@@ -497,15 +498,19 @@ class Function extends Instruction {
     for(let param of this.parameters){
 
       dimensionParam = 0;
-      if(param.isArray) dimensionParam = param.dimencions;
-
+      valueType = new Type(EnumType.PARAMETER,null);
+      if(param.isArray){
+        dimensionParam = param.dimensions;
+        valueType.enumType = EnumType.ARRAY;
+      }
+      
       symbolParam = new Symbol(
         param.line,
         param.column,
         param.identifier,
         param.type,
         param.typeDeclaration,
-        new Type(EnumType.PARAMETER,null),
+        valueType,
         this.environment.enviromentType,
         arrayEnvironments,
         1,

@@ -268,10 +268,12 @@ class CallFunction extends Expresion {
         Singleton.deleteTemporaryIntoDisplay(tpos);
         Singleton.deleteTemporaryIntoDisplay(tnextStack);
         
-        result.code += `//---------------- guardo valor de temporales en stack -----------------\n`;
-        for(let i = 0;i < Singleton.getNumberDisplayTemporary();i++){
-            result.code += `${tpos} = P + ${env.size + i};//temporal a guardar en stack\n`; 
-            result.code += `Stack[(int)${tpos}] = ${Singleton.displayTemporary[i]};\n`;
+        if(Singleton.getNumberDisplayTemporary() > 0){
+            result.code += `//---------------- guardo valor de temporales en stack -----------------\n`;
+            for(let i = 0;i < Singleton.getNumberDisplayTemporary();i++){
+                result.code += `${tpos} = P + ${env.size + i};//temporal a guardar en stack\n`; 
+                result.code += `Stack[(int)${tpos}] = ${Singleton.displayTemporary[i]};\n`;
+            }
         }
         
         result.code += `${tnextStack} = P + ${env.size + Singleton.getNumberDisplayTemporary()};//Ambito de la funcion a llamar, paso de parametros\n`;
