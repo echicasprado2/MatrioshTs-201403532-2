@@ -133,7 +133,7 @@ class Switch extends Instruction {
                 
             }else{
                 let ldefault = Singleton.getLabel();
-                result.code += `goto ${ldefault};\n`;
+                result.code += `if(1 != 0) goto ${ldefault};\n`;
                 resultCode += `${ldefault}:\n`;
             }
         
