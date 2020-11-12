@@ -109,12 +109,7 @@ class Value extends Expresion {
     }else if (this.type.enumType == EnumType.STRING) {
       let listChar = this.value.split("");
 
-      if (listChar.length == 0) {
-        result.value = -1;
-        result.type.identifier = "NULL";
-        result.code = "";
-        return result;
-      }
+      
 
       tInicio = Singleton.getTemporary();
       tPosition = Singleton.getTemporary();
@@ -123,17 +118,25 @@ class Value extends Expresion {
       result.code += `${tInicio} = H;//Guardo el inicio de la variable en Heap\n`;
       result.code += `${tPosition} = ${tInicio};//Copio el inicio de la en Heap, para moverme en las posiciones\n`;
 
-      for (let i = 0; i < listChar.length; i++) {
-        if (listChar[i] === "\\") {
-          i++;
-          result.code += `Heap[(int)${tPosition}] = ${this.getSpecialChar(listChar[i])};//char -> \\${listChar[i]}\n`;
-
-        }else {
-          result.code += `Heap[(int)${tPosition}] = ${listChar[i].charCodeAt(0)};//char -> ${listChar[i]}\n`;
-        }
-
+      if (listChar.length == 0) {
+        result.code += `Heap[(int)${tPosition}] = -1;\n`;
         result.code += `${tPosition} = ${tPosition} + 1;\n`;
+
+      }else{
+
+        for (let i = 0; i < listChar.length; i++) {
+          if (listChar[i] === "\\") {
+            i++;
+            result.code += `Heap[(int)${tPosition}] = ${this.getSpecialChar(listChar[i])};//char -> \\${listChar[i]}\n`;
+  
+          }else {
+            result.code += `Heap[(int)${tPosition}] = ${listChar[i].charCodeAt(0)};//char -> ${listChar[i]}\n`;
+          }
+  
+          result.code += `${tPosition} = ${tPosition} + 1;\n`;
+        }
       }
+
       result.code += `Heap[(int)${tPosition}] = -1;//fin de cadena\n`;
       result.code += `${tPosition} = ${tPosition} + 1;\n`;
       result.code += `H = ${tPosition};//apunta a la primera posicion libre de Heap\n`;
