@@ -105,6 +105,7 @@ class Switch extends Instruction {
         let resulCondition;
         let resulCase;
         let lexit = Singleton.getLabel();
+        let resultCode = '';
         
         resulCondition = this.condition.getC3D(env);
         result.code += resulCondition.code;
@@ -125,14 +126,18 @@ class Switch extends Instruction {
             if(resulCase.falseLabels == 0){
                 resulCase.falseLabels.push(Singleton.getLabel());
             }
-
+        
             if(item.isCase){
                 result.code += `if(${resulCondition.value} == ${resulCase.value}) goto ${resulCase.trueLabels[0]};\n`;
                 result.code += `goto ${resulCase.falseLabels[0]};\n`;
+                
+            }else{
+                let ldefault = Singleton.getLabel();
+                result.code += `goto ${ldefault};\n`;
+                resultCode += `${ldefault}:\n`;
             }
-            
-            result.code += resulCase.code;
-            result.code += `goto ${lexit};//salgo de switch\n`;
+        
+            resultCode += resulCase.code;
             
             if(item.isCase){
                 result.code += `//condicion false case\n`;
@@ -141,7 +146,8 @@ class Switch extends Instruction {
                 }
             }
         }
-        
+
+        result.code += resultCode;
         result.code += `//salida de switch\n`;
         result.breakLabels.push(lexit);
         for(let item of result.breakLabels){
