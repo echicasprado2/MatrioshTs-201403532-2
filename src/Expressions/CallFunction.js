@@ -279,7 +279,10 @@ class CallFunction extends Expresion {
         result.code += `${tnextStack} = P + ${env.size + Singleton.getNumberDisplayTemporary()};//Ambito de la funcion a llamar, paso de parametros\n`;
         
         for(let i = 0; i < this.parametros.length; i++){
-           resultExpresion = this.parametros[i].getC3D(env);
+
+            if(this.parametros[i] instanceof Expresion) resultExpresion = this.parametros[i].getC3D(env);
+            else resultExpresion = DeclarationArray.makeArrayIntoHeap(env,this.parametros[i]);
+
            resultParameterDefinition = symbolFunction.value.parameters[i];
            
             if(resultExpresion.type.enumType != resultParameterDefinition.type.enumType){

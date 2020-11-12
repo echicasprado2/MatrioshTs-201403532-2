@@ -449,4 +449,87 @@ class DeclarationArray extends Instruction {
         return result;
     }
 
+
+    static makeArrayIntoHeap(env,arr){
+        let resultArrayExpresion = [];
+
+        if(arr == undefined) return new RESULT();
+        else resultArrayExpresion = DeclarationArray.makeDataOfArray(env,arr);
+
+        return DeclarationArray.saveArrayIntoHeapWithValues(resultArrayExpresion);
+    }
+
+    static makeDataOfArray(env,arr){
+        let result = [];
+
+        for(let item of arr){
+            if(item instanceof Array){
+                result.push(...DeclarationArray.makeDataOfArray(env,item));
+
+            }else if(item instanceof Expresion){
+                result.push(item.getC3D(env));
+            }
+        }
+        return result;
+    }
+
+    static saveArrayIntoHeapWithValues(arr){
+        let code = '';
+        let tposHeap;
+        let tinitHeap;
+        let result;
+
+        for(let item of arr){
+            
+            if(item.type.enumType == EnumType.BOOLEAN){
+                Singleton.deleteTemporaryIntoDisplay(item.value);
+
+                let t1 = Singleton.getTemporary();
+                let lexit = Singleton.getLabel();
+
+                item.code += '//boolean en arreglo quemado como parametro\n';
+                for(let lt of item.trueLabels){
+                    item.code += `${lt}:\n`;
+                }
+
+                item.code += `${t1} = 1;\n`;
+                item.code += `goto ${lexit};\n`;
+
+                for(let lf of item.falseLabels){
+                    item.code += `${lf}:\n`;
+                }
+
+                item.code += `${t1} = 0;\n`;
+                item.code += `goto ${lexit}:\n`;
+                item.code += `${lexit}:\n`;
+                item.value = t1;
+            }
+            code += item.code;
+        }
+        tposHeap = Singleton.getTemporary();
+        tinitHeap = Singleton.getTemporary();
+
+        code += `${tinitHeap} = H;//inicio de arreglo en heap, guardo el size\n`;
+        code += `${tposHeap} = ${tinitHeap};//puntero para recorrer heap\n`;
+        code += `Heap[(int)${tposHeap}] = ${arr.length};//guardo el size en la primera posicion\n`;
+
+        for(let item of arr){
+            code += `${tposHeap} = ${tposHeap} + 1;//mover de posicion en heap\n`;
+            code += `Heap[(int)${tposHeap}] = ${item.value};//guardo valor en heap\n`;
+            
+            Singleton.deleteTemporaryIntoDisplay(item.value);
+        }
+
+        code += `${tposHeap} = ${tposHeap} + 1;\n`;
+        code += `H = ${tposHeap};//posicion vacia en heap\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(tposHeap);
+
+        result = new RESULT();
+        result.type.enumType = arr[0].type.enumType;
+        result.code = code;
+        result.value = tinitHeap;
+        return result;
+    }
+
 }
