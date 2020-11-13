@@ -198,7 +198,8 @@ class Print extends Instruction {
                     
                     Singleton.deleteTemporaryIntoDisplay(resultTemp.value);
                     break;
-            }        
+            }
+            result.code += `printf("%c",32);//coma para separar lista de cadenas\n`;       
         }
         result.code += `printf("%c",10);//Salto de linea\n`;
         
