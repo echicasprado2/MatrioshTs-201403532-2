@@ -122,6 +122,7 @@ class AST {
   }
 
   fillGlobalDeclarationTable(){
+    Singleton.cleanPointerStackInit();
     for(var i = 0; i < this.instruccions.length; i++){
       if((this.instruccions[i] instanceof Declaration) || 
        (this.instruccions[i] instanceof DeclarationTypes) ||

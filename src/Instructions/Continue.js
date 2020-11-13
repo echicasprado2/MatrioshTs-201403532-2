@@ -50,7 +50,7 @@ class Continue extends Instruction {
         }
 
         if(!isValid){
-            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El break no viene dentro de un ciclo`,env.enviromentType));
+            ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumErrorType.SEMANTIC),`El continue no viene dentro de un ciclo`,env.enviromentType));
             return result;
         }
 

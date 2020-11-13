@@ -74,6 +74,17 @@ class Ternary extends Expresion {
 
         result.code += `//------------  TERNARIO  ---------------\n`;
         result.code += resultCondition.code;
+
+        if(resultCondition.trueLabels.length == 0 && resultCondition.falseLabels.length == 0){
+            let lt = Singleton.getLabel();
+            let lf = Singleton.getLabel();
+
+            resultCondition.trueLabels.push(lt);
+            resultCondition.falseLabels.push(lf);
+
+            result.code += `if(${resultCondition.value} == 1) goto ${lt};\n`;
+            result.code += `goto ${lf};\n`;
+        }
         
         result.code += `//------------ Por si la condicion es verdadera  ---------------\n`;
         for(let item of resultCondition.trueLabels){
