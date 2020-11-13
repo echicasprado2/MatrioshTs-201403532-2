@@ -12,8 +12,19 @@ class ForOf extends Instruction {
     }
 
     getTranslated(){
-        this.translatedCode += `for(${this.declaration.getTranslated().replace("\n","").replace(";","")} of ${this.expression.getTranslated()})`;
-        this.translatedCode += `${this.block.getTranslated()}\n\n`;
+        this.translatedCode += `for(${this.declaration.getTranslated().replace("\n","").replace(";","")} of `;
+        
+        if(this.expression instanceof Array){
+            this.translatedCode += '['
+            for(let i = 0;i<this.expression.length;i++){
+                this.translatedCode += (i == 0)? this.expression[i].getTranslated() : `,${this.expression[i].getTranslated()}`;
+            }
+            this.translatedCode += ']';
+        }else{
+            this.translatedCode += this.expression.getTranslated();
+        }
+
+        this.translatedCode += `)${this.block.getTranslated()}\n\n`;
         return this.translatedCode;
     }
 
@@ -31,7 +42,15 @@ class ForOf extends Instruction {
       
         var env = new Environment(e,new EnvironmentType(EnumEnvironmentType.FOR,""));
         this.declaration.translatedSymbolsTable(env);
-        this.expression.translatedSymbolsTable(env);
+        
+        if(this.expression instanceof Array){
+            for(let item of this.expression){
+                item.translatedSymbolsTable(env);
+            }
+        }else{
+            this.expression.translatedSymbolsTable(env);
+        }
+
         this.block.translatedSymbolsTable(env);
     }
 
@@ -128,10 +147,12 @@ class ForOf extends Instruction {
         resultDeclarationCounter = this.counter.getC3D(this.environment);
         resultDeclaration = this.declaration.getC3D(this.environment);
         resultAccess = access.getC3D(this.environment);
-        resultArray = this.expression.getC3D(this.environment);
         resultBlock = this.block.getC3D(this.environment);
         resultCounterPlusPlus = counterPlusPlus.getC3D(this.environment);
         resultAccessCounter = accessCounter.getC3D(this.environment);
+
+        if(this.expression instanceof Expresion ) resultArray = this.expression.getC3D(this.environment);
+        else resultArray = DeclarationArray.makeArrayIntoHeap(this.environment,this.expression);
 
         if(resultArray.type.enumType == EnumType.ERROR){
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumEnvironmentType.SEMANTIC),'Error con arreglo',this.environment.enviromentType));
@@ -237,13 +258,17 @@ class ForOf extends Instruction {
 
     fillTable(env){
         let symbolExpresion;
+        let typeIterator;
         this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.FOR_IN,null));
         this.environment.size = env.size;
         
-        symbolExpresion = this.expression.getC3D(this.environment);
+        if(this.expression instanceof Expresion) symbolExpresion = this.expression.getC3D(this.environment);
+        else  symbolExpresion = DeclarationArray.makeArrayIntoHeap(env,this.expression);
+        
         Singleton.deleteTemporaryIntoDisplay(symbolExpresion.value);
+        typeIterator = symbolExpresion.type;
 
-        this.declaration.type.enumType = symbolExpresion.type.enumType;
+        this.declaration.type.enumType = typeIterator.enumType;
 
         this.counter.fillTable(this.environment);
         this.declaration.fillTable(this.environment);

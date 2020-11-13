@@ -146,11 +146,13 @@ class ForIn extends Instruction {
         }
 
         resultDeclaration = this.declaration.getC3D(this.environment);
-        resultArray = this.expression.getC3D(this.environment);
         resultBlock = this.block.getC3D(this.environment);
         resultAccessPlusPlus = accessPlusPlus.getC3D(this.environment);
         resultAccess = access.getC3D(this.environment);
-
+        
+        if(this.expression instanceof Expresion ) resultArray = this.expression.getC3D(this.environment);
+        else resultArray = DeclarationArray.makeArrayIntoHeap(this.environment,this.expression);
+        
         if(resultArray.type.enumType == EnumType.ERROR){
             ErrorList.addError(new ErrorNode(this.line,this.column,new ErrorType(EnumEnvironmentType.SEMANTIC),'Error con arreglo',this.environment.enviromentType));
             return result;
