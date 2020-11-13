@@ -250,7 +250,13 @@ class DeclarationArray extends Instruction {
                 }
             }
         }else{
-            this.size = this.size.value;
+            resultArrayExpresion = this.getDataOfEmptyValues(env);
+
+            for(let name of this.ids){
+                symbolOfVariable = env.searchSymbol(name);
+                if(symbolOfVariable != null)
+                    result.code = this.getC3DArrayDeclarationWithEmptyValue(env,symbolOfVariable,resultArrayExpresion);
+            }
         }
         
         return result;
@@ -395,6 +401,78 @@ class DeclarationArray extends Instruction {
         return code;
     }
 
+    getC3DArrayDeclarationWithEmptyValue(env,symbolOfVariable,resultArrayExpresion){
+        let code = '';
+        let tposStack;
+        let tposHeap;
+        let tinitHeap;
+
+        if(symbolOfVariable == null) return '';
+
+        for(let item of resultArrayExpresion){
+
+            if(item.type.enumType == EnumType.BOOLEAN){
+                Singleton.deleteTemporaryIntoDisplay(item.value);
+
+                let t1 = Singleton.getTemporary();
+                let lexit = Singleton.getLabel();
+
+                
+                item.code += `//declaracion de valor booleano de array\n`;
+                for(let lt of item.trueLabels){
+                    item.code += `${lt}:\n`;
+                }
+                
+                item.code += `${t1} = 1;\n`;
+                item.code += `goto ${lexit};\n`;
+
+                for(let lf of item.falseLabels){
+                    item.code += `${lf}:\n`;
+                }
+                
+                item.code += `${t1} = 0;\n`;
+                item.code += `goto ${lexit};\n`;
+                item.code += `${lexit}:\n`;
+
+                item.value = t1;
+            }
+            code += item.code;
+        }
+
+        tposStack = Singleton.getTemporary();
+        tposHeap = Singleton.getTemporary();
+        tinitHeap = Singleton.getTemporary();
+
+        code += `${tinitHeap} = H;//inicio del arreglo en heap\n`;
+        code += `${tposHeap} = ${tinitHeap};//puntero en heap, para guardar valores\n`;
+        code += `Heap[(int)${tposHeap}] = ${this.size};//Guardo el size del arreglo\n`;
+
+        for(let item of resultArrayExpresion){            
+            code += `${tposHeap} = ${tposHeap} + 1;//Guardar valor de arreglo\n`;
+            code += `Heap[(int)${tposHeap}] = ${item.value};//Guardo valor de arreglo en heap\n`;
+
+            Singleton.deleteTemporaryIntoDisplay(item.value);
+        }
+        
+        code += `${tposHeap} = ${tposHeap} + 1;\n`;
+        code += `H = ${tposHeap};//posicion vacia de heap\n`;
+
+        if(env.enviromentType.enumEnvironmentType == EnumEnvironmentType.MAIN){
+            code += `${tposStack} = ${symbolOfVariable.positionRelativa} + 0;//variable global\n`;
+
+        }else{
+            code += `${tposStack} = P + ${symbolOfVariable.positionRelativa};//variable local\n`;
+        }
+
+        code += `Stack[(int)${tposStack}] = ${tinitHeap};//guardo inicio de arreglo en heap\n`;
+
+        Singleton.deleteTemporaryIntoDisplay(tposStack);
+        Singleton.deleteTemporaryIntoDisplay(tposHeap);
+        Singleton.deleteTemporaryIntoDisplay(tinitHeap);
+
+        return code;
+    }
+
     getC3DArrayDeclarationWithAccessOtherArray(env,symbolOfVariable,resultExpresion){
         let code = '//--------------------- copiar referencia de un arreglo ----------------------\n';
         let tposStack;
@@ -449,6 +527,16 @@ class DeclarationArray extends Instruction {
         return result;
     }
 
+    getDataOfEmptyValues(env){
+        let result = [];
+        let newValue;
+
+        for(let i = 0; i < this.size; i++){
+            newValue = Declaration.getInitValue(new Type(EnumType.NULL,null));
+            result.push(newValue.getC3D(env));
+        }
+        return result;
+    }
 
     static makeArrayIntoHeap(env,arr){
         let resultArrayExpresion = [];
