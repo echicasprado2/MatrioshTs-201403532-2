@@ -436,6 +436,26 @@ class ArithmeticC3D extends ExpresionC3D{
                 return result;
             }
 
+        }else if(resultExp1.valueType.enumResultTypeC3D == EnumResultTypeC3D.VALUE){
+
+            if(resultExp1.value == '0'){
+                result.type = resultExp1.type;
+                result.value = '0';
+                result.code = '0';
+
+                rule = new OptimizationRule(EnumOptimizationRule.RULE_16);
+                optimizationType = new OptimizationType(EnumOptimizationType.MIRILLA);
+                previousCode = `${resultExp1.value} / ${resultExp2.value}`;
+                newCode = '0';
+                TableReportC3D.addNodeOptimization(new NodeReportOptimizateC3D(this.line,previousCode,newCode,rule,optimizationType));
+
+                return result;
+
+            }else{
+                result.code = `${resultExp1.value} / ${resultExp2.value}`;
+                return result;
+            }
+
         }else if(resultExp2.valueType.enumResultTypeC3D == EnumResultTypeC3D.VALUE){
             
             if(resultExp2.value == '0'){

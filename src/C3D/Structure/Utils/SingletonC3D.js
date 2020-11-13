@@ -11,6 +11,10 @@ class SingletonC3D {
         if(index >= 0) SingletonC3D.displayTemporary.splice(index,1);
     }
 
+    static deleteObjectIntoList(listNodes,index){
+        if(index >= 0) listNodes.splice(index,1);
+    }
+
     static existsTemporary(node){
         let index = SingletonC3D.displayTemporary.indexOf(node);
         return (index >= 0)? true:false;
