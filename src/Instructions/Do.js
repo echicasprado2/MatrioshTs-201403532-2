@@ -146,8 +146,7 @@ class Do extends Instruction {
 
     fillTable(env){
         this.environment = new Environment(env,new EnvironmentType(EnumEnvironmentType.DO,null));
-        this.environment.size = this.getSize();
-        Singleton.cleanPointerStackInit();
+        this.environment.size = env.size
         
         this.block.fillTable(this.environment);
         return null;
