@@ -1,5 +1,6 @@
 class SingletonC3D {
     static displayTemporary = [];
+    static fillDisplayTemporary = true;
 
     static addTemporary(node){
         SingletonC3D.displayTemporary.push(node);
@@ -21,6 +22,16 @@ class SingletonC3D {
 
     static isEmptyDisplayTemporary(){
         return (SingletonC3D.displayTemporary == 0) ? true : false;
+    }
+
+    static isFillDisplayTemporary(){
+        if(SingletonC3D.fillDisplayTemporary){
+            SingletonC3D.fillDisplayTemporary = false;
+            return true;
+        }else{
+            SingletonC3D.fillDisplayTemporary = true;
+            return false;
+        }
     }
 
 }

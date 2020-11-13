@@ -88,13 +88,13 @@ class AST {
     this.cleanVariableC3D();
     this.getSizeMain();
     this.getGlobalTypeDefinition();
-    this.fillGlobalDeclarationTable();
     this.fillFunctionTable();
+    this.fillGlobalDeclarationTable();
 
     let cadena = "";
     let metodosNativos = C3DMethods.getMethods();
-    let globalVariable = this.getGlobalVariable();
     let globalFunctionDefinition = this.getGlobalFunctionDefinition();
+    let globalVariable = this.getGlobalVariable();
     let mainInstructions = this.getMainInstructions();
     let header = this.getHeaderC3D();
     
@@ -150,7 +150,7 @@ class AST {
   }
 
   getGlobalVariable(){
-   Singleton.cleanPointerStackInit();
+  //  Singleton.cleanPointerStackInit();
    let cadena = "";
 
     for(var i = 0; i < this.instruccions.length; i++){

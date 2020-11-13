@@ -10,7 +10,7 @@ class DeclarationC3D extends InstructionC3D{
     optimizeByPeephole(listNodes,currentIndex){
         let result = new RESULTC3D();
 
-        if(SingletonC3D.isEmptyDisplayTemporary()){
+        if(SingletonC3D.isFillDisplayTemporary()){
             for(let item of this.name){
                 SingletonC3D.addTemporary(item);
             }
