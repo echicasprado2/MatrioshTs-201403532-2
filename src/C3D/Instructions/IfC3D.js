@@ -7,11 +7,6 @@ class IfC3D extends InstructionC3D{
     }
 
     optimizeByPeephole(listNodes,currentIndex){
-        /*TODO implements use this for
-            optimization rule 2
-            optimization rule 3
-            optimization rule 4
-        */
         switch(this.validOptimizationToUse(listNodes,currentIndex)){
 
             case 2:

@@ -8,8 +8,6 @@ class GoToC3D extends InstructionC3D{
     optimizeByPeephole(listNodes,currentIndex){
         let result = new RESULTC3D();
 
-        //TODO use for optimization rule 1
-
         result.code = `goto ${this.nameTag};\n`
         this.deleteDeadCode(listNodes,currentIndex);
         return result;
