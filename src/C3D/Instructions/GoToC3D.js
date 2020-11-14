@@ -24,7 +24,7 @@ class GoToC3D extends InstructionC3D{
         let node;
         let nodeDead;
         let nodeTag;
-        let deadCode = '';
+        let deadCode = `goto ${this.nameTag};<br>`;
         let newCode = `goto ${this.nameTag};<br>`;
         let rule = new OptimizationRule(EnumOptimizationRule.RULE_1);
         let optimizationType = new OptimizationType(EnumOptimizationType.MIRILLA);
@@ -36,7 +36,6 @@ class GoToC3D extends InstructionC3D{
             node = listNodes[index];
                 
             if(node instanceof TagC3D && node.nameTag == this.nameTag){
-                //TODO add node report
                 nodeTag = node.optimizeByPeephole(listNodes,currentIndex);
                 newCode = `${newCode}${nodeTag.code}`;
                    
